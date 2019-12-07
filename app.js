@@ -18,6 +18,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 require('./routes')(app);
 
 // Listen config
+// TODO: Get config and start server
+// TODO: Auto restart server when source code changed
 const port = 8080
 app.listen(port, () => {
     console.log(`App listening on port ${port}!`)
