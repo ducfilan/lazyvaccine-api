@@ -1,4 +1,4 @@
-var authorityRole = require('./authorityRole.json');
+var authorityRole = require('./authorityRole.json.js');
 
 var config = {
 	dev: 'dev',
@@ -9,7 +9,7 @@ var config = {
 
 	// Config authentication & authorization
 	secrets: {
-		jwt: process.env.JWT || 'lean-learn-api-2019'
+		jwt: process.env.SECRET_KEY
 	},
 	authorizationPath: authorityRole
 };
