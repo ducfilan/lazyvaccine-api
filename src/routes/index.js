@@ -1,14 +1,14 @@
-var express = require('express');
-var router = express.Router();
+import { Router } from 'express';
+var router = Router();
 
 /* GET home page. */
 //router.get('/', function(req, res, next) {
 //  res.render('index', { title: 'Express' });
 //});
 
-var usersRoutes = require('./users.js');
+import usersRoutes from './users.js';
 
 //module.exports = router;
-module.exports = function (app) {
+export default function (app) {
     usersRoutes(app);
 }
