@@ -1,6 +1,4 @@
-import '@babel/register'
-import { config } from 'dotenv'
-
-config()
+require('@babel/register')
+require('dotenv').config()
 
 exports = module.exports = require('./src')
