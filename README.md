@@ -17,6 +17,10 @@
 	MONGO_DB=[your-mongodb-database-name]
 	```
 - Run `docker-compose up` from terminal
+#### Usage:
+- Run bash in docker container:
+
+	`docker exec -it <container name>`
 ### Source code configuration:
 #### Run steps:
 - Create an `.env` file to config environment variables:
