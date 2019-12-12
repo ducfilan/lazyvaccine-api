@@ -13,22 +13,13 @@
 	```bash
 	MONGO_USERNAME=[your-mongodb-username]
 	MONGO_PASSWORD=[your-mongodb-password]
-	MONGO_PORT=[your-mongodb-port]
+	MONGO_PORT=27017
 	MONGO_DB=[your-mongodb-database-name]
+	NODE_PORT=8080
 	```
 - Run `docker-compose up` from terminal
 #### Usage:
 - Run bash in docker container:
 
 	`docker exec -it <container name>`
-### Source code configuration:
-#### Run steps:
-- Create an `.env` file to config environment variables:
-	```bash
-	# Secret key will be used to sign JWT
-	SECRET_KEY=[secret-key-without-square-brackets]
-	LL_DB_URI=[db-uri-without-square-brackets]
-	LL_DB_NAME=[db-name-without-square-brackets]
-	PORT=[port-without-square-brackets]
-	```
-- *(to be continued)*
+
