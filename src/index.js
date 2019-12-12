@@ -6,8 +6,6 @@ import CategoriesDao from './dao/categories.dao'
 
 const port = process.env.NODE_PORT || 8080
 
-console.log(MongoClientConfigs.ConnectionString)
-
 MongoClient.connect(
   MongoClientConfigs.ConnectionString,
   MongoClientConfigs.Configs
