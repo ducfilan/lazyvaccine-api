@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon -L ./index.js",
+    "debug": "nodemon --inspect ./index.js",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --passWithNoTests --watch"
   },
