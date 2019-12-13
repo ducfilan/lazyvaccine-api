@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "nodemon -L ./index.js",
-    "debug": "nodemon --inspect ./index.js",
+    "debug": "nodemon --inspect=0.0.0.0:9229 ./index.js",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --passWithNoTests --watch"
   },
