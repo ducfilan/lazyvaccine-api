@@ -4,6 +4,10 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import routeIndex from './routes/index';
 import AuthenticationMiddleware from './middlewares/global/authentication';
+import session from 'express-session';
+import passport from 'passport';
+import Auth0Strategy from 'passport-auth0';
+import UsersDao from './dao/users.dao';
 
 const app = express()
 
@@ -18,11 +22,10 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 
 /** SET UP GOOGLE AUTHEN */
-var session = require('express-session');
 
 // config express-session
 var sessionConfig = {
-    secret: 'RANDOM SECRET', // TODO
+    secret: process.env.AUTH0_CLIENT_SECRET,
     cookie: {},
     resave: false,
     saveUninitialized: true
@@ -35,21 +38,13 @@ if (app.get('env') === 'prd') {
 
 app.use(session(sessionConfig));
 
-// Load environment variables from .env
-var dotenv = require('dotenv');
-dotenv.config();
-
-// Load Passport
-var passport = require('passport');
-var Auth0Strategy = require('passport-auth0');
-
 // Configure Passport to use Auth0
 var strategy = new Auth0Strategy(
     {
         domain: process.env.AUTH0_DOMAIN,
         clientID: process.env.AUTH0_CLIENT_ID,
         clientSecret: process.env.AUTH0_CLIENT_SECRET,
-        callbackURL: process.env.AUTH0_CALLBACK_URL || 'http://localhost:8080/callback'
+        callbackURL: process.env.AUTH0_CALLBACK_URL
     },
     function (accessToken, refreshToken, extraParams, profile, done) {
         // accessToken is the token to call Auth0 API (not needed in the most cases)
@@ -79,11 +74,10 @@ passport.deserializeUser(function (user, done) {
 app.get('/login', passport.authenticate('auth0', {
     scope: 'openid email profile'
 }), function (req, res) {
-    res.redirect('/');
+    res.redirect('/api/v1/user/my-info');
 });
 
-// Perform the final stage of authentication and redirect to previously requested URL or '/user'
-import UsersDao from './dao/users.dao';
+// Perform the final stage of authentication and redirect to previously requested URL or '/user/my-info'
 app.get('/callback', function (req, res, next) {
     passport.authenticate('auth0', function (err, user, info) {
         if (err) {
@@ -101,7 +95,7 @@ app.get('/callback', function (req, res, next) {
             }
             const returnTo = req.session.returnTo;
             delete req.session.returnTo;
-            res.redirect(returnTo || '/api/v1/user/my-info');
+            res.redirect(returnTo);
         });
     })(req, res, next);
 });
