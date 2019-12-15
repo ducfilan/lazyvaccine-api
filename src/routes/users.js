@@ -1,4 +1,8 @@
-export default function(app) {
-    var controller = require('../controllers/auth/userController.js')(app);
-	app.get('/users', controller.getUsers);
-}
+import { Router } from 'express';
+import UsersController from '../controllers/auth/userController';
+
+const router = new Router()
+
+router.route('/list').get(UsersController.getUsers)
+
+export default router

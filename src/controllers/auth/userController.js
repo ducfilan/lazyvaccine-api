@@ -1,7 +1,6 @@
-module.exports = function(app) {
-
-    var getUsers = function(req, res, next) {
-        let users = [
+export default class UsersController {
+    static async getUsers(req, res, next) {
+        var users = [
             {
                 'id': 1
             },
@@ -9,10 +8,6 @@ module.exports = function(app) {
                 'id': 2
             }
         ]
-        res.status(200).send(users);
-    }
-
-    return {
-        getUsers: getUsers
+        return res.status(200).json(users);
     }
 }
