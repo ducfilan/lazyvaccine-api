@@ -1,18 +1,11 @@
-module.exports = function(app) {
+import UsersDao from '../../dao/users.dao';
 
-    var getUsers = function(req, res, next) {
-        let users = [
-            {
-                'id': 1
-            },
-            {
-                'id': 2
-            }
-        ]
-        res.status(200).send(users);
+export default class UsersController {
+    static async getUsers(req, res, next) {
+        return res.status(200).json(await UsersDao.getAllusers());
     }
 
-    return {
-        getUsers: getUsers
+    static async myInfo(req, res, next) {
+        return res.status(200).json(req.user);
     }
 }

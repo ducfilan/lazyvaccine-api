@@ -1,14 +1,15 @@
 import { Router } from 'express';
-var router = Router();
+import categories from './categories.route';
+import usersRoutes from './users';
 
 /* GET home page. */
 //router.get('/', function(req, res, next) {
 //  res.render('index', { title: 'Express' });
 //});
 
-import usersRoutes from './users.js';
+var router = Router();
 
-//module.exports = router;
-export default function (app) {
-    usersRoutes(app);
-}
+router.use('/categories', categories)
+router.use('/user', usersRoutes);
+
+module.exports = router;
