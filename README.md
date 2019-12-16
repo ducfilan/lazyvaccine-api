@@ -16,6 +16,11 @@
 	MONGO_PORT=27017
 	MONGO_DB=[your-mongodb-database-name]
 	NODE_PORT=8080
+	// Google authentication application config, get from https://manage.auth0.com/dashboard/us/<your-account-name>/applications
+	AUTH0_CLIENT_ID=[your-client-id]
+	AUTH0_DOMAIN=[your-google-authen-app-domain]   
+	AUTH0_CLIENT_SECRET=[your-client-secret]
+	AUTH0_CALLBACK_URL=[call-back-url]
 	```
 - Run `docker-compose up` from terminal
 #### Usage:
