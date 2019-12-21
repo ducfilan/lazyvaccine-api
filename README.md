@@ -21,6 +21,9 @@
 	AUTH0_DOMAIN=[your-google-authen-app-domain]   
 	AUTH0_CLIENT_SECRET=[your-client-secret]
 	AUTH0_CALLBACK_URL=[call-back-url]
+	JWK_URI=[your-google-authen-url].well-known/jwks.json
+	JWK_AUDIENCE=[your-application-url]
+	JWK_ISSUER=[your-google-authen-url]
 	```
 - Run `docker-compose up` from terminal
 #### Usage:
