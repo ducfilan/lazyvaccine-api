@@ -101,14 +101,34 @@ app.get('/callback', function (req, res, next) {
 });
 
 // setup middleware
-app.use(AuthenticationMiddleware.secured);
+// app.use(AuthenticationMiddleware.secured);
 /** END SET UP GOOLE AUTHEN */
 
+
+/** GOOGLE AUTHEN FOR API */
+var jwt = require('express-jwt');
+var jwks = require('jwks-rsa');
+var jwtCheck = jwt({
+      secret: jwks.expressJwtSecret({
+          cache: true,
+          rateLimit: true,
+          jwksRequestsPerMinute: 5,
+          jwksUri: process.env.JWK_URI
+    }),
+    audience: process.env.JWK_AUDIENCE,
+    issuer: process.env.JWK_ISSUER,
+    algorithms: ['RS256']
+});
+app.use(jwtCheck);
+/** END GOOGLE AUTHEN FOR API */
+
 // setup routes
-app.use('/api/v1', routeIndex);
+app.use('/api/v1', jwtCheck, routeIndex);
+
 // TODO: remove this code and handle not found exception
 app.use('*', (req, res) => res.status(404).json({
   error: 'not found'
 }))
+
 
 export default app;
