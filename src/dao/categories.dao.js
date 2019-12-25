@@ -26,6 +26,7 @@ export default class CategoriesDao {
    */
   static async getAllCategories(lang) {
     let projectRules = {
+      '_id': 0,
       'name': 1,
       'description': 1,
       'path': 1
