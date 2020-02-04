@@ -26,7 +26,6 @@ export default class CategoriesDao {
    */
   static async getAllCategories(lang) {
     let projectRules = {
-      '_id': 0,
       'name': 1,
       'description': 1,
       'path': 1
@@ -39,6 +38,7 @@ export default class CategoriesDao {
           .project(projectRules)
           .toArray()
       ).map(category => ({
+        _id: category._id,
         name: category.name[lang],
         description: category.description ? category.description[lang] : null,
         path: category.path
