@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import categories from './categories.route';
+import categoriesRoute from './categories.route';
+import authRoute from './auth.route';
 import usersRoutes from './users';
 
 /* GET home page. */
@@ -9,7 +10,8 @@ import usersRoutes from './users';
 
 var router = Router();
 
-router.use('/categories', categories)
+router.use('/categories', categoriesRoute);
+router.use('/auth', authRoute);
 router.use('/user', usersRoutes);
 
 module.exports = router;
