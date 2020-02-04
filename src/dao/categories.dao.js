@@ -19,9 +19,30 @@ export default class CategoriesDao {
     }
   }
 
-  static async getAllCategories() {
+  /**
+   * 
+   * @param {string} lang - Target language for displaying in UI
+   * @returns {Array} - Returns the list of categories and subs
+   */
+  static async getAllCategories(lang) {
+    let projectRules = {
+      'name': 1,
+      'description': 1,
+      'path': 1
+    }
+
     try {
-      return await categories.find().toArray()
+      return (
+        await categories
+          .find()
+          .project(projectRules)
+          .toArray()
+      ).map(category => ({
+        _id: category._id,
+        name: category.name[lang],
+        description: category.description ? category.description[lang] : null,
+        path: category.path
+      }))
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return {}
