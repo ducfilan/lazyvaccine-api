@@ -43,9 +43,11 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.2",
     "express": "~4.17.1",
+    "express-jwt": "^5.3.1",
     "express-session": "^1.17.0",
     "jest-runner": "^24.9.0",
     "mongodb": "^3.5.2",
+    "jwks-rsa": "^1.6.0",
     "morgan": "~1.9.1",
     "npm-check-updates": "^3.2.2",
     "prettier": "^1.19.1"
