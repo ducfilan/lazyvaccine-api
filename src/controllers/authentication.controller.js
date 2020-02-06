@@ -1,18 +1,23 @@
-import { google } from 'googleapis';
+const {OAuth2Client} = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 
 export default class CategoriesController {
   static async apiAuthGoogle(req, res, next) {
+    async function verify(token) {
+      const ticket = await client.verifyIdToken({
+          idToken: token,
+          audience: process.env.GOOGLE_CLIENT_ID,
+      });
+      
+      const payload = ticket.getPayload();
+      const userid = payload['sub'];
+    }
+
     try {
       let token = req.body.token;
 
-      const auth = new google.auth.OAuth2(
-        process.env.GOOGLE_CLIENT_ID
-      );
-      auth.setCredentials(token);
-      const plus = google.plus({ version: 'v1', auth });
-      const me = await plus.people.get({ userId: 'me' });
-
-      const userGoogleId = me.data.id;
+      verify(token).catch(console.error);
 
       return token;
     } catch (e) {
