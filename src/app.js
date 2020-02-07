@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import routeIndex from './routes/index';
 import AuthenticationMiddleware from './middlewares/global/authentication';
@@ -17,10 +16,9 @@ app.use(express.json())
 app.use(express.urlencoded({
   extended: true
 }))
-app.use(cookieParser());
 
 // setup routes
-app.use('/api/v1', jwtCheck, routeIndex);
+app.use('/api/v1', routeIndex);
 
 // TODO: remove this code and handle not found exception
 app.use('*', (req, res) => res.status(404).json({
