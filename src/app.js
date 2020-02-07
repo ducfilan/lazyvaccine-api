@@ -20,7 +20,8 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 
 // setup routes
-app.use('/api/v1', routeIndex);
+app.use('/api/v1', jwtCheck, routeIndex);
+
 // TODO: remove this code and handle not found exception
 app.use('*', (req, res) => res.status(404).json({
   error: 'not found'
