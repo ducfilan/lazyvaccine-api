@@ -6,7 +6,6 @@ const {
   MONGO_DB
 } = process.env;
 
-
 export default {
   ConnectionString: `mongodb://${MONGO_USERNAME}:${encodeURIComponent(MONGO_PASSWORD)}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}?authSource=admin`,
   DatabaseName: MONGO_DB,

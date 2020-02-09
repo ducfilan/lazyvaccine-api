@@ -6,7 +6,7 @@ export default class CategoriesController {
     try {
       let token = req.body.token;
 
-      // This method will throw if the token is invalid.
+      // TODO: This method will throw if the token is invalid.
       const tokenInfo = await oAuth2Client.getTokenInfo(token);
 
       return tokenInfo;

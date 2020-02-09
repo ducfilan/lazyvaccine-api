@@ -6,7 +6,7 @@ let db
 export default class UsersDao {
   static async injectDB(conn) {
     if (users) {
-      return;
+      return
     }
 
     try {
@@ -19,29 +19,22 @@ export default class UsersDao {
     }
   }
 
-  static async getAllusers() {
+  static async isUserExists(email) {
     try {
-      return await users.find().toArray()
+      var user = await users.findOne({ 'email': email });
+      return !!user;
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
-      return {}
+      return false;
     }
   }
 
   static async registerUser(userInfo) {
-    var checkExist = await users.findOne({'gid': userInfo.id});
-    if (checkExist) {
-      return;
-    }
-    return await users.insertOne({   
-      'gid' : userInfo.id,
-      'name' : userInfo.name,
-      'nickname': userInfo.nickname,
-      'email' : userInfo.emails,
-      'picture' : userInfo.picture
-    }, null, function (err, body) {
+    if (await UsersDao.isUserExists(userInfo.email)) return;
+
+    return await users.insertOne(userInfo, null, function (err, body) {
       if (err) {
-        console.log(err);
+        console.log(err)
       }
     });
   }
