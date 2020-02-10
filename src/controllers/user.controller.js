@@ -7,7 +7,7 @@ export default class UsersController {
 
   static async register(req, res, next) {
     try {
-      let { type, token, name, email, picture_url } = req.body
+      let { type, token, name, email, picture: picture_url } = req.body
       await userService.register({ type, token, name, email, picture_url })
 
       return res.sendStatus(200)
