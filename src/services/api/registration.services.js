@@ -10,6 +10,7 @@ export default {
         break
 
       default:
+        throw Error('Not supported register type!')
         break
     }
 
