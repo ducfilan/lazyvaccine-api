@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import categories from './categories.route';
-import usersRoutes from './users';
+import categoriesRoute from './categories.route';
+import authRoute from './auth.route';
+import usersRoute from './users.route';
 
 /* GET home page. */
 //router.get('/', function(req, res, next) {
@@ -9,7 +10,8 @@ import usersRoutes from './users';
 
 var router = Router();
 
-router.use('/categories', categories)
-router.use('/user', usersRoutes);
+router.use('/categories', categoriesRoute);
+router.use('/auth', authRoute);
+router.use('/user', usersRoute);
 
 module.exports = router;
