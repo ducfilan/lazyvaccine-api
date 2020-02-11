@@ -1,19 +1,37 @@
-import userService from '../services/api/registration.services'
+import userService from '../services/api/user.services'
 
 export default class UsersController {
-  static async myInfo(req, res, next) {
+  static async me(req, res) {
     return res.status(200).json(req.user);
   }
 
-  static async register(req, res, next) {
+  static async register(req, res) {
     try {
-      let { type, token, name, email, picture: picture_url } = req.body
-      await userService.register({ type, token, name, email, picture_url })
+      await userService.register(req.body)
 
       return res.sendStatus(200)
     } catch (e) {
-      console.log(`api, ${e}`)
-      res.status(500).json({ error: e })
+      res.status(500).json({ error: e.message })
+    }
+  }
+
+  static async login(req, res) {
+    try {
+      const { user, jwt_token } = await userService.login(req.body)
+
+      res.send({ user, jwt_token })
+    } catch (e) {
+      res.status(400).send({ error: e.message })
+    }
+  }
+
+  static async logout(req, res) {
+    try {
+      await userService.logout(req.user)
+
+      res.sendStatus(200)
+    } catch (e) {
+      res.status(400).send({ error: e.message })
     }
   }
 }

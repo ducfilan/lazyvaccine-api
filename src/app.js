@@ -2,9 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import routeIndex from './routes/index';
-import AuthenticationMiddleware from './middlewares/global/authentication';
-import session from 'express-session';
-import UsersDao from './dao/users.dao';
 
 const app = express()
 

@@ -19,6 +19,30 @@ export default class UsersDao {
     }
   }
 
+  static async findOne(query) {
+    return await users.findOne(query)
+  }
+
+  static async findByEmail(email) {
+    try {
+      var user = await users.findOne({ 'email': email });
+      return user;
+    } catch (e) {
+      console.error(`Unable to issue find command, ${e}`)
+      return false;
+    }
+  }
+
+  static async updateOne(_id, field, value) {
+    try {
+      var user = await users.findOneAndUpdate({ _id }, { $set: { [field]: value } });
+      return user;
+    } catch (e) {
+      console.error(`Unable to issue find command, ${e}`)
+      return false;
+    }
+  }
+
   static async isUserExists(email) {
     try {
       var user = await users.findOne({ 'email': email });
@@ -30,7 +54,7 @@ export default class UsersDao {
   }
 
   static async registerUser(userInfo) {
-    if (await UsersDao.isUserExists(userInfo.email)) return;
+    if (await UsersDao.isUserExists(userInfo.email)) throw Error('User is already registered!');
 
     return await users.insertOne(userInfo, null, function (err, body) {
       if (err) {
