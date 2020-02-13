@@ -1,21 +1,30 @@
 import UsersDao from '../../dao/users.dao';
 import googleAuthService from '../support/google-auth.service'
 import jwtTokenService from '../support/jwt-token.service'
+import { ObjectID } from 'mongodb'
 
 export default {
   register: async ({ type, token, name, email, password, picture: picture_url }) => {
+    let userInfo = { type, token, name, email, password, picture: picture_url }
+
     switch (type) {
       case 'google':
         const isTokenValid = await googleAuthService.isTokenValid(token, email)
         if (!isTokenValid)
           throw new Error('Invalid token')
+
+        const _id = ObjectID()
+        const jwt_token = jwtTokenService.generateAuthToken(_id)
+
+        userInfo = { _id, ...userInfo, jwt_token }
         break
 
       default:
         throw Error('Not supported register type!')
     }
 
-    return await UsersDao.registerUser({ type, token, name, email, password, picture_url })
+    const registeredUser = await UsersDao.registerUser(userInfo)
+    return registeredUser
   },
   login: async ({ type, token, email, password }) => {
     switch (type) {

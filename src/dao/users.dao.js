@@ -1,4 +1,5 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { resolveConfig } from 'prettier'
 
 let users
 let db
@@ -56,10 +57,14 @@ export default class UsersDao {
   static async registerUser(userInfo) {
     if (await UsersDao.isUserExists(userInfo.email)) throw Error('User is already registered!');
 
-    return await users.insertOne(userInfo, null, function (err, body) {
-      if (err) {
-        console.log(err)
-      }
-    });
+    return new Promise((resolve, reject) => {
+      users.insertOne(userInfo, null, (error, response) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(response.ops[0])
+        }
+      })
+    })
   }
 }
