@@ -45,17 +45,14 @@ export default class UsersDao {
   }
 
   static async isUserExists(email) {
-    try {
-      var user = await users.findOne({ 'email': email });
-      return !!user;
-    } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
-      return false;
-    }
+    return !!this.findByEmail(email)
   }
 
   static async registerUser(userInfo) {
-    if (await UsersDao.isUserExists(userInfo.email)) throw Error('User is already registered!');
+    let user = await this.findByEmail(userInfo.email)
+    if (!!user) {
+      return { isPreRegistered: true, ...user }
+    }
 
     return new Promise((resolve, reject) => {
       users.insertOne(userInfo, null, (error, response) => {
