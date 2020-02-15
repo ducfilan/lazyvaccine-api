@@ -1,8 +1,8 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { resolveConfig } from 'prettier'
 
 let users
 let db
+let defaultInjection = { 'password': 0 }
 
 export default class UsersDao {
   static async injectDB(conn) {
@@ -21,12 +21,12 @@ export default class UsersDao {
   }
 
   static async findOne(query) {
-    return await users.findOne(query)
+    return await users.findOne(query, defaultInjection)
   }
 
   static async findByEmail(email) {
     try {
-      var user = await users.findOne({ 'email': email });
+      var user = await users.findOne({ 'email': email }, defaultInjection);
       return user;
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
@@ -36,7 +36,7 @@ export default class UsersDao {
 
   static async updateOne(_id, field, value) {
     try {
-      var user = await users.findOneAndUpdate({ _id }, { $set: { [field]: value } });
+      var user = await users.findOneAndUpdate({ _id }, { $set: { [field]: value } }, { projection: defaultInjection });
       return user;
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
