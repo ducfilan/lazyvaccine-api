@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import categoriesRoute from './categories.route';
-import authRoute from './auth.route';
 import usersRoute from './users.route';
 
 /* GET home page. */
