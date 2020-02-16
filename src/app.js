@@ -1,7 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import routeIndex from './routes/index';
+
+import publicRouteIndex from './routes/public.index';
+import securedRouteIndex from './routes/secured.index';
 
 const app = express()
 
@@ -14,7 +16,8 @@ app.use(express.urlencoded({
   extended: true
 }))
 
-app.use('/api/v1', routeIndex);
+app.use('/api/v1', publicRouteIndex);
+app.use('/api/v1', securedRouteIndex);
 
 // TODO: remove this code and handle not found exception
 app.use('*', (req, res) => res.status(404).json({

@@ -7,9 +7,9 @@ export default class UsersController {
 
   static async register(req, res) {
     try {
-      await userService.register(req.body)
+      const registeredUser = await userService.register(req.body)
 
-      return res.sendStatus(200)
+      res.status(200).send(registeredUser)
     } catch (e) {
       res.status(500).json({ error: e.message })
     }
@@ -17,9 +17,9 @@ export default class UsersController {
 
   static async login(req, res) {
     try {
-      const { user, jwt_token } = await userService.login(req.body)
+      const { user, jwtToken: jwtToken } = await userService.login(req.body)
 
-      res.send({ user, jwt_token })
+      res.status(200).send({ user, jwtToken: jwtToken })
     } catch (e) {
       res.status(400).send({ error: e.message })
     }

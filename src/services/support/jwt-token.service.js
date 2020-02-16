@@ -1,7 +1,8 @@
-const jwt = require('jsonwebtoken')
+import jwt from 'jsonwebtoken'
+import consts from '../../common/consts'
 
 export default {
   generateAuthToken: _id => {
-    return jwt.sign({ _id }, process.env.JWT_KEY)
+    return jwt.sign({ _id }, process.env.JWT_KEY, { expiresIn: consts.tokenExpiresIn })
   }
 }

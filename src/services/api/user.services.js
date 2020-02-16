@@ -1,26 +1,35 @@
 import UsersDao from '../../dao/users.dao';
 import googleAuthService from '../support/google-auth.service'
 import jwtTokenService from '../support/jwt-token.service'
+import { ObjectID } from 'mongodb'
 
 export default {
-  register: async ({ type, token, name, email, password, picture: picture_url }) => {
+  register: async ({ type, serviceAcesstoken, name, email, password, picture: picture_url }) => {
+    let userInfo = { type, serviceAcesstoken, name, email, password, picture: picture_url }
+
     switch (type) {
       case 'google':
-        const isTokenValid = await googleAuthService.isTokenValid(token, email)
+        const isTokenValid = await googleAuthService.isTokenValid(serviceAcesstoken, email)
         if (!isTokenValid)
           throw new Error('Invalid token')
+
+        const _id = ObjectID()
+        const jwtToken = jwtTokenService.generateAuthToken(_id)
+
+        userInfo = { _id, ...userInfo, jwtToken: jwtToken }
         break
 
       default:
         throw Error('Not supported register type!')
     }
 
-    return await UsersDao.registerUser({ type, token, name, email, password, picture_url })
+    const registeredUser = await UsersDao.registerUser(userInfo)
+    return registeredUser
   },
-  login: async ({ type, token, email, password }) => {
+  login: async ({ type, serviceAcesstoken, email, password }) => {
     switch (type) {
       case 'google':
-        const isTokenValid = await googleAuthService.isTokenValid(token, email)
+        const isTokenValid = await googleAuthService.isTokenValid(serviceAcesstoken, email)
         if (!isTokenValid)
           throw new Error('Invalid token')
 
@@ -28,17 +37,17 @@ export default {
         if (!user)
           throw new Error('Login failed! Check authentication credentials')
 
-        const jwt_token = jwtTokenService.generateAuthToken(user._id)
+        const jwtToken = jwtTokenService.generateAuthToken(user._id)
 
-        await UsersDao.updateOne(user._id, 'jwt_token', jwt_token)
+        await UsersDao.updateOne(user._id, 'jwtToken', jwtToken)
 
-        return { user, jwt_token }
+        return { user, jwtToken: jwtToken }
 
       default:
         throw Error('Not supported register type!')
     }
   },
   logout: async ({ _id }) => {
-    await UsersDao.updateOne(_id, 'jwt_token', null)
+    await UsersDao.updateOne(_id, 'jwtToken', null)
   }
 }

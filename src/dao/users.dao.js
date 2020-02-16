@@ -2,6 +2,7 @@ import MongoClientConfigs from '../common/configs/mongodb-client.config'
 
 let users
 let db
+let defaultInjection = { projection: { password: 0 } }
 
 export default class UsersDao {
   static async injectDB(conn) {
@@ -20,12 +21,12 @@ export default class UsersDao {
   }
 
   static async findOne(query) {
-    return await users.findOne(query)
+    return await users.findOne(query, defaultInjection)
   }
 
   static async findByEmail(email) {
     try {
-      var user = await users.findOne({ 'email': email });
+      var user = await users.findOne({ 'email': email }, defaultInjection);
       return user;
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
@@ -35,7 +36,7 @@ export default class UsersDao {
 
   static async updateOne(_id, field, value) {
     try {
-      var user = await users.findOneAndUpdate({ _id }, { $set: { [field]: value } });
+      var user = await users.findOneAndUpdate({ _id }, { $set: { [field]: value } }, defaultInjection);
       return user;
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
@@ -44,22 +45,23 @@ export default class UsersDao {
   }
 
   static async isUserExists(email) {
-    try {
-      var user = await users.findOne({ 'email': email });
-      return !!user;
-    } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
-      return false;
-    }
+    return !!this.findByEmail(email)
   }
 
   static async registerUser(userInfo) {
-    if (await UsersDao.isUserExists(userInfo.email)) throw Error('User is already registered!');
+    let user = await this.findByEmail(userInfo.email)
+    if (!!user) {
+      return { isPreRegistered: true, ...user }
+    }
 
-    return await users.insertOne(userInfo, null, function (err, body) {
-      if (err) {
-        console.log(err)
-      }
-    });
+    return new Promise((resolve, reject) => {
+      users.insertOne(userInfo, null, (error, response) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(response.ops[0])
+        }
+      })
+    })
   }
 }
