@@ -2,7 +2,7 @@ import MongoClientConfigs from '../common/configs/mongodb-client.config'
 
 let users
 let db
-let defaultInjection = { 'password': 0 }
+let defaultInjection = { projection: { password: 0 } }
 
 export default class UsersDao {
   static async injectDB(conn) {
@@ -36,7 +36,7 @@ export default class UsersDao {
 
   static async updateOne(_id, field, value) {
     try {
-      var user = await users.findOneAndUpdate({ _id }, { $set: { [field]: value } }, { projection: defaultInjection });
+      var user = await users.findOneAndUpdate({ _id }, { $set: { [field]: value } }, defaultInjection);
       return user;
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
