@@ -3,15 +3,15 @@ import UsersDao from '../../dao/users.dao'
 import { ObjectId } from 'mongodb'
 
 export default async (req, res, next) => {
-    const jwt_token = req.header('Authorization').replace('Bearer ', '')
-    const data = verify(jwt_token, process.env.JWT_KEY)
+    const jwtToken = req.header('Authorization').replace('Bearer ', '')
+    const data = verify(jwtToken, process.env.JWT_KEY)
     try {
-        const user = await UsersDao.findOne({ _id: ObjectId(data._id), jwt_token: jwt_token })
+        const user = await UsersDao.findOne({ _id: ObjectId(data._id), jwtToken: jwtToken })
         if (!user) {
             throw new Error()
         }
         req.user = user
-        req.token = jwt_token
+        req.jwtToken = jwtToken
         next()
     } catch (error) {
         console.log(error)

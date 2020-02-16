@@ -17,9 +17,9 @@ export default class UsersController {
 
   static async login(req, res) {
     try {
-      const { user, jwt_token } = await userService.login(req.body)
+      const { user, jwtToken: jwtToken } = await userService.login(req.body)
 
-      res.status(200).send({ user, jwt_token })
+      res.status(200).send({ user, jwtToken: jwtToken })
     } catch (e) {
       res.status(400).send({ error: e.message })
     }
