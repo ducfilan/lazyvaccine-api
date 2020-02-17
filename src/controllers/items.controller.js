@@ -9,4 +9,13 @@ export default class ItemsController {
       res.status(500).json({ error: e })
     }
   }
+
+  static async apiGetItems(req, res) {
+    try {
+      return res.json(await ItemsDao.getItems(req.params.set_id))
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
 }
