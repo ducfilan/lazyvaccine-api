@@ -1,9 +1,9 @@
-import CategoriesDao from '../dao/categories.dao'
+import ItemsDao from '../dao/items.dao'
 
-export default class CategoriesController {
+export default class ItemsController {
   static async apiCreateItems(req, res) {
     try {
-      return res.json(await CategoriesDao.getAllCategories(lang))
+      return res.json(await ItemsDao.createItems(req.body.items))
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })
