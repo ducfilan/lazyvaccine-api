@@ -5,6 +5,6 @@ import { publicUserRouter } from './users.route';
 var router = Router();
 
 router.use('/categories', categoriesRoute);
-router.use('/user', publicUserRouter);
+router.use('/users', publicUserRouter);
 
 module.exports = router;

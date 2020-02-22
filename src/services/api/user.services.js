@@ -39,7 +39,7 @@ export default {
 
         const jwtToken = jwtTokenService.generateAuthToken(user._id)
 
-        await UsersDao.updateOne(user._id, 'jwtToken', jwtToken)
+        await UsersDao.updateOne(user._id, { $set: { jwtToken } })
 
         return { user, jwtToken: jwtToken }
 
@@ -47,7 +47,10 @@ export default {
         throw Error('Not supported register type!')
     }
   },
+  update: async ({ _id, masteredLanguages, learningLanguages, pages }) => {
+    return await UsersDao.updateOne(_id, { $set: { masteredLanguages, learningLanguages, pages } })
+  },
   logout: async ({ _id }) => {
-    await UsersDao.updateOne(_id, 'jwtToken', null)
+    await UsersDao.updateOne(_id, { $set: { jwtToken: null } })
   }
 }

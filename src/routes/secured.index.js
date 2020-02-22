@@ -4,7 +4,7 @@ import itemRouter from './items.route';
 
 var router = Router();
 
-router.use('/user', securedUserRouter);
+router.use('/users', securedUserRouter);
 router.use('/items', itemRouter);
 
 module.exports = router;

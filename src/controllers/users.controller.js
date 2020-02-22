@@ -17,9 +17,22 @@ export default class UsersController {
 
   static async login(req, res) {
     try {
-      const { user, jwtToken: jwtToken } = await userService.login(req.body)
+      const { user, jwtToken } = await userService.login(req.body)
 
       res.status(200).send({ user, jwtToken: jwtToken })
+    } catch (e) {
+      res.status(400).send({ error: e.message })
+    }
+  }
+
+  static async update(req, res) {
+    try {
+      const updateResult = await userService.update({ _id: req.user._id, ...req.body })
+      if (!updateResult.ok) {
+        res.status(400).json({ error: 'User not found' })
+      }
+
+      res.sendStatus(200)
     } catch (e) {
       res.status(400).send({ error: e.message })
     }
