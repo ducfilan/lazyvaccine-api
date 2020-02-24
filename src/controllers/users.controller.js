@@ -27,7 +27,7 @@ export default class UsersController {
 
   static async update(req, res) {
     try {
-      const updateResult = await userService.update({ _id: req.user._id, ...req.body })
+      const updateResult = await userService.update(req.user._id, req.body)
       if (!updateResult.ok) {
         res.status(400).json({ error: 'User not found' })
       }

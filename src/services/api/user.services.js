@@ -47,8 +47,8 @@ export default {
         throw Error('Not supported register type!')
     }
   },
-  update: async ({ _id, masteredLanguages, learningLanguages, pages }) => {
-    return await UsersDao.updateOne(_id, { $set: { masteredLanguages, learningLanguages, pages } })
+  update: async (_id, updateItems) => {
+    return await UsersDao.updateOne(_id, { $set: updateItems })
   },
   logout: async ({ _id }) => {
     await UsersDao.updateOne(_id, { $set: { jwtToken: null } })
