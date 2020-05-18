@@ -4,12 +4,12 @@ import jwtTokenService from '../support/jwt-token.service'
 import { ObjectID } from 'mongodb'
 
 export default {
-  register: async ({ type, serviceAcesstoken, name, email, password, picture: picture_url }) => {
-    let userInfo = { type, serviceAcesstoken, name, email, password, picture: picture_url }
+  register: async ({ type, serviceAccessToken, name, email, password, picture: picture_url }) => {
+    let userInfo = { type, serviceAccessToken, name, email, password, picture: picture_url }
 
     switch (type) {
       case 'google':
-        const isTokenValid = await googleAuthService.isTokenValid(serviceAcesstoken, email)
+        const isTokenValid = await googleAuthService.isTokenValid(serviceAccessToken, email)
         if (!isTokenValid)
           throw new Error('Invalid token')
 
@@ -26,10 +26,10 @@ export default {
     const registeredUser = await UsersDao.registerUser(userInfo)
     return registeredUser
   },
-  login: async ({ type, serviceAcesstoken, email, password }) => {
+  login: async ({ type, serviceAccessToken, email, password }) => {
     switch (type) {
       case 'google':
-        const isTokenValid = await googleAuthService.isTokenValid(serviceAcesstoken, email)
+        const isTokenValid = await googleAuthService.isTokenValid(serviceAccessToken, email)
         if (!isTokenValid)
           throw new Error('Invalid token')
 
