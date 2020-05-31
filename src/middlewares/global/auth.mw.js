@@ -4,6 +4,8 @@ import { ObjectId } from 'mongodb'
 
 export default async (req, res, next) => {
     try {
+        next() // TODO: For testing without auth, need to remove.
+        return
         const jwtToken = req.header('Authorization')?.replace('Bearer ', '')
         if (!jwtToken) throw new Error('No Authorization token provided!')
 
