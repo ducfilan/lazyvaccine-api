@@ -4,6 +4,9 @@ import MongoClientConfigs from './common/configs/mongodb-client.config'
 
 import UsersDao from './dao/users.dao'
 import CategoriesDao from './dao/categories.dao'
+import ItemsDao from './dao/items.dao'
+import SetsDao from './dao/sets.dao'
+import TagsDao from './dao/tags.dao'
 
 const port = process.env.NODE_PORT || 8080
 
@@ -18,6 +21,9 @@ MongoClient.connect(
   .then(async client => {
     await CategoriesDao.injectDB(client)
     await UsersDao.injectDB(client)
+    await ItemsDao.injectDB(client)
+    await SetsDao.injectDB(client)
+    await TagsDao.injectDB(client)
     app.listen(port, () => {
       console.log(`listening on port ${port}`)
     })
