@@ -1,4 +1,4 @@
-import userService from '../services/api/user.services'
+import usersServices from '../services/api/users.services'
 
 export default class UsersController {
   static async me(req, res) {
