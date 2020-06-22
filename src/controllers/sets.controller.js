@@ -1,9 +1,9 @@
-import SetsDao from '../dao/sets.dao'
+import setsServices from '../services/api/sets.services'
 
 export default class SetsController {
   static async apiCreateSet(req, res) {
     try {
-      return res.json(await SetsDao.createSet(req.body.set))
+      return res.json(await setsServices.createSet(req.body))
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })
