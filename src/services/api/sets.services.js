@@ -16,7 +16,7 @@ export default {
   createSet: async ({ title, description, contributors_id, creator_id, category_id, tags_ids, image_url }) => {
     let setInfo = standardizeSetInfoProperties({ title, description, contributors_id, creator_id, category_id, tags_ids, image_url })
 
-    const registeredSet = await SetsDao.createSet(setInfo)
-    return registeredSet
+    const createdSet = await SetsDao.createSet(setInfo)
+    return createdSet
   }
 }
