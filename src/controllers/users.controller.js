@@ -7,7 +7,7 @@ export default class UsersController {
 
   static async register(req, res) {
     try {
-      const registeredUser = await userService.register(req.body)
+      const registeredUser = await usersServices.register(req.body)
 
       res.status(200).send(registeredUser)
     } catch (e) {
@@ -17,8 +17,9 @@ export default class UsersController {
 
   static async login(req, res) {
     try {
-      const { user, jwtToken } = await userService.login(req.body)
+      const { user, jwtToken } = await usersServices.login(req.body)
 
+      // TODO: Verify expired token
       res.status(200).send({ user, jwtToken: jwtToken })
     } catch (e) {
       res.status(400).send({ error: e.message })
@@ -27,7 +28,7 @@ export default class UsersController {
 
   static async update(req, res) {
     try {
-      const updateResult = await userService.update(req.user._id, req.body)
+      const updateResult = await usersServices.update(req.user._id, req.body)
       if (!updateResult.ok) {
         res.status(400).json({ error: 'User not found' })
       }
@@ -40,7 +41,7 @@ export default class UsersController {
 
   static async logout(req, res) {
     try {
-      await userService.logout(req.user)
+      await usersServices.logout(req.user)
 
       res.sendStatus(200)
     } catch (e) {

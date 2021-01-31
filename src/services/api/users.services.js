@@ -24,6 +24,13 @@ export default {
     }
 
     const registeredUser = await UsersDao.registerUser(userInfo)
+
+    if (registeredUser.isPreRegistered) {
+      const jwtToken = jwtTokenService.generateAuthToken(registeredUser._id)
+      await UsersDao.updateOne(registeredUser._id, { $set: { jwtToken } })
+      registeredUser.jwtToken = jwtToken
+    }
+
     return registeredUser
   },
   login: async ({ type, serviceAccessToken, email, password }) => {
