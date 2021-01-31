@@ -25,7 +25,7 @@ export default class ItemsDao {
 
   static async findOneBySetId(set_id) {
     try {
-      var item = await _items.findOne({ 'set_id': set_id });
+      var item = await _items.findOne({ 'set_id': set_id })
       return item;
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
@@ -36,7 +36,7 @@ export default class ItemsDao {
   static async findAllBySetId(set_id) {
     try {
       var items = await _items.find({ 'set_id': set_id }).toArray()
-      return items;
+      return items
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return false;
@@ -45,8 +45,8 @@ export default class ItemsDao {
 
   static async updateOne(_id, field, value) {
     try {
-      var user = await _items.findOneAndUpdate({ _id }, { $set: { [field]: value } });
-      return user;
+      var user = await _items.findOneAndUpdate({ _id }, { $set: { [field]: value } })
+      return user
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return false;
@@ -60,7 +60,7 @@ export default class ItemsDao {
         // TODO: Handle inserting to existing set_id
       }
 
-      _items.insert(items)
+      return _items.insertMany(items)
     } catch (e) {
       console.error(`Unable to execute insert command, ${e}`)
       return false;
