@@ -1,6 +1,6 @@
-import SetsDao from '../../dao/sets.dao'
-import stringService from '../support/string.service'
-import visibilities from '../../common/visibilities'
+import SetsDao from "../../dao/sets.dao"
+import stringService from "../support/string.service"
+import visibilities from "../../common/visibilities"
 
 function standardizeSetInfoProperties(setInfo) {
   setInfo.tags_ids = stringService.toArray(setInfo.tags_ids)
@@ -13,10 +13,30 @@ function standardizeSetInfoProperties(setInfo) {
 }
 
 export default {
-  createSet: async ({ title, description, contributors_id, creator_id, category_id, tags_ids, image_url }) => {
-    let setInfo = standardizeSetInfoProperties({ title, description, contributors_id, creator_id, category_id, tags_ids, image_url })
+  createSet: async ({
+    title,
+    description,
+    contributors_id,
+    creator_id,
+    category_id,
+    tags_ids,
+    image_url,
+  }) => {
+    let setInfo = standardizeSetInfoProperties({
+      title,
+      description,
+      contributors_id,
+      creator_id,
+      category_id,
+      tags_ids,
+      image_url,
+    })
 
     const registeredSet = await SetsDao.createSet(setInfo)
     return registeredSet
-  }
+  },
+
+  getSet: async (setId) => {
+    return await SetsDao.getSet(setId)
+  },
 }

@@ -1,4 +1,5 @@
-import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import MongoClientConfigs from "../common/configs/mongodb-client.config"
+import { ObjectID } from "mongodb"
 
 let _sets
 let _db
@@ -11,11 +12,9 @@ export default class SetsDao {
 
     try {
       _db = await conn.db(MongoClientConfigs.DatabaseName)
-      _sets = await conn.db(MongoClientConfigs.DatabaseName).collection('sets')
+      _sets = await conn.db(MongoClientConfigs.DatabaseName).collection("sets")
     } catch (e) {
-      console.error(
-        `Unable to establish a collection handle in setsDao: ${e}`,
-      )
+      console.error(`Unable to establish a collection handle in setsDao: ${e}`)
     }
   }
 
@@ -25,39 +24,42 @@ export default class SetsDao {
 
   static async findOneById(_id) {
     try {
-      var set = await _sets.findOne({ _id });
-      return set;
+      var set = await _sets.findOne({ _id })
+      return set
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
-      return false;
+      return false
     }
   }
 
   static async updateOne(_id, field, value) {
     try {
-      var user = await _sets.findOneAndUpdate({ _id }, { $set: { [field]: value } });
-      return user;
+      var user = await _sets.findOneAndUpdate(
+        { _id },
+        { $set: { [field]: value } }
+      )
+      return user
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
-      return false;
+      return false
     }
   }
 
   static async createSet(set) {
     try {
-      _sets.insert(set)
+      return _sets.insertOne(set)
     } catch (e) {
       console.error(`Unable to execute insert command, ${e}`)
-      return false;
+      return false
     }
   }
 
   static async getSet(_id) {
     try {
-      return await this.findOneById(_id)
+      return await this.findOneById(ObjectID(_id))
     } catch (e) {
       console.error(`Unable to execute insert command, ${e}`)
-      return false;
+      return false
     }
   }
 }
