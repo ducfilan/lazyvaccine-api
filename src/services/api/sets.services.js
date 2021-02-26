@@ -1,10 +1,12 @@
 import SetsDao from "../../dao/sets.dao"
 import stringService from "../support/string.service"
 import visibilities from "../../common/visibilities"
+import { ObjectID } from "mongodb"
 
 function standardizeSetInfoProperties(setInfo) {
   setInfo.tags_ids = stringService.toArray(setInfo.tags_ids)
   setInfo.contributors_id = stringService.toArray(setInfo.contributors_id)
+  setInfo.category_id = ObjectID(setInfo.category_id)
   setInfo.visibility = visibilities.draft
   setInfo.last_updated = new Date()
   setInfo.del_flag = false
@@ -32,8 +34,8 @@ export default {
       image_url,
     })
 
-    const registeredSet = await SetsDao.createSet(setInfo)
-    return registeredSet
+    const createdSet = await SetsDao.createSet(setInfo)
+    return createdSet
   },
 
   getSet: async (setId) => {

@@ -1,6 +1,8 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { ObjectID } from "mongodb"
 
 let _items
+let _sets
 let _db
 
 export default class ItemsDao {
@@ -12,6 +14,7 @@ export default class ItemsDao {
     try {
       _db = await conn.db(MongoClientConfigs.DatabaseName)
       _items = await conn.db(MongoClientConfigs.DatabaseName).collection('items')
+      _sets = await conn.db(MongoClientConfigs.DatabaseName).collection('sets')
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in itemsDao: ${e}`,
@@ -35,8 +38,50 @@ export default class ItemsDao {
 
   static async findAllBySetId(set_id) {
     try {
-      var items = await _items.find({ 'set_id': set_id }).toArray()
-      return items
+      var set = await _sets.aggregate([
+          {
+            $match: {
+              _id: ObjectID(set_id),
+            },
+          },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'creator_id',
+              foreignField: '_id',
+              as: 'creator',
+            }
+          },
+          {
+            $unwind: '$creator'
+          },
+          {
+            $lookup: {
+              from: 'items',
+              localField: '_id',
+              foreignField: 'set_id',
+              as: 'items',
+            }
+          },
+          {
+            $project: {
+              title: 1,
+              description: 1,
+              creator_name: '$creator.name',
+              visibility: 1,
+              tags_ids: 1,
+              image_url: 1,
+              last_updated: 1,
+              items: 1
+            }
+          }
+        ])
+        .limit(1)
+        .toArray()
+
+      if(!set) return {}
+
+      return set[0]
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return false;
