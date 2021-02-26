@@ -34,8 +34,8 @@ export default {
       image_url,
     })
 
-    const registeredSet = await SetsDao.createSet(setInfo)
-    return registeredSet
+    const createdSet = await SetsDao.createSet(setInfo)
+    return createdSet
   },
 
   getSet: async (setId) => {
