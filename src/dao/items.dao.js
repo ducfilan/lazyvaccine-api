@@ -1,5 +1,5 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { ObjectID } from "mongodb"
+import { ObjectID } from 'mongodb'
 
 let _items
 let _sets
@@ -29,7 +29,7 @@ export default class ItemsDao {
   static async findOneBySetId(set_id) {
     try {
       var item = await _items.findOne({ 'set_id': set_id })
-      return item;
+      return item
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return false;
@@ -58,8 +58,20 @@ export default class ItemsDao {
           {
             $lookup: {
               from: 'items',
-              localField: '_id',
-              foreignField: 'set_id',
+              let: { set_id: '$_id' },
+              pipeline: [
+                 { $match:
+                    { $expr:
+                       { $and:
+                          [
+                            { $eq: [ '$set_id',  '$$set_id' ] },
+                            { $eq: [ '$del_flag', false ] }
+                          ]
+                       }
+                    }
+                 },
+                 { $project: { set_id: 0, del_flag: 0 } }
+              ],
               as: 'items',
             }
           },
@@ -100,11 +112,6 @@ export default class ItemsDao {
 
   static async createItems(items) {
     try {
-      let sets = await this.findOneBySetId(items.setId)
-      if (!!sets) {
-        // TODO: Handle inserting to existing set_id
-      }
-
       return _items.insertMany(items)
     } catch (e) {
       console.error(`Unable to execute insert command, ${e}`)

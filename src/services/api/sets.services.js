@@ -1,7 +1,7 @@
-import SetsDao from "../../dao/sets.dao"
-import stringService from "../support/string.service"
-import visibilities from "../../common/visibilities"
-import { ObjectID } from "mongodb"
+import SetsDao from '../../dao/sets.dao'
+import stringService from '../support/string.service'
+import visibilities from '../../common/visibilities'
+import { ObjectID } from 'mongodb'
 
 function standardizeSetInfoProperties(setInfo) {
   setInfo.tags_ids = stringService.toArray(setInfo.tags_ids)
