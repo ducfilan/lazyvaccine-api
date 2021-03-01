@@ -1,18 +1,39 @@
 import ItemsDao from '../../dao/items.dao'
-import stringService from '../support/string.service'
+import SetsDao from '../../dao/sets.dao'
+import { ObjectID } from 'mongodb'
 
-function standardizeItemsInfoProperties(items) {
-  items.last_updated = new Date()
-  items.del_flag = false
+function standardizeItemsInfoProperties(setItems) {
+  let currentDateTime = new Date()
 
-  return items
+  setItems.items.forEach(item => {
+    item.set_id = ObjectID(setItems.setId)
+    item.last_updated = currentDateTime
+    item.del_flag = false
+  })
+
+  return setItems.items
 }
 
 export default {
-  createItems: async (items) => {
-    items = standardizeItemsInfoProperties(items)
+  upsertItems: async (setItems, { _id: userId }) => {
+    let set = await SetsDao.findOneById(ObjectID(setItems.setId))
+    if (!set) {
+      // TODO: Handle inserting to not existing set_id.
+    }
 
-    const createdItems = await ItemsDao.createItems(items)
+    if (!set.contributors_id.includes(userId)) {
+      // TODO: Throw error, not authorized.
+    }
+    
+    let items = standardizeItemsInfoProperties(setItems)
+
+    const createdItems = await ItemsDao.upsertItems(items)
     return createdItems
+  },
+
+  getItems: async (set_id) => {
+    let setItems = await ItemsDao.getItems(set_id)
+
+    return setItems
   }
 }

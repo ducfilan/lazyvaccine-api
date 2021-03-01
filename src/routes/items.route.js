@@ -7,7 +7,7 @@ const router = new Router()
 
 const upload = multer()
 
-router.route('/').post(auth, upload.none(), ItemsController.apiCreateItems)
+router.route('/').post(auth, upload.none(), ItemsController.apiUpsertItems)
 router.route('/:set_id').get(ItemsController.apiGetItems)
 
 export default router
