@@ -1,4 +1,5 @@
 import ItemsDao from '../../dao/items.dao'
+import SetsDao from '../../dao/sets.dao'
 import { ObjectID } from 'mongodb'
 
 function standardizeItemsInfoProperties(setItems) {
@@ -14,18 +15,19 @@ function standardizeItemsInfoProperties(setItems) {
 }
 
 export default {
-  createItems: async (setItems, { _id: userId }) => {
-    let set = await ItemsDao.findOneBySetId(setItems.setId)
-    if (!!set) {
-      // TODO: Handle inserting to existing set_id
-      if (!set.contributors_id.includes(userId)) {
-        // TODO: Throw error, not authorized.
-      }
+  upsertItems: async (setItems, { _id: userId }) => {
+    let set = await SetsDao.findOneById(ObjectID(setItems.setId))
+    if (!set) {
+      // TODO: Handle inserting to not existing set_id.
+    }
+
+    if (!set.contributors_id.includes(userId)) {
+      // TODO: Throw error, not authorized.
     }
     
     let items = standardizeItemsInfoProperties(setItems)
 
-    const createdItems = await ItemsDao.createItems(items)
+    const createdItems = await ItemsDao.upsertItems(items)
     return createdItems
   },
 

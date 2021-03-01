@@ -13,32 +13,29 @@ export default class ItemsDao {
 
     try {
       _db = await conn.db(MongoClientConfigs.DatabaseName)
-      _items = await conn.db(MongoClientConfigs.DatabaseName).collection('items')
-      _sets = await conn.db(MongoClientConfigs.DatabaseName).collection('sets')
+      _items = await conn
+        .db(MongoClientConfigs.DatabaseName)
+        .collection("items")
+      _sets = await conn.db(MongoClientConfigs.DatabaseName).collection("sets")
     } catch (e) {
-      console.error(
-        `Unable to establish a collection handle in itemsDao: ${e}`,
-      )
+      console.error(`Unable to establish a collection handle in itemsDao: ${e}`)
     }
-  }
-
-  static async findOne(query) {
-    return await _items.findOne(query)
   }
 
   static async findOneBySetId(set_id) {
     try {
-      var item = await _items.findOne({ 'set_id': set_id })
+      var item = await _items.findOne({ set_id: ObjectID(set_id) })
       return item
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
-      return false;
+      return false
     }
   }
 
   static async findAllBySetId(set_id) {
     try {
-      var set = await _sets.aggregate([
+      var set = await _sets
+        .aggregate([
           {
             $match: {
               _id: ObjectID(set_id),
@@ -46,77 +43,89 @@ export default class ItemsDao {
           },
           {
             $lookup: {
-              from: 'users',
-              localField: 'creator_id',
-              foreignField: '_id',
-              as: 'creator',
-            }
+              from: "users",
+              localField: "creator_id",
+              foreignField: "_id",
+              as: "creator",
+            },
           },
           {
-            $unwind: '$creator'
+            $unwind: "$creator",
           },
           {
             $lookup: {
-              from: 'items',
-              let: { set_id: '$_id' },
+              from: "items",
+              let: { set_id: "$_id" },
               pipeline: [
-                 { $match:
-                    { $expr:
-                       { $and:
-                          [
-                            { $eq: [ '$set_id',  '$$set_id' ] },
-                            { $eq: [ '$del_flag', false ] }
-                          ]
-                       }
-                    }
-                 },
-                 { $project: { set_id: 0, del_flag: 0 } }
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$set_id", "$$set_id"] },
+                        { $eq: ["$del_flag", false] },
+                      ],
+                    },
+                  },
+                },
+                { $project: { set_id: 0, del_flag: 0 } },
               ],
-              as: 'items',
-            }
+              as: "items",
+            },
           },
           {
             $project: {
               title: 1,
               description: 1,
-              creator_name: '$creator.name',
+              creator_name: "$creator.name",
               visibility: 1,
               tags_ids: 1,
               image_url: 1,
               last_updated: 1,
-              items: 1
-            }
-          }
+              items: 1,
+            },
+          },
         ])
         .limit(1)
         .toArray()
 
-      if(!set) return {}
+      if (!set) return {}
 
       return set[0]
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
-      return false;
+      return false
     }
   }
 
-  static async updateOne(_id, field, value) {
+  static async upsertItems(items) {
     try {
-      var user = await _items.findOneAndUpdate({ _id }, { $set: { [field]: value } })
-      return user
-    } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
-      return false;
-    }
-  }
+      let operations = this.createBulkInsertOperations(items)
 
-  static async createItems(items) {
-    try {
-      return _items.insertMany(items)
+      return _items.bulkWrite(operations, { ordered: false })
     } catch (e) {
       console.error(`Unable to execute insert command, ${e}`)
-      return false;
+      return false
     }
+  }
+
+  static createBulkInsertOperations(items) {
+    return items.map((item) => {
+      if (item._id) {
+        let itemId = item._id
+        delete item._id
+
+        return {
+          updateOne: {
+            filter: { _id: ObjectID(itemId) },
+            update: { $set: item },
+          },
+        }
+      }
+
+      return {
+        insertOne: item,
+      }
+    })
   }
 
   static async getItems(set_id) {
@@ -124,7 +133,7 @@ export default class ItemsDao {
       return await this.findAllBySetId(set_id)
     } catch (e) {
       console.error(`Unable to execute insert command, ${e}`)
-      return false;
+      return false
     }
   }
 }

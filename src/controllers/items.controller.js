@@ -1,9 +1,9 @@
 import ItemsServices from '../services/api/items.services'
 
 export default class ItemsController {
-  static async apiCreateItems(req, res) {
+  static async apiUpsertItems(req, res) {
     try {
-      return res.json(await ItemsServices.createItems(req.body.setItems, req.user))
+      return res.json(await ItemsServices.upsertItems(req.body.setItems, req.user))
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })
