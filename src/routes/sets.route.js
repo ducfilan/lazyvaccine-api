@@ -8,6 +8,6 @@ const router = new Router()
 const upload = multer()
 
 router.route('/').post(auth, upload.none(), SetsController.apiCreateSet)
-router.route('/:set_id').get(SetsController.apiGetSet)
+router.route('/:set_id').get(SetsController.apiGetSet) // TODO: Add Authorization
 
 export default router

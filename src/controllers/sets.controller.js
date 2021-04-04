@@ -22,4 +22,15 @@ export default class SetsController {
       res.status(500).json({ error: e })
     }
   }
+
+  static async apiGetSetsInCategories(req, res, next) {
+    try {
+      const { category_id: categoryId } = req.params
+
+      return res.json(await setsServices.getSetsInCategory(categoryId))
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
 }
