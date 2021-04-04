@@ -77,6 +77,7 @@ export default class ItemsDao {
               title: 1,
               description: 1,
               creator_name: "$creator.name",
+              creator_picture: "$creator.picture",
               visibility: 1,
               tags_ids: 1,
               image_url: 1,
@@ -103,6 +104,7 @@ export default class ItemsDao {
 
       return _items.bulkWrite(operations, { ordered: false })
     } catch (e) {
+      // TODO: Revert (edit) inserted documents.
       console.error(`Unable to execute insert command, ${e}`)
       return false
     }
