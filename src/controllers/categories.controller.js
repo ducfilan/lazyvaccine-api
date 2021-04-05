@@ -3,7 +3,7 @@ import CategoriesDao from '../dao/categories.dao'
 export default class CategoriesController {
   static async apiGetCategories(req, res, next) {
     try {
-      let lang = req.params.lang
+      const { lang } = req.query
 
       return res.json(await CategoriesDao.getAllCategories(lang))
     } catch (e) {

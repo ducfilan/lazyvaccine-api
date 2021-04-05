@@ -45,4 +45,52 @@ export default class SetsDao {
       return false
     }
   }
+
+  /**
+   * 
+   * @param {string} categoryId - category Id in string form
+   * @returns {Promise(Array)} - Returns the list of sets in the category
+   */
+  static async getSetsInCategory(categoryId) {
+    categoryId = ObjectID(categoryId)
+
+    try {
+      return await _sets
+        .aggregate([
+          {
+            $match: {
+              category_id: categoryId,
+              del_flag: false
+            },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "creator_id",
+              foreignField: "_id",
+              as: "creator",
+            },
+          },
+          {
+            $unwind: "$creator",
+          },
+          {
+            $project: {
+              title: 1,
+              description: 1,
+              creator_name: "$creator.name",
+              creator_picture: "$creator.picture",
+              visibility: 1,
+              tags_ids: 1,
+              image_url: 1,
+              last_updated: 1,
+            },
+          },
+        ])
+        .toArray()
+    } catch (e) {
+      console.error(`Unable to issue find command, ${e}`)
+      return {}
+    }
+  }
 }
