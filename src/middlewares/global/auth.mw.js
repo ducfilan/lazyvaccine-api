@@ -7,9 +7,9 @@ export default async (req, res, next) => {
         const jwtToken = req.header('Authorization')?.replace('Bearer ', '')
         if (!jwtToken) throw new Error('No Authorization token provided!')
 
-        const data = verify(jwtToken, process.env.JWT_KEY)
+        const { _id } = verify(jwtToken, process.env.JWT_KEY)
 
-        const user = await UsersDao.findOne({ _id: ObjectId(data._id), jwtToken: jwtToken })
+        const user = await UsersDao.findOne({ _id: ObjectId(_id), jwtToken: jwtToken })
         if (!user) {
             throw new Error()
         }

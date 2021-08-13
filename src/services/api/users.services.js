@@ -4,8 +4,8 @@ import jwtTokenService from '../support/jwt-token.service'
 import { ObjectID } from 'mongodb'
 
 export default {
-  register: async ({ type, serviceAccessToken, name, email, password, picture: picture_url }) => {
-    let userInfo = { type, serviceAccessToken, name, email, password, picture: picture_url }
+  register: async ({ type, serviceAccessToken, name, email, locale, password, picture: pictureUrl }) => {
+    let userInfo = { type, serviceAccessToken, name, email, locale, password, pictureUrl }
 
     switch (type) {
       case 'google':
@@ -32,27 +32,6 @@ export default {
     }
 
     return registeredUser
-  },
-  login: async ({ type, serviceAccessToken, email, password }) => {
-    switch (type) {
-      case 'google':
-        const isTokenValid = await googleAuthService.isTokenValid(serviceAccessToken, email)
-        if (!isTokenValid)
-          throw new Error('Invalid token')
-
-        const user = await UsersDao.findByEmail(email)
-        if (!user)
-          throw new Error('Login failed! Check authentication credentials')
-
-        const jwtToken = jwtTokenService.generateAuthToken(user._id)
-
-        await UsersDao.updateOne(user._id, { $set: { jwtToken } })
-
-        return { user, jwtToken: jwtToken }
-
-      default:
-        throw Error('Not supported register type!')
-    }
   },
   update: async (_id, updateItems) => {
     return await UsersDao.updateOne(_id, { $set: updateItems })

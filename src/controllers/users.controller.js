@@ -15,12 +15,9 @@ export default class UsersController {
     }
   }
 
-  static async login(req, res) {
+  static async getUserInfo(req, res) {
     try {
-      const { user, jwtToken } = await usersServices.login(req.body)
-
-      // TODO: Verify expired token
-      res.status(200).send({ user, jwtToken: jwtToken })
+      res.status(200).send(req.user)
     } catch (e) {
       res.status(400).send({ error: e.message })
     }
