@@ -4,8 +4,12 @@ import jwtTokenService from '../support/jwt-token.service'
 import { ObjectID } from 'mongodb'
 
 export default {
-  register: async ({ type, serviceAccessToken, name, email, locale, password, picture: pictureUrl }) => {
-    let userInfo = { type, serviceAccessToken, name, email, locale, password, pictureUrl }
+  register: async (requestBody) => {
+    const { type, serviceAccessToken, finishedRegisterStep,
+      name, email, locale, password, picture: pictureUrl
+    } = requestBody
+
+    let userInfo = { type, serviceAccessToken, finishedRegisterStep, name, email, locale, password, pictureUrl }
 
     switch (type) {
       case 'google':

@@ -15,14 +15,6 @@ export default class UsersController {
     }
   }
 
-  static async getUserInfo(req, res) {
-    try {
-      res.status(200).send(req.user)
-    } catch (e) {
-      res.status(400).send({ error: e.message })
-    }
-  }
-
   static async update(req, res) {
     try {
       const updateResult = await usersServices.update(req.user._id, req.body)
