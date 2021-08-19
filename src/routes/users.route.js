@@ -9,7 +9,6 @@ const securedUserRouter = new Router()
 const upload = multer()
 
 publicUserRouter.route('/').post(upload.none(), UsersController.register)
-publicUserRouter.route('/userinfo').post(upload.none(), UsersController.getUserInfo)
 
 securedUserRouter.route('/').patch(auth, upload.none(), UsersController.update)
 
