@@ -9,7 +9,17 @@ export default {
       name, email, locale, password, picture: pictureUrl
     } = requestBody
 
-    let userInfo = { type, serviceAccessToken, finishedRegisterStep, name, email, locale, password, pictureUrl }
+    let userInfo = {
+      type,
+      serviceAccessToken,
+      finishedRegisterStep,
+      name,
+      email,
+      locale,
+      password,
+      pictureUrl,
+      langCodes: [locale]
+    }
 
     switch (type) {
       case 'google':

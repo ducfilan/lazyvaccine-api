@@ -9,10 +9,11 @@ export default async (req, res, next) => {
 
         const { _id } = verify(jwtToken, process.env.JWT_KEY)
 
-        const user = await UsersDao.findOne({ _id: ObjectId(_id), jwtToken: jwtToken })
-        if (!user) {
+        const user = await UsersDao.findOne({ _id: ObjectId(_id) })
+        if (!user || user.jwtToken !== jwtToken) {
             throw new Error()
         }
+
         req.user = user
         req.jwtToken = jwtToken
         next()

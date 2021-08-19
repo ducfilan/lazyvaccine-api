@@ -1,4 +1,5 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { SupportingLanguages, UserCollectionName } from '../common/consts'
 
 let users
 let db
@@ -12,7 +13,40 @@ export default class UsersDao {
 
     try {
       db = await conn.db(MongoClientConfigs.DatabaseName)
-      users = await conn.db(MongoClientConfigs.DatabaseName).collection('users')
+      users = await conn.db(MongoClientConfigs.DatabaseName)
+        .collection(UserCollectionName)
+
+      users.createIndex({ email: 1 }, { unique: true, sparse: true })
+
+      db.command({
+        collMod: UserCollectionName,
+        validator: {
+          $jsonSchema: {
+            bsonType: 'object',
+            required: ['name', 'email', 'locale', 'jwtToken', 'finishedRegisterStep', 'langCodes'],
+            properties: {
+              name: {
+                bsonType: 'string',
+              },
+              email: {
+                bsonType: 'string',
+              },
+              locale: {
+                enum: SupportingLanguages
+              },
+              finishedRegisterStep: {
+                bsonType: 'int',
+              },
+              langCodes: {
+                bsonType: 'array',
+                items: [
+                  { enum: SupportingLanguages }
+                ]
+              }
+            }
+          }
+        }
+      })
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in usersDao: ${e}`,
@@ -50,7 +84,9 @@ export default class UsersDao {
 
   static async registerUser(userInfo) {
     let user = await this.findByEmail(userInfo.email)
+
     if (!!user) {
+      delete user.password
       return { isPreRegistered: true, ...user }
     }
 
@@ -59,7 +95,9 @@ export default class UsersDao {
         if (error) {
           reject(error)
         } else {
-          resolve(response.ops[0])
+          const insertedUser = response.ops[0]
+          delete insertedUser.password
+          resolve(insertedUser)
         }
       })
     })
