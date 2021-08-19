@@ -10,7 +10,7 @@ const upload = multer()
 
 publicUserRouter.route('/').post(upload.none(), UsersController.register)
 
-securedUserRouter.route('/').patch(auth, upload.none(), UsersController.update)
+securedUserRouter.route('/me').patch(auth, upload.none(), UsersController.update)
 
 securedUserRouter.route('/me').get(auth, UsersController.me)
 securedUserRouter.route('/logout').get(auth, UsersController.logout)

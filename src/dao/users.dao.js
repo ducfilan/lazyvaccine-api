@@ -70,10 +70,10 @@ export default class UsersDao {
 
   static async updateOne(_id, updateOperations) {
     try {
-      var updateResult = await users.findOneAndUpdate({ _id }, updateOperations, defaultProjection)
-      return updateResult
+      await users.findOneAndUpdate({ _id }, updateOperations, defaultProjection)
+      return true
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Unable to update user, ${e}`)
       return false
     }
   }
