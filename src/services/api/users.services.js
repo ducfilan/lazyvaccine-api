@@ -51,6 +51,6 @@ export default {
     return await UsersDao.updateOne(_id, { $set: updateItems })
   },
   logout: async ({ _id }) => {
-    await UsersDao.updateOne(_id, { $set: { jwtToken: null } })
+    return await UsersDao.updateOne(_id, { $set: { jwtToken: null } })
   }
 }

@@ -15,8 +15,8 @@ export default class ItemsDao {
       _db = await conn.db(MongoClientConfigs.DatabaseName)
       _items = await conn
         .db(MongoClientConfigs.DatabaseName)
-        .collection("items")
-      _sets = await conn.db(MongoClientConfigs.DatabaseName).collection("sets")
+        .collection('items')
+      _sets = await conn.db(MongoClientConfigs.DatabaseName).collection('sets')
     } catch (e) {
       console.error(`Unable to establish a collection handle in itemsDao: ${e}`)
     }
@@ -43,41 +43,41 @@ export default class ItemsDao {
           },
           {
             $lookup: {
-              from: "users",
-              localField: "creator_id",
-              foreignField: "_id",
-              as: "creator",
+              from: 'users',
+              localField: 'creator_id',
+              foreignField: '_id',
+              as: 'creator',
             },
           },
           {
-            $unwind: "$creator",
+            $unwind: '$creator',
           },
           {
             $lookup: {
-              from: "items",
-              let: { set_id: "$_id" },
+              from: 'items',
+              let: { set_id: '$_id' },
               pipeline: [
                 {
                   $match: {
                     $expr: {
                       $and: [
-                        { $eq: ["$set_id", "$$set_id"] },
-                        { $eq: ["$del_flag", false] },
+                        { $eq: ['$set_id', '$$set_id'] },
+                        { $eq: ['$del_flag', false] },
                       ],
                     },
                   },
                 },
                 { $project: { set_id: 0, del_flag: 0 } },
               ],
-              as: "items",
+              as: 'items',
             },
           },
           {
             $project: {
               title: 1,
               description: 1,
-              creator_name: "$creator.name",
-              creator_picture: "$creator.picture",
+              creator_name: '$creator.name',
+              creator_picture: '$creator.picture',
               visibility: 1,
               tags_ids: 1,
               image_url: 1,

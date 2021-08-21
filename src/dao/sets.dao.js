@@ -65,21 +65,21 @@ export default class SetsDao {
           },
           {
             $lookup: {
-              from: "users",
-              localField: "creator_id",
-              foreignField: "_id",
-              as: "creator",
+              from: 'users',
+              localField: 'creator_id',
+              foreignField: '_id',
+              as: 'creator',
             },
           },
           {
-            $unwind: "$creator",
+            $unwind: '$creator',
           },
           {
             $project: {
               title: 1,
               description: 1,
-              creator_name: "$creator.name",
-              creator_picture: "$creator.picture",
+              creator_name: '$creator.name',
+              creator_picture: '$creator.picture',
               visibility: 1,
               tags_ids: 1,
               image_url: 1,
