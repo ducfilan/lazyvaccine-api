@@ -58,9 +58,9 @@ export default class UsersDao {
     return await users.findOne(query, defaultProjection)
   }
 
-  static async findByEmail(email) {
+  static async findByEmail(email, projection = defaultProjection) {
     try {
-      var user = await users.findOne({ 'email': email }, defaultProjection);
+      var user = await users.findOne({ 'email': email }, projection);
       return user;
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
@@ -86,7 +86,6 @@ export default class UsersDao {
     let user = await this.findByEmail(userInfo.email)
 
     if (!!user) {
-      delete user.password
       return { isPreRegistered: true, ...user }
     }
 

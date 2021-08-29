@@ -9,6 +9,12 @@ const app = express()
 
 
 // TODO: Configure CORS https://expressjs.com/en/resources/middleware/cors.html
+/*
+app.use(cors({
+    origin: 'http://127.0.0.1:5500', // Block all domains except this domain.
+    credentials: true // Turn on HTTP cookie over CORS.
+}))
+*/
 app.use(cors())
 process.env.NODE_ENV !== 'prod' && app.use(morgan('dev'))
 app.use(express.urlencoded({

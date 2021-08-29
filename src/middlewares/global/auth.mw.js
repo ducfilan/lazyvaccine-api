@@ -1,21 +1,29 @@
-import { verify } from 'jsonwebtoken'
 import UsersDao from '../../dao/users.dao'
-import { ObjectId } from 'mongodb'
+import { getEmailFromGoogleToken } from '../../services/support/google-auth.service'
+import { LoginTypes } from '../../common/consts'
 
 export default async (req, res, next) => {
     try {
-        const jwtToken = req.header('Authorization')?.replace('Bearer ', '')
-        if (!jwtToken) throw new Error('No Authorization token provided!')
+        const token = req.header('Authorization')?.replace('Bearer ', '')
+        const loginType = req.header('X-Login-Type')
+        if (!token) throw new Error('No Authorization token provided!')
 
-        const { _id } = verify(jwtToken, process.env.JWT_KEY)
+        let email
+        switch (loginType) {
+            case LoginTypes.google:
+                email = await getEmailFromGoogleToken(token)
+                break
 
-        const user = await UsersDao.findOne({ _id: ObjectId(_id) })
-        if (!user || user.jwtToken !== jwtToken) {
+            default:
+                throw new Error('Invalid login type')
+        }
+
+        const user = await UsersDao.findByEmail(email)
+        if (!user) {
             throw new Error()
         }
 
         req.user = user
-        req.jwtToken = jwtToken
         next()
     } catch (error) {
         console.log(error)

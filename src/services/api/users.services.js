@@ -1,7 +1,6 @@
 import UsersDao from '../../dao/users.dao';
-import googleAuthService from '../support/google-auth.service'
-import jwtTokenService from '../support/jwt-token.service'
-import { ObjectID } from 'mongodb'
+import { isGoogleTokenValid } from '../support/google-auth.service'
+import { LoginTypes } from '../../common/consts'
 
 export default {
   register: async (requestBody) => {
@@ -22,15 +21,11 @@ export default {
     }
 
     switch (type) {
-      case 'google':
-        const isTokenValid = await googleAuthService.isTokenValid(serviceAccessToken, email)
+      case LoginTypes.google:
+        const isTokenValid = await isGoogleTokenValid(serviceAccessToken, email)
         if (!isTokenValid)
           throw new Error('Invalid token')
 
-        const _id = ObjectID()
-        const jwtToken = jwtTokenService.generateAuthToken(_id)
-
-        userInfo = { _id, ...userInfo, jwtToken: jwtToken }
         break
 
       default:
@@ -38,12 +33,6 @@ export default {
     }
 
     const registeredUser = await UsersDao.registerUser(userInfo)
-
-    if (registeredUser.isPreRegistered) {
-      const jwtToken = jwtTokenService.generateAuthToken(registeredUser._id)
-      await UsersDao.updateOne(registeredUser._id, { $set: { jwtToken } })
-      registeredUser.jwtToken = jwtToken
-    }
 
     return registeredUser
   },
