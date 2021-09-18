@@ -32,13 +32,15 @@ export default class CategoriesDao {
     }
 
     try {
-      return await _categories
-          .find()
-          .project(projectRules)
-          .toArray()
+      const categories = await _categories
+        .find()
+        .project(projectRules)
+        .toArray()
+
+      return categories
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
-      return {}
+      return []
     }
   }
 }
