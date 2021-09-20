@@ -1,5 +1,6 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
 import { ObjectID } from 'mongodb'
+import { SetCollectionName, SupportingSetTypes, SupportingLanguages } from '../common/consts'
 
 let _sets
 let _db
@@ -12,7 +13,124 @@ export default class SetsDao {
 
     try {
       _db = await conn.db(MongoClientConfigs.DatabaseName)
-      _sets = await conn.db(MongoClientConfigs.DatabaseName).collection('sets')
+      _sets = await conn.db(MongoClientConfigs.DatabaseName).collection(SetCollectionName)
+
+      _db.command({
+        collMod: SetCollectionName,
+        validator: {
+          $jsonSchema: {
+            required: ['name', 'categoryId', 'description', 'tags', 'fromLanguage', 'toLanguage', 'items'],
+            type: 'object',
+            properties: {
+              name: {
+                maxLength: 60,
+                minLength: 1,
+                type: 'string'
+              },
+              creatorId: {
+                bsonType: 'objectId',
+              },
+              categoryId: {
+                bsonType: 'categoryId'
+              },
+              description: {
+                maxLength: 250,
+                type: 'string'
+              },
+              tags: {
+                maxItems: 20,
+                type: 'array',
+                items: {
+                  uniqueItems: true,
+                  type: 'string'
+                }
+              },
+              captchaToken: {
+                type: 'string'
+              },
+              fromLanguage: {
+                enum: SupportingLanguages,
+                type: 'string'
+              },
+              toLanguage: {
+                enum: ['', ...SupportingLanguages],
+                type: 'string'
+              },
+              items: {
+                minItems: 2,
+                type: 'array',
+                items: {
+                  type: 'object',
+                  oneOf: [{
+                    required: ['type', 'term', 'definition'],
+                    type: 'object',
+                    properties: {
+                      type: {
+                        enum: SupportingSetTypes,
+                        type: 'string'
+                      },
+                      term: {
+                        minLength: 1,
+                        type: 'string'
+                      },
+                      definition: {
+                        minLength: 1,
+                        type: 'string'
+                      }
+                    },
+                  }, {
+                    required: ['type', 'answers', 'question'],
+                    type: 'object',
+                    properties: {
+                      type: {
+                        enum: SupportingSetTypes,
+                        type: 'string'
+                      },
+                      answers: {
+                        minItems: 2,
+                        type: 'array',
+                        items: {
+                          required: [
+                            'isCorrect',
+                            'answer'
+                          ],
+                          type: 'object',
+                          properties: {
+                            isCorrect: {
+                              type: 'boolean'
+                            },
+                            answer: {
+                              type: 'string'
+                            }
+                          },
+                        }
+                      },
+                      question: {
+                        minLength: 1,
+                        type: 'string'
+                      }
+                    },
+                  }, {
+                    required: ['type', 'content'],
+                    type: 'object',
+                    properties: {
+                      type: {
+                        enum: SupportingSetTypes,
+                        type: 'string'
+                      },
+                      content: {
+                        minLength: 1,
+                        type: 'string'
+                      }
+                    },
+                  }]
+                }
+              }
+            },
+            additionalProperties: false,
+          }
+        }
+      })
     } catch (e) {
       console.error(`Unable to establish a collection handle in setsDao: ${e}`)
     }

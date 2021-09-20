@@ -3,8 +3,8 @@ import setsServices from '../services/api/sets.services'
 export default class SetsController {
   static async apiCreateSet(req, res) {
     try {
-      let setInfo = req.body.setInfo
-      setInfo.creator_id = req.user._id
+      let setInfo = req.body
+      setInfo.creatorId = req.user._id
       const registeredSet = await setsServices.createSet(setInfo)
 
       res.status(200).send(registeredSet)
