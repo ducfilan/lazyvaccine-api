@@ -13,8 +13,7 @@ export default class UsersDao {
 
     try {
       db = await conn.db(MongoClientConfigs.DatabaseName)
-      users = await conn.db(MongoClientConfigs.DatabaseName)
-        .collection(UserCollectionName)
+      users = await conn.db(MongoClientConfigs.DatabaseName).collection(UserCollectionName)
 
       users.createIndex({ email: 1 }, { unique: true, sparse: true })
 
@@ -23,7 +22,7 @@ export default class UsersDao {
         validator: {
           $jsonSchema: {
             bsonType: 'object',
-            required: ['name', 'email', 'locale', 'jwtToken', 'finishedRegisterStep', 'langCodes'],
+            required: ['name', 'email', 'locale', 'finishedRegisterStep', 'langCodes'],
             properties: {
               name: {
                 bsonType: 'string',
