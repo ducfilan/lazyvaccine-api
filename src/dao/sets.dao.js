@@ -31,7 +31,7 @@ export default class SetsDao {
                 bsonType: 'objectId',
               },
               categoryId: {
-                bsonType: 'categoryId'
+                bsonType: 'objectId'
               },
               description: {
                 maxLength: 250,
