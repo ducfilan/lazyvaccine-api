@@ -15,6 +15,7 @@ export const getEmailFromGoogleToken = async (serviceAccessToken) => {
     const { email } = await oAuth2Client.getTokenInfo(serviceAccessToken)
     return email
   } catch (error) {
+    console.log(error)
     return false
   }
 }

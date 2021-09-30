@@ -13,8 +13,10 @@ export const LoginTypes = {
 }
 
 export const BaseCollectionProperties = {
-  last_updated: new Date(),
-  del_flag: false
+  lastUpdated: new Date(),
+  delFlag: false
 }
 
 export const SupportingSetTypes = ['term-def', 'question-answers', 'content']
+
+export const CaptchaVerificationUrl = (response) => `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${response}`;
