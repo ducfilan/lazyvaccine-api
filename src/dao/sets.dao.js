@@ -19,9 +19,12 @@ export default class SetsDao {
         collMod: SetCollectionName,
         validator: {
           $jsonSchema: {
-            required: ['name', 'categoryId', 'description', 'tags', 'fromLanguage', 'toLanguage', 'items'],
+            required: ['_id', 'name', 'categoryId', 'description', 'tags', 'fromLanguage', 'toLanguage', 'items', 'lastUpdated', 'delFlag'],
             type: 'object',
             properties: {
+              _id: {
+                bsonType: 'objectId'
+              },
               name: {
                 maxLength: 60,
                 minLength: 1,
@@ -125,6 +128,12 @@ export default class SetsDao {
                     },
                   }]
                 }
+              },
+              lastUpdated: {
+                bsonType: 'date'
+              },
+              delFlag: {
+                type: 'boolean'
               }
             },
             additionalProperties: false,
