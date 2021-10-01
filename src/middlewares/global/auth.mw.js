@@ -6,7 +6,7 @@ export default async (req, res, next) => {
     try {
         const token = req.header('Authorization')?.replace('Bearer ', '')
         const loginType = req.header('X-Login-Type')
-        if (!token) throw new Error('No Authorization token provided!')
+        if (!token) throw new Error('no Authorization token provided!')
 
         let email
         switch (loginType) {
@@ -15,18 +15,19 @@ export default async (req, res, next) => {
                 break
 
             default:
-                throw new Error('Invalid login type')
+                throw new Error('invalid login type')
         }
 
+        if (!email) throw new Error('invalid/expired token')
+
         const user = await UsersDao.findByEmail(email)
-        if (!user) {
-            throw new Error()
-        }
+
+        if (!user) throw new Error('not found user')
 
         req.user = user
         next()
     } catch (error) {
         console.log(error)
-        res.status(401).send({ error: 'Not authorized to access this resource' })
+        res.status(401).send({ error: `Not authorized to access this resource, ${error.message}` })
     }
 }
