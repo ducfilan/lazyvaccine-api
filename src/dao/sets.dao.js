@@ -147,8 +147,47 @@ export default class SetsDao {
 
   static async findOneById(_id) {
     try {
-      var set = await _sets.findOne({ _id })
-      return set
+      var set = await _sets
+        .aggregate([
+          {
+            $match: {
+              _id,
+              delFlag: false,
+            },
+          },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'creatorId',
+              foreignField: '_id',
+              as: 'creator',
+            },
+          },
+          {
+            $unwind: '$creator',
+          },
+          {
+            $project: {
+              name: 1,
+              categoryId: 1,
+              description: 1,
+              tags: 1,
+              fromLanguage: 1,
+              toLanguage: 1,
+              creatorId: 1,
+              creatorName: '$creator.name',
+              imageUrl: 1,
+              lastUpdated: 1,
+              items: 1,
+            },
+          },
+        ])
+        .limit(1)
+        .toArray()
+
+      if (!set) return {}
+
+      return set[0]
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return false
@@ -166,7 +205,7 @@ export default class SetsDao {
 
   static async getSet(_id) {
     try {
-      return await this.findOneById(ObjectID(_id))
+      return await this.findOneById(_id)
     } catch (e) {
       console.error(`Unable to execute insert command, ${e}`)
       return false

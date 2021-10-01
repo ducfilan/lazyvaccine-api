@@ -16,7 +16,7 @@ export default {
   },
 
   getSet: async setId => {
-    return await SetsDao.getSet(setId)
+    return await SetsDao.getSet(ObjectID(setId))
   },
 
   getSetsInCategory: async categoryId => {
