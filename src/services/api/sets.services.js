@@ -11,8 +11,8 @@ export default {
   createSet: async (setInfo) => {
     setInfo = standardizeSetInfoProperties(setInfo)
 
-    const createdSet = await SetsDao.createSet(setInfo)
-    return createdSet
+    const insertedId = await SetsDao.createSet(setInfo)
+    return insertedId
   },
 
   getSet: async setId => {

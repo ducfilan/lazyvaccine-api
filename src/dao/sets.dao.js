@@ -196,7 +196,9 @@ export default class SetsDao {
 
   static async createSet(set) {
     try {
-      return _sets.insertOne(set)
+      const insertResult = await _sets.insertOne(set)
+
+      return insertResult.insertedId
     } catch (e) {
       console.error(`Unable to execute insert command, ${e}`)
       return false

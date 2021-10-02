@@ -5,9 +5,11 @@ export default class SetsController {
     try {
       let setInfo = req.body
       setInfo.creatorId = req.user._id
-      const registeredSet = await setsServices.createSet(setInfo)
 
-      res.status(200).send(registeredSet)
+      const registeredSetId = await setsServices.createSet(setInfo)
+      if (!registeredSetId) throw new Error('cannot insert set')
+
+      res.status(200).send(registeredSetId)
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })
