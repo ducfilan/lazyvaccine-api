@@ -1,5 +1,5 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { SupportingLanguages, UserCollectionName } from '../common/consts'
+import { SupportingLanguages, UsersCollectionName } from '../common/consts'
 
 let users
 let db
@@ -13,12 +13,12 @@ export default class UsersDao {
 
     try {
       db = await conn.db(MongoClientConfigs.DatabaseName)
-      users = await conn.db(MongoClientConfigs.DatabaseName).collection(UserCollectionName)
+      users = await conn.db(MongoClientConfigs.DatabaseName).collection(UsersCollectionName)
 
       users.createIndex({ email: 1 }, { unique: true, sparse: true })
 
       db.command({
-        collMod: UserCollectionName,
+        collMod: UsersCollectionName,
         validator: {
           $jsonSchema: {
             bsonType: 'object',

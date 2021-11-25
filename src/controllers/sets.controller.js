@@ -18,7 +18,16 @@ export default class SetsController {
 
   static async apiGetSet(req, res) {
     try {
-      return res.json(await setsServices.getSet(req.params.set_id))
+      return res.json(await setsServices.getSet(req.params.setId))
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
+
+  static async apiGetTopSets(req, res) {
+    try {
+      return res.json(await setsServices.getTopSets(req.query.lang))
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })

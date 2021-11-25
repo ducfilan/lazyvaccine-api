@@ -1,4 +1,5 @@
 import SetsDao from '../../dao/sets.dao'
+import TopSetsDao from '../../dao/top-sets.dao'
 import { ObjectID } from 'mongodb'
 import { BaseCollectionProperties } from '../../common/consts'
 
@@ -21,5 +22,9 @@ export default {
 
   getSetsInCategory: async categoryId => {
     return await SetsDao.getSetsInCategory(categoryId)
+  },
+
+  getTopSets: async langCode => {
+    return await TopSetsDao.getTopSets(langCode)
   },
 }

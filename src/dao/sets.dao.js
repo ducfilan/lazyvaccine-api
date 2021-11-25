@@ -1,6 +1,6 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
 import { ObjectID } from 'mongodb'
-import { SetCollectionName, SupportingSetTypes, SupportingLanguages } from '../common/consts'
+import { SetsCollectionName, SupportingSetTypes, SupportingLanguages } from '../common/consts'
 
 let _sets
 let _db
@@ -13,10 +13,10 @@ export default class SetsDao {
 
     try {
       _db = await conn.db(MongoClientConfigs.DatabaseName)
-      _sets = await conn.db(MongoClientConfigs.DatabaseName).collection(SetCollectionName)
+      _sets = await conn.db(MongoClientConfigs.DatabaseName).collection(SetsCollectionName)
 
       _db.command({
-        collMod: SetCollectionName,
+        collMod: SetsCollectionName,
         validator: {
           $jsonSchema: {
             required: ['_id', 'name', 'categoryId', 'description', 'tags', 'fromLanguage', 'toLanguage', 'items', 'lastUpdated', 'delFlag'],

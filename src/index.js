@@ -7,6 +7,7 @@ import CategoriesDao from './dao/categories.dao'
 import ItemsDao from './dao/items.dao'
 import SetsDao from './dao/sets.dao'
 import TagsDao from './dao/tags.dao'
+import TopSetsDao from './dao/top-sets.dao'
 
 const port = process.env.NODE_PORT || 8080
 
@@ -24,6 +25,7 @@ MongoClient.connect(
     await ItemsDao.injectDB(client)
     await SetsDao.injectDB(client)
     await TagsDao.injectDB(client)
+    await TopSetsDao.injectDB(client)
     app.listen(port, () => {
       console.log(`listening on port ${port}`)
     })

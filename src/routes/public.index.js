@@ -1,10 +1,14 @@
-import { Router } from 'express';
-import categoriesRoute from './categories.route';
-import { publicUserRouter } from './users.route';
+import { Router } from 'express'
+import categoriesRoute from './categories.route'
+import { publicUserRouter } from './users.route'
+import { publicSetRouter } from './sets.route'
+import { publicTopSetRouter } from './top-sets.route'
 
-var router = Router();
+var publicRouter = Router()
 
-router.use('/categories', categoriesRoute);
-router.use('/users', publicUserRouter);
+publicRouter.use('/categories', categoriesRoute)
+publicRouter.use('/users', publicUserRouter)
+publicRouter.use('/sets', publicSetRouter)
+publicRouter.use('/top-sets', publicTopSetRouter)
 
-module.exports = router;
+export default publicRouter
