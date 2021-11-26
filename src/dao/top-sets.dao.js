@@ -68,22 +68,45 @@ export default class TopSetsDao {
           },
           {
             $lookup: {
-              from: SetsCollectionName,
+              from: 'sets',
               localField: 'sets.setId',
               foreignField: '_id',
-              as: 'sets',
+              pipeline: [
+                {
+                  $lookup: {
+                    from: 'users',
+                    localField: 'creatorId',
+                    foreignField: '_id',
+                    as: 'creator'
+                  }
+                },
+                {
+                  $lookup: {
+                    from: 'categories',
+                    localField: 'categoryId',
+                    foreignField: '_id',
+                    as: 'category'
+                  }
+                },
+                {
+                  $addFields: {
+                    'creatorName': { $arrayElemAt: ['$creator.name', 0] },
+                    'categoryName': { $arrayElemAt: ['$category.name', 0] }
+                  }
+                }
+              ],
+              as: 'sets'
             }
-          },
-          {
+          }, {
             $project: {
-              _id: 0,
-              'sets.items': 0
+              'sets.items': 0,
+              'sets.creator': 0,
+              'sets.category': 0
             }
-          }
-        ])
+          }])
         .toArray()
 
-      return topSets[0].sets
+      return topSets.length > 0 ? topSets[0] : {}
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return {}
