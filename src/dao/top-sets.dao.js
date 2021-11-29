@@ -91,7 +91,8 @@ export default class TopSetsDao {
                 {
                   $addFields: {
                     'creatorName': { $arrayElemAt: ['$creator.name', 0] },
-                    'categoryName': { $arrayElemAt: ['$category.name', 0] }
+                    'categoryName': { $getField: { field: langCode, input: { $arrayElemAt: ['$category.name', 0] } } },
+                    'categoryNameEn': { $getField: { field: 'en', input: { $arrayElemAt: ['$category.name', 0] } } }
                   }
                 }
               ],
@@ -101,7 +102,8 @@ export default class TopSetsDao {
             $project: {
               'sets.items': 0,
               'sets.creator': 0,
-              'sets.category': 0
+              'sets.category': 0,
+              'sets.delFlag': 0,
             }
           }])
         .toArray()
