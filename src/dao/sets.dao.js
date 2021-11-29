@@ -227,14 +227,14 @@ export default class SetsDao {
         .aggregate([
           {
             $match: {
-              category_id: categoryId,
-              del_flag: false
+              categoryId,
+              delFlag: false
             },
           },
           {
             $lookup: {
               from: 'users',
-              localField: 'creator_id',
+              localField: 'creatorId',
               foreignField: '_id',
               as: 'creator',
             },
@@ -244,14 +244,15 @@ export default class SetsDao {
           },
           {
             $project: {
-              title: 1,
+              name: 1,
               description: 1,
-              creator_name: '$creator.name',
-              creator_picture: '$creator.picture',
-              visibility: 1,
-              tags_ids: 1,
-              image_url: 1,
-              last_updated: 1,
+              creatorName: '$creator.name',
+              creatorPicture: '$creator.picture',
+              fromLanguage: 1,
+              toLanguage: 1,
+              tags: 1,
+              imageUrl: 1,
+              lastUpdated: 1,
             },
           },
         ])
