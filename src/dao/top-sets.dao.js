@@ -1,5 +1,5 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { SetsCollectionName, TopSetsCollectionName, SupportingLanguages } from '../common/consts'
+import { SupportingTopSetsTypes, TopSetsCollectionName, SupportingLanguages } from '../common/consts'
 
 let _topSets
 let _db
@@ -18,11 +18,15 @@ export default class TopSetsDao {
         collMod: TopSetsCollectionName,
         validator: {
           $jsonSchema: {
-            required: ['_id', 'langCode', 'sets'],
+            required: ['_id', 'type', 'langCode', 'sets'],
             type: 'object',
             properties: {
               _id: {
                 bsonType: 'objectId'
+              },
+              type: {
+                enum: Object.values(SupportingTopSetsTypes),
+                bsonType: 'int'
               },
               langCode: {
                 enum: SupportingLanguages,
@@ -31,6 +35,7 @@ export default class TopSetsDao {
               sets: {
                 type: 'array',
                 items: {
+                  required: ['setId', 'lastUpdated'],
                   type: 'object',
                   properties: {
                     setId: {
@@ -41,6 +46,9 @@ export default class TopSetsDao {
                     }
                   }
                 }
+              },
+              categoryId: {
+                bsonType: 'objectId'
               }
             },
             additionalProperties: false,
@@ -54,17 +62,14 @@ export default class TopSetsDao {
 
   /**
    * Get top sets in the specified language
-   * @param {string} langCode - language code, e.g. 'en'
    * @returns {Promise(Array)} - Returns the list of sets in the language
    */
-  static async getTopSets(langCode) {
+  static async getTopSets(matchObject) {
     try {
       const topSets = await _topSets
         .aggregate([
           {
-            $match: {
-              langCode
-            }
+            $match: matchObject
           },
           {
             $lookup: {
@@ -91,7 +96,8 @@ export default class TopSetsDao {
                 {
                   $addFields: {
                     'creatorName': { $arrayElemAt: ['$creator.name', 0] },
-                    'categoryName': { $getField: { field: langCode, input: { $arrayElemAt: ['$category.name', 0] } } },
+                    'creatorImageUrl': { $arrayElemAt: ['$creator.pictureUrl', 0] },
+                    'categoryName': { $getField: { field: matchObject.langCode, input: { $arrayElemAt: ['$category.name', 0] } } },
                     'categoryNameEn': { $getField: { field: 'en', input: { $arrayElemAt: ['$category.name', 0] } } }
                   }
                 }

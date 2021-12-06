@@ -247,7 +247,7 @@ export default class SetsDao {
               name: 1,
               description: 1,
               creatorName: '$creator.name',
-              creatorPicture: '$creator.picture',
+              creatorImageUrl: '$creator.pictureUrl',
               fromLanguage: 1,
               toLanguage: 1,
               tags: 1,

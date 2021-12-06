@@ -36,9 +36,20 @@ export default class SetsController {
 
   static async apiGetSetsInCategories(req, res, next) {
     try {
-      const { category_id: categoryId } = req.params
+      const { categoryId } = req.params
 
       return res.json(await setsServices.getSetsInCategory(categoryId))
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
+
+  static async apiGetTopSetsInCategories(req, res) {
+    try {
+      const { categoryId } = req.params
+      const { lang } = req.query
+      return res.json(await setsServices.getTopSetsInCategory(lang, categoryId))
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })

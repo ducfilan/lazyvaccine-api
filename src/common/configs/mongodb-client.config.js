@@ -13,6 +13,7 @@ export default {
     poolSize: 100,
     w: 'majority',
     wtimeout: 5000, // ms
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   }
 }

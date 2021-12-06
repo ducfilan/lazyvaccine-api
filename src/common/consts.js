@@ -4,6 +4,10 @@ export default {
 }
 
 export const SupportingLanguages = ['ar', 'zh', 'nl', 'en', 'de', 'it', 'ja', 'ko', 'mn', 'pt', 'ru', 'sl', 'es', 'vi']
+export const SupportingTopSetsTypes = {
+  Global: 0,
+  Category: 1
+}
 
 export const UsersCollectionName = 'users'
 export const SetsCollectionName = 'sets'
