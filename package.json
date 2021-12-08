@@ -29,6 +29,7 @@
     ]
   },
   "dependencies": {
+    "aws-sdk": "^2.1044.0",
     "babel-eslint": "^10.0.3",
     "chai": "^4.2.0",
     "cors": "^2.8.5",
