@@ -1,6 +1,6 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
 import { ObjectID } from 'mongodb'
-import { SetsCollectionName, SupportingSetTypes, SupportingLanguages } from '../common/consts'
+import { SetsCollectionName, SupportingSetTypes, SupportingLanguages, StaticBaseUrl } from '../common/consts'
 
 let _sets
 let _db
@@ -24,6 +24,10 @@ export default class SetsDao {
             properties: {
               _id: {
                 bsonType: 'objectId'
+              },
+              imgUrl: {
+                type: 'string',
+                pattern: `^${StaticBaseUrl}/[A-z0-9_]+?.(png|jpg|jpeg|PNG|JPG|JPEG)$`
               },
               name: {
                 maxLength: 60,
