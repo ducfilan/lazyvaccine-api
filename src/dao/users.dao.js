@@ -59,7 +59,7 @@ export default class UsersDao {
 
   static async findByEmail(email, projection = defaultProjection) {
     try {
-      var user = await users.findOne({ 'email': email }, projection);
+      var user = await users.findOne({ email }, projection);
       return user;
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)

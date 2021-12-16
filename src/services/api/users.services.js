@@ -1,4 +1,4 @@
-import UsersDao from '../../dao/users.dao';
+import UsersDao from '../../dao/users.dao'
 import { isGoogleTokenValid } from '../support/google-auth.service'
 import { LoginTypes } from '../../common/consts'
 

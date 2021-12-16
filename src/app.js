@@ -1,21 +1,28 @@
-import express from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
+import express from 'express'
+import cors from 'cors'
+import morgan from 'morgan'
 
-import publicRouteIndex from './routes/public.index';
-import securedRouteIndex from './routes/secured.index';
+import publicRouteIndex from './routes/public.index'
+import securedRouteIndex from './routes/secured.index'
+
+import ConfigsDao from './dao/configs.dao'
 
 const app = express()
 
+var corsOptions = {
+  origin: function (origin, callback) {
+    ConfigsDao.getAllowedOrigins().then((origins) => {
+      if (origins.includes(origin)) {
+        callback(null, origins)
+      } else {
+        callback(`cors error, not allowed: ${origin}`)
+      }
+    })
+  },
+  preflightContinue: true
+}
 
-// TODO: Configure CORS https://expressjs.com/en/resources/middleware/cors.html
-/*
-app.use(cors({
-    origin: 'http://127.0.0.1:5500', // Block all domains except this domain.
-    credentials: true // Turn on HTTP cookie over CORS.
-}))
-*/
-app.use(cors())
+app.use(cors(corsOptions))
 process.env.NODE_ENV !== 'prod' && app.use(morgan('dev'))
 app.use(express.urlencoded({
   extended: true
