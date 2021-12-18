@@ -69,9 +69,12 @@ export default class SetsDao {
                 items: {
                   type: 'object',
                   oneOf: [{
-                    required: ['type', 'term', 'definition'],
+                    required: ['_id', 'type', 'term', 'definition'],
                     type: 'object',
                     properties: {
+                      _id: {
+                        bsonType: 'objectId'
+                      },
                       type: {
                         enum: SupportingSetTypes,
                         type: 'string'
@@ -86,9 +89,12 @@ export default class SetsDao {
                       }
                     },
                   }, {
-                    required: ['type', 'answers', 'question'],
+                    required: ['_id', 'type', 'answers', 'question'],
                     type: 'object',
                     properties: {
+                      _id: {
+                        bsonType: 'objectId'
+                      },
                       type: {
                         enum: SupportingSetTypes,
                         type: 'string'
@@ -118,9 +124,12 @@ export default class SetsDao {
                       }
                     },
                   }, {
-                    required: ['type', 'content'],
+                    required: ['_id', 'type', 'content'],
                     type: 'object',
                     properties: {
+                      _id: {
+                        bsonType: 'objectId'
+                      },
                       type: {
                         enum: SupportingSetTypes,
                         type: 'string'

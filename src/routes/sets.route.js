@@ -4,12 +4,12 @@ import multer from 'multer'
 import auth from '../middlewares/global/auth.mw'
 import recaptcha from '../middlewares/global/recaptcha.mw'
 
-const publicSetRouter = new Router()
-const securedSetRouter = new Router()
+const publicSetsRouter = new Router()
+const securedSetsRouter = new Router()
 
 const upload = multer()
 
-securedSetRouter.route('/').post(auth, recaptcha, upload.none(), SetsController.apiCreateSet)
-publicSetRouter.route('/:setId').get(SetsController.apiGetSet) // TODO: Add Authorization
+securedSetsRouter.route('/').post(auth, recaptcha, upload.none(), SetsController.apiCreateSet)
+publicSetsRouter.route('/:setId').get(SetsController.apiGetSet) // TODO: Add Authorization
 
-export { securedSetRouter, publicSetRouter }
+export { securedSetsRouter, publicSetsRouter }

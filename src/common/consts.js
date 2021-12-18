@@ -12,6 +12,7 @@ export const SupportingTopSetsTypes = {
 export const UsersCollectionName = 'users'
 export const SetsCollectionName = 'sets'
 export const TopSetsCollectionName = 'topSets'
+export const InteractionsCollectionName = 'interactions'
 
 export const LoginTypes = {
   google: 'google'

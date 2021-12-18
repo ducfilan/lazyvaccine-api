@@ -1,10 +1,14 @@
 import SetsDao from '../../dao/sets.dao'
 import TopSetsDao from '../../dao/top-sets.dao'
+import InteractionsDao from '../../dao/interactions.dao'
 import { ObjectID } from 'mongodb'
 import { BaseCollectionProperties, SupportingTopSetsTypes } from '../../common/consts'
 
 function standardizeSetInfoProperties(setInfo) {
   delete setInfo.captchaToken
+
+  // Add _id to items.
+  setInfo.items.foreach(item => item._id = ObjectID())
   return { ...setInfo, categoryId: ObjectID(setInfo.categoryId), ...BaseCollectionProperties }
 }
 
@@ -49,4 +53,8 @@ export default {
       categoryId: ObjectID(categoryId)
     })
   },
+
+  subscribeSet: async (userId, setId) => {
+    await InteractionsDao.subscribeSet(userId, setId)
+  }
 }
