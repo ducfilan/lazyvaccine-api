@@ -79,4 +79,23 @@ export default class InteractionsDao {
       return []
     }
   }
+
+  static async filterSetIds(userId, setIds) {
+    try {
+      return await _interactions
+        .find({
+          userId: userId,
+          setId: { $in: setIds }
+        })
+        .project({
+          _id: 0,
+          setId: 1,
+          actions: 1,
+        })
+        .toArray()
+    } catch (e) {
+      console.error(`Unable to issue find command, ${e}`)
+      return []
+    }
+  }
 }

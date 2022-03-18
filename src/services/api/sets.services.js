@@ -30,28 +30,48 @@ export default {
 
   /**
    * Get top sets global
+   * @param {string} userId current user id
    * @param {string} langCode language code, e.g. 'en'
    * @returns Array of top sets
    */
-  getTopSets: async (langCode) => {
-    return await TopSetsDao.getTopSets({
+  getTopSets: async (userId, langCode) => {
+    const topSets = await TopSetsDao.getTopSets({
       langCode,
       type: SupportingTopSetsTypes.Global
     })
+
+    const topSetIds = topSets.map(({ _id }) => _id)
+
+    let interactions = []
+    if (userId) {
+      interactions = await InteractionsDao.filterSetIds(userId, topSetIds)
+    }
+
+    return { topSets, interactions }
   },
 
   /**
    * Get top sets in a category
+   * @param {string} userId current user id
    * @param {string} langCode language code, e.g. 'en'
    * @param {string} categoryId id for the category
    * @returns Array of top sets
    */
-  getTopSetsInCategory: async (langCode, categoryId) => {
-    return await TopSetsDao.getTopSets({
+  getTopSetsInCategory: async (userId, langCode, categoryId) => {
+    const topSets = await TopSetsDao.getTopSets({
       langCode,
       type: SupportingTopSetsTypes.Category,
       categoryId: ObjectID(categoryId)
     })
+
+    const topSetIds = topSets.map(topSet => topSet._id)
+
+    let interactions = []
+    if (userId) {
+      interactions = await InteractionsDao.filterSetIds(userId, topSetIds)
+    }
+
+    return { topSets, interactions }
   },
 
   subscribeSet: async (userId, setId) => {

@@ -109,12 +109,12 @@ export default class TopSetsDao {
               'sets.items': 0,
               'sets.creator': 0,
               'sets.category': 0,
-              'sets.delFlag': 0,
+              'sets.delFlag': 0
             }
           }])
         .toArray()
 
-      return topSets.length > 0 ? topSets[0] : {}
+      return topSets.length > 0 ? topSets[0]?.sets : []
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return {}

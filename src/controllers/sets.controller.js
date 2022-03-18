@@ -27,7 +27,7 @@ export default class SetsController {
 
   static async apiGetTopSets(req, res) {
     try {
-      return res.json(await setsServices.getTopSets(req.query.lang))
+      return res.json(await setsServices.getTopSets(req.user?._id, req.query.lang))
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })
@@ -49,7 +49,7 @@ export default class SetsController {
     try {
       const { categoryId } = req.params
       const { lang } = req.query
-      return res.json(await setsServices.getTopSetsInCategory(lang, categoryId))
+      return res.json(await setsServices.getTopSetsInCategory(req.user?._id, lang, categoryId))
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })
