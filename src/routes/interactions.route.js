@@ -7,6 +7,7 @@ const securedInteractionsRouter = new Router()
 
 const upload = multer()
 
-securedInteractionsRouter.route('/:setId/subscription').post(auth, upload.none(), InteractionsController.apiSubscribeSet)
+securedInteractionsRouter.route('/:setId/interactions').post(auth, upload.none(), InteractionsController.apiInteractSet)
+securedInteractionsRouter.route('/:setId/interactions').delete(auth, upload.none(), InteractionsController.apiUndoInteractSet)
 
 export { securedInteractionsRouter }

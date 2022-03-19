@@ -1,6 +1,6 @@
 import { ObjectID } from 'mongodb'
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { BaseCollectionProperties, InteractionsCollectionName } from '../common/consts'
+import { BaseCollectionProperties, InteractionsCollectionName, SetInteractions } from '../common/consts'
 
 let _interactions
 let _db
@@ -35,6 +35,7 @@ export default class InteractionsDao {
                 minItems: 1,
                 type: 'array',
                 items: {
+                  enum: SetInteractions,
                   type: 'string',
                 }
               },
@@ -56,7 +57,7 @@ export default class InteractionsDao {
     }
   }
 
-  static async subscribeSet(userId, setId) {
+  static async interactSet(action, userId, setId) {
     try {
       await _interactions
         .updateOne(
@@ -66,7 +67,7 @@ export default class InteractionsDao {
           },
           {
             $addToSet: {
-              actions: 'subscribe'
+              actions: action
             },
             $set: BaseCollectionProperties
           },
@@ -76,7 +77,26 @@ export default class InteractionsDao {
         )
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
-      return []
+    }
+  }
+
+  static async undoInteractSet(action, userId, setId) {
+    try {
+      await _interactions
+        .updateOne(
+          {
+            userId: ObjectID(userId),
+            setId: ObjectID(setId)
+          },
+          {
+            $pull: {
+              actions: action
+            },
+            $set: BaseCollectionProperties
+          }
+        )
+    } catch (e) {
+      console.error(`Unable to issue find command, ${e}`)
     }
   }
 

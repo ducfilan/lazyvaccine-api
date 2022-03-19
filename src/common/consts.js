@@ -39,3 +39,9 @@ export const HttpStatusBadRequest = 400
 export const HttpStatusUnauthorized = 401
 export const HttpStatusForbidden = 403
 export const HttpStatusInternalServer = 500
+
+
+export const InteractionSubscribe = 'subscribe'
+export const InteractionLike = 'like'
+export const InteractionDislike = 'dislike'
+export const SetInteractions = [InteractionSubscribe, InteractionLike, InteractionDislike]

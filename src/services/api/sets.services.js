@@ -74,7 +74,11 @@ export default {
     return { topSets, interactions }
   },
 
-  subscribeSet: async (userId, setId) => {
-    await InteractionsDao.subscribeSet(userId, setId)
+  interactSet: async (action, userId, setId) => {
+    await InteractionsDao.interactSet(action, userId, setId)
+  },
+
+  undoInteractSet: async (action, userId, setId) => {
+    await InteractionsDao.undoInteractSet(action, userId, setId)
   }
 }
