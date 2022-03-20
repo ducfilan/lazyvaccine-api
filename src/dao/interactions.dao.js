@@ -19,7 +19,7 @@ export default class InteractionsDao {
         collMod: InteractionsCollectionName,
         validator: {
           $jsonSchema: {
-            required: ['_id', 'setId', 'userId', 'actions', 'lastUpdated', 'delFlag'],
+            required: ['_id', 'setId', 'userId', 'actions', 'lastUpdated'],
             type: 'object',
             properties: {
               _id: {
@@ -41,9 +41,6 @@ export default class InteractionsDao {
               },
               lastUpdated: {
                 bsonType: 'date'
-              },
-              delFlag: {
-                type: 'boolean'
               }
             },
             additionalProperties: false,
@@ -69,7 +66,7 @@ export default class InteractionsDao {
             $addToSet: {
               actions: action
             },
-            $set: BaseCollectionProperties
+            $set: { lastUpdated: BaseCollectionProperties.lastUpdated }
           },
           {
             upsert: true
@@ -91,8 +88,7 @@ export default class InteractionsDao {
           {
             $pull: {
               actions: action
-            },
-            $set: BaseCollectionProperties
+            }
           }
         )
     } catch (e) {

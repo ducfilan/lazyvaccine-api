@@ -1,6 +1,6 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
 import { ObjectID } from 'mongodb'
-import { SetsCollectionName, SupportingSetTypes, SupportingLanguages, StaticBaseUrl } from '../common/consts'
+import { SetsCollectionName, SupportingSetTypes, SupportingLanguages, StaticBaseUrl, SetInteractions } from '../common/consts'
 
 let _sets
 let _db
@@ -52,8 +52,16 @@ export default class SetsDao {
                   type: 'string'
                 }
               },
-              captchaToken: {
-                type: 'string'
+              interactionCount: {
+                type: 'object',
+                properties: {
+                  ...SetInteractions.reduce((previousValue, interaction) => ({
+                    ...previousValue, [interaction]: ({
+                      bsonType: 'int'
+                    })
+                  }), {})
+                },
+                additionalProperties: false
               },
               fromLanguage: {
                 enum: SupportingLanguages,
