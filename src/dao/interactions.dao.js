@@ -32,7 +32,6 @@ export default class InteractionsDao {
                 bsonType: 'objectId'
               },
               actions: {
-                minItems: 1,
                 type: 'array',
                 items: {
                   enum: SetInteractions,
@@ -88,7 +87,8 @@ export default class InteractionsDao {
           {
             $pull: {
               actions: action
-            }
+            },
+            $set: { lastUpdated: BaseCollectionProperties.lastUpdated }
           }
         )
     } catch (e) {
