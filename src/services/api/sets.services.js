@@ -76,9 +76,15 @@ export default {
 
   interactSet: async (action, userId, setId) => {
     await InteractionsDao.interactSet(action, userId, setId)
+
+    // TODO: Use kafka, separate job to sync.
+    await SetsDao.interactSet(action, setId)
   },
 
   undoInteractSet: async (action, userId, setId) => {
     await InteractionsDao.undoInteractSet(action, userId, setId)
+
+    // TODO: Use kafka, separate job to sync.
+    await SetsDao.interactSet(action, setId, -1)
   }
 }

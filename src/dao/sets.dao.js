@@ -1,6 +1,6 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
 import { ObjectID } from 'mongodb'
-import { SetsCollectionName, SupportingSetTypes, SupportingLanguages, StaticBaseUrl, SetInteractions } from '../common/consts'
+import { SetsCollectionName, SupportingSetTypes, SupportingLanguages, StaticBaseUrl, SetInteractions, BaseCollectionProperties } from '../common/consts'
 
 let _sets
 let _db
@@ -281,6 +281,29 @@ export default class SetsDao {
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return {}
+    }
+  }
+
+  static async interactSet(action, setId, increment = 1) {
+    try {
+      return await _sets
+        .updateOne(
+          {
+            _id: ObjectID(setId)
+          },
+          {
+            $inc: {
+              [`interactionCount.${action}`]: increment
+            },
+            $set: { lastUpdated: BaseCollectionProperties.lastUpdated }
+          },
+          {
+            upsert: true
+          }
+        )
+    } catch (e) {
+      console.error(`Error in interactSet, ${e}`)
+      return false
     }
   }
 }
