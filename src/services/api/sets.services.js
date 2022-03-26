@@ -8,7 +8,7 @@ function standardizeSetInfoProperties(setInfo) {
   delete setInfo.captchaToken
 
   // Add _id to items.
-  setInfo.items.foreach(item => item._id = ObjectID())
+  setInfo.items.forEach(item => item._id = ObjectID())
   return { ...setInfo, categoryId: ObjectID(setInfo.categoryId), ...BaseCollectionProperties }
 }
 
