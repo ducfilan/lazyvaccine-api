@@ -114,4 +114,21 @@ export default class InteractionsDao {
       return []
     }
   }
+
+  static async filterSetId(userId, setId) {
+    try {
+      return await _interactions
+        .findOne({
+          userId: userId,
+          setId: setId
+        }, {
+          _id: 0,
+          setId: 1,
+          actions: 1,
+        }) || {}
+    } catch (e) {
+      console.error(`Error in filterSetId, ${e}`)
+      return {}
+    }
+  }
 }

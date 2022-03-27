@@ -20,8 +20,16 @@ export default {
     return insertedId
   },
 
-  getSet: async setId => {
-    return await SetsDao.getSet(ObjectID(setId))
+  getSet: async (userId, setId) => {
+    let set = await SetsDao.getSet(ObjectID(setId))
+    if (!set) return null
+
+    if (userId) {
+      const { actions } = await InteractionsDao.filterSetId(userId, ObjectID(setId))
+      set = { ...set, actions }
+    }
+
+    return set
   },
 
   getSetsInCategory: async categoryId => {

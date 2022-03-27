@@ -18,7 +18,7 @@ export default class SetsController {
 
   static async apiGetSet(req, res) {
     try {
-      return res.json(await setsServices.getSet(req.params.setId))
+      return res.json(await setsServices.getSet(req.user?._id, req.params.setId))
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })
