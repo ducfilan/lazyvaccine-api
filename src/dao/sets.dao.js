@@ -197,9 +197,10 @@ export default class SetsDao {
               toLanguage: 1,
               creatorId: 1,
               creatorName: '$creator.name',
-              imageUrl: 1,
+              imgUrl: 1,
               lastUpdated: 1,
               items: 1,
+              interactionCount: 1,
             },
           },
         ])
@@ -231,7 +232,7 @@ export default class SetsDao {
       return await this.findOneById(_id)
     } catch (e) {
       console.error(`Unable to execute insert command, ${e}`)
-      return false
+      return null
     }
   }
 
