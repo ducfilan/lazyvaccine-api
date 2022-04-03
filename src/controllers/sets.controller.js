@@ -16,6 +16,21 @@ export default class SetsController {
     }
   }
 
+  static async apiEditSet(req, res) {
+    try {
+      let setInfo = req.body
+      setInfo.creatorId = req.user._id
+
+      const success = await setsServices.editSet(setInfo)
+      if (!success) throw new Error('cannot update set')
+
+      res.sendStatus(200)
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
+
   static async apiGetSet(req, res) {
     try {
       return res.json(await setsServices.getSet(req.user?._id, req.params.setId))

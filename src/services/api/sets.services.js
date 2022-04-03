@@ -8,7 +8,7 @@ function standardizeSetInfoProperties(setInfo) {
   delete setInfo.captchaToken
 
   // Add _id to items.
-  setInfo.items.forEach(item => item._id = ObjectID())
+  setInfo.items.forEach(item => item._id = item._id ? ObjectID(item._id) : ObjectID())
   return { ...setInfo, categoryId: ObjectID(setInfo.categoryId), ...BaseCollectionProperties }
 }
 
@@ -18,6 +18,12 @@ export default {
 
     const insertedId = await SetsDao.createSet(setInfo)
     return insertedId
+  },
+
+  editSet: async (setInfo) => {
+    setInfo = standardizeSetInfoProperties(setInfo)
+
+    return await SetsDao.replaceSet(setInfo)
   },
 
   getSet: async (userId, setId) => {

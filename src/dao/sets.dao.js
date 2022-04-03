@@ -227,6 +227,22 @@ export default class SetsDao {
     }
   }
 
+  static async replaceSet(set) {
+    try {
+      const _id = ObjectID(set._id)
+      delete set._id
+
+      const { interactionCount } = (await _sets.findOne({ _id }, { interactionCount: 1 })) || {}
+
+      await _sets.findOneAndReplace({ _id }, { ...set, interactionCount })
+
+      return true
+    } catch (e) {
+      console.error(`Unable to execute insert command, ${e}`)
+      return false
+    }
+  }
+
   static async getSet(_id) {
     try {
       return await this.findOneById(_id)
