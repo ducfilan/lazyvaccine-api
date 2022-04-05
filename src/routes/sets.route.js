@@ -13,5 +13,6 @@ const upload = multer()
 securedSetsRouter.route('/').post(auth, recaptcha, upload.none(), SetsController.apiCreateSet)
 securedSetsRouter.route('/').patch(auth, recaptcha, upload.none(), SetsController.apiEditSet)
 publicSetsRouter.route('/:setId').get(identity, SetsController.apiGetSet) // TODO: Add Authorization
+publicSetsRouter.route('/').get(identity, SetsController.apiSearchSet)
 
 export { securedSetsRouter, publicSetsRouter }

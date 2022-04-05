@@ -42,6 +42,19 @@ export default {
     return await SetsDao.getSetsInCategory(categoryId)
   },
 
+  searchSet: async (userId, searchConditions) => {
+    const sets = await SetsDao.searchSet(searchConditions)
+
+    const setIds = sets.map(({ _id }) => _id)
+
+    let interactions = []
+    if (userId) {
+      interactions = await InteractionsDao.filterSetIds(userId, setIds)
+    }
+
+    return { sets, interactions }
+  },
+
   /**
    * Get top sets global
    * @param {string} userId current user id

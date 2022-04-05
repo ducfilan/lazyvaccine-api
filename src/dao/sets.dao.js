@@ -252,6 +252,55 @@ export default class SetsDao {
     }
   }
 
+  static async searchSet(searchConditions) {
+    try {
+      const { keyword } = searchConditions
+
+      return await _sets
+        .aggregate([
+          {
+            $search: {
+              index: 'setSearchIndex',
+              text: {
+                query: keyword,
+                path: {
+                  'wildcard': '*'
+                }
+              }
+            },
+          },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'creatorId',
+              foreignField: '_id',
+              as: 'creator',
+            },
+          },
+          {
+            $unwind: '$creator',
+          },
+          {
+            $project: {
+              name: 1,
+              description: 1,
+              creatorName: '$creator.name',
+              creatorImageUrl: '$creator.pictureUrl',
+              fromLanguage: 1,
+              toLanguage: 1,
+              tags: 1,
+              imgUrl: 1,
+              lastUpdated: 1,
+            },
+          },
+        ])
+        .toArray()
+    } catch (e) {
+      console.error(`Unable to execute search command, ${e}`)
+      return []
+    }
+  }
+
   /**
    * 
    * @param {string} categoryId - category Id in string form
@@ -289,7 +338,7 @@ export default class SetsDao {
               fromLanguage: 1,
               toLanguage: 1,
               tags: 1,
-              imageUrl: 1,
+              imgUrl: 1,
               lastUpdated: 1,
             },
           },

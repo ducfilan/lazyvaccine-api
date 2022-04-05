@@ -40,6 +40,16 @@ export default class SetsController {
     }
   }
 
+  static async apiSearchSet(req, res) {
+    try {
+      const searchConditions = req.query
+      return res.json(await setsServices.searchSet(req.user?._id, searchConditions))
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
+
   static async apiGetTopSets(req, res) {
     try {
       return res.json(await setsServices.getTopSets(req.user?._id, req.query.lang))

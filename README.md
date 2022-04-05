@@ -1,5 +1,5 @@
 
-## leanlearn API
+## lazy-vaccine API
 ### Docker configuration:
 #### Requirements:
 - docker
@@ -11,10 +11,10 @@
 #### Steps:
 - Create an `.env` file to config database information:
 	```bash
-	MONGO_USERNAME=leanlearn
+	MONGO_USERNAME=lazyvaccine
 	MONGO_PASSWORD=password
 	MONGO_PORT=27017
-	MONGO_DB=leanlearn
+	MONGO_DB=lazyvaccine
 	NODE_PORT=8080
 	NODE_ENV=dev
 	JWT_KEY=7eaa951e-6688-42cc-be3a-78a712da979d
