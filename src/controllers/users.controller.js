@@ -2,7 +2,17 @@ import usersServices from '../services/api/users.services'
 
 export default class UsersController {
   static async me(req, res) {
-    return res.status(200).json(req.user);
+    return res.status(200).json(req.user)
+  }
+
+  static async getUserInfo(req, res) {
+    try {
+      const userInfo = await usersServices.getUserInfo(req.params.userId)
+
+      res.status(200).send(userInfo)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
   }
 
   static async register(req, res) {

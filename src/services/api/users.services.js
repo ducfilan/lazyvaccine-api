@@ -1,3 +1,4 @@
+import { ObjectID } from 'mongodb'
 import UsersDao from '../../dao/users.dao'
 import { isGoogleTokenValid } from '../support/google-auth.service'
 import { LoginTypes } from '../../common/consts'
@@ -35,6 +36,9 @@ export default {
     const registeredUser = await UsersDao.registerUser(userInfo)
 
     return registeredUser
+  },
+  getUserInfo: async (userId) => {
+    return await UsersDao.findOne({ _id: ObjectID(userId) })
   },
   update: async (_id, updateItems) => {
     return await UsersDao.updateOne(_id, { $set: updateItems })
