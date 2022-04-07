@@ -1,6 +1,6 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
 import { ObjectID } from 'mongodb'
-import { SetsCollectionName, SupportingSetTypes, SupportingLanguages, StaticBaseUrl, SetInteractions, BaseCollectionProperties } from '../common/consts'
+import { SetsCollectionName, UsersCollectionName, SupportingSetTypes, SupportingLanguages, StaticBaseUrl, SetInteractions, BaseCollectionProperties } from '../common/consts'
 
 let _sets
 let _db
@@ -178,7 +178,7 @@ export default class SetsDao {
           },
           {
             $lookup: {
-              from: 'users',
+              from: UsersCollectionName,
               localField: 'creatorId',
               foreignField: '_id',
               as: 'creator',
@@ -210,6 +210,55 @@ export default class SetsDao {
       if (!set) return {}
 
       return set[0]
+    } catch (e) {
+      console.error(`Unable to issue find command, ${e}`)
+      return false
+    }
+  }
+
+  static async find(matchCondition) {
+    try {
+      var sets = await _sets
+        .aggregate([
+          {
+            $match: {
+              ...matchCondition,
+              delFlag: false,
+            },
+          },
+          {
+            $lookup: {
+              from: UsersCollectionName,
+              localField: 'creatorId',
+              foreignField: '_id',
+              as: 'creator',
+            },
+          },
+          {
+            $unwind: '$creator',
+          },
+          {
+            $project: {
+              name: 1,
+              categoryId: 1,
+              description: 1,
+              tags: 1,
+              fromLanguage: 1,
+              toLanguage: 1,
+              creatorId: 1,
+              creatorName: '$creator.name',
+              imgUrl: 1,
+              lastUpdated: 1,
+              items: 1,
+              interactionCount: 1,
+            },
+          },
+        ])
+        .toArray()
+
+      if (!sets) return []
+
+      return sets
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return false

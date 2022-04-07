@@ -1,6 +1,6 @@
 import { ObjectID } from 'mongodb'
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { BaseCollectionProperties, InteractionsCollectionName, SetInteractions } from '../common/consts'
+import { BaseCollectionProperties, SetsCollectionName, InteractionsCollectionName, SetInteractions } from '../common/consts'
 
 let _interactions
 let _db
@@ -129,6 +129,41 @@ export default class InteractionsDao {
     } catch (e) {
       console.error(`Error in filterSetId, ${e}`)
       return {}
+    }
+  }
+
+  static async getUserInteractedSets(userId, interaction) {
+    try {
+      return await _interactions
+        .aggregate([
+          {
+            $match: {
+              userId,
+              actions: { $elemMatch: { $eq: interaction } },
+            },
+          },
+          {
+            $lookup: {
+              from: SetsCollectionName,
+              localField: 'setId',
+              foreignField: '_id',
+              as: 'set',
+            },
+          },
+          {
+            $unwind: '$set'
+          },
+        ])
+        .project({
+          _id: 0,
+          setId: 0,
+          userId: 0,
+          lastUpdated: 0,
+        })
+        .toArray()
+    } catch (e) {
+      console.error(`Unable to issue find command, ${e}`)
+      return []
     }
   }
 }
