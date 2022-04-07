@@ -26,6 +26,16 @@ export default class UsersController {
     }
   }
 
+  static async getUserRandomSet(req, res) {
+    try {
+      const set = await usersServices.getUserRandomSet(req.params.userId, req.query.interaction)
+
+      res.status(200).send(set)
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  }
+
   static async register(req, res) {
     try {
       const registeredUser = await usersServices.register(req.body)

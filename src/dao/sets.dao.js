@@ -207,7 +207,7 @@ export default class SetsDao {
         .limit(1)
         .toArray()
 
-      if (!set) return {}
+      if (!set || set.length === 0) return {}
 
       return set[0]
     } catch (e) {

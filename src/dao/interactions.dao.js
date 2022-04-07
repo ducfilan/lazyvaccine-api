@@ -159,11 +159,56 @@ export default class InteractionsDao {
           setId: 0,
           userId: 0,
           lastUpdated: 0,
+          'set.items': 0,
+          'set.delFlag': 0,
         })
         .toArray()
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return []
+    }
+  }
+
+  static async getUserRandomSet(userId, interaction) {
+    try {
+      const set = await _interactions
+        .aggregate([
+          {
+            $match: {
+              userId,
+              actions: { $elemMatch: { $eq: interaction } },
+            },
+          },
+          {
+            $sample: { size: 1 }
+          },
+          {
+            $lookup: {
+              from: SetsCollectionName,
+              localField: 'setId',
+              foreignField: '_id',
+              as: 'set',
+            },
+          },
+          {
+            $unwind: '$set'
+          },
+        ])
+        .project({
+          _id: 0,
+          setId: 0,
+          userId: 0,
+          lastUpdated: 0,
+          'set.delFlag': 0,
+        })
+        .toArray()
+
+      if (!set || set.length === 0) return {}
+
+      return set[0]
+    } catch (e) {
+      console.error(`Unable to issue find command, ${e}`)
+      return {}
     }
   }
 }

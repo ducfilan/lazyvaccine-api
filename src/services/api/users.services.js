@@ -58,6 +58,9 @@ export default {
         return await InteractionsDao.getUserInteractedSets(ObjectID(userId), interaction)
     }
   },
+  getUserRandomSet: async (userId, interaction) => {
+    return await InteractionsDao.getUserRandomSet(ObjectID(userId), interaction)
+  },
   update: async (_id, updateItems) => {
     return await UsersDao.updateOne(_id, { $set: updateItems })
   },
