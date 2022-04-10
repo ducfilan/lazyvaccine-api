@@ -15,7 +15,7 @@ securedUserRouter.route('/me').patch(auth, upload.none(), UsersController.update
 securedUserRouter.route('/me').get(auth, UsersController.me)
 securedUserRouter.route('/:userId').get(UsersController.getUserInfo)
 securedUserRouter.route('/:userId/sets').get(UsersController.getUserSets)
-securedUserRouter.route('/:userId/random-set').get(UsersController.getUserRandomSet)
+securedUserRouter.route('/me/random-set').get(auth, UsersController.getUserRandomSet)
 securedUserRouter.route('/logout').get(auth, UsersController.logout)
 
 export {

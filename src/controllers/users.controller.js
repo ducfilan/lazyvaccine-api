@@ -28,7 +28,7 @@ export default class UsersController {
 
   static async getUserRandomSet(req, res) {
     try {
-      const set = await usersServices.getUserRandomSet(req.params.userId, req.query.interaction)
+      const set = await usersServices.getUserRandomSet(req.user._id, req.query.interaction)
 
       res.status(200).send(set)
     } catch (e) {
