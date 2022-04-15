@@ -303,7 +303,7 @@ export default class SetsDao {
 
   static async searchSet(searchConditions) {
     try {
-      const { keyword } = searchConditions
+      const { keyword, skip, limit } = searchConditions
 
       return await _sets
         .aggregate([
@@ -315,8 +315,17 @@ export default class SetsDao {
                 path: {
                   'wildcard': '*'
                 }
+              },
+              'count': {
+                'type': 'total'
               }
             },
+          },
+          {
+            $skip: skip
+          },
+          {
+            $limit: skip + limit
           },
           {
             $lookup: {
@@ -331,6 +340,7 @@ export default class SetsDao {
           },
           {
             $project: {
+              total: '$$SEARCH_META.count.total',
               name: 1,
               description: 1,
               creatorName: '$creator.name',

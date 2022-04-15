@@ -1,4 +1,5 @@
 import setsServices from '../services/api/sets.services'
+import { apiSearchSetValidator } from './validators/sets.validator'
 
 export default class SetsController {
   static async apiCreateSet(req, res) {
@@ -42,7 +43,9 @@ export default class SetsController {
 
   static async apiSearchSet(req, res) {
     try {
-      const searchConditions = req.query
+      const searchConditions = apiSearchSetValidator(req.query)
+      if (!searchConditions) res.sendStatus(400)
+
       return res.json(await setsServices.searchSet(req.user?._id, searchConditions))
     } catch (e) {
       console.log(`api, ${e}`)

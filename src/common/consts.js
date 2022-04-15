@@ -45,3 +45,5 @@ export const InteractionSubscribe = 'subscribe'
 export const InteractionLike = 'like'
 export const InteractionDislike = 'dislike'
 export const SetInteractions = [InteractionSubscribe, InteractionLike, InteractionDislike]
+
+export const MaxPaginationLimit = 100
