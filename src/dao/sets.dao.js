@@ -216,7 +216,7 @@ export default class SetsDao {
     }
   }
 
-  static async find(matchCondition) {
+  static async find(matchCondition, skip, limit) {
     try {
       var sets = await _sets
         .aggregate([
@@ -227,6 +227,12 @@ export default class SetsDao {
             },
           },
           {
+            $skip: skip
+          },
+          {
+            $limit: limit
+          },
+          {
             $lookup: {
               from: UsersCollectionName,
               localField: 'creatorId',
@@ -235,10 +241,11 @@ export default class SetsDao {
             },
           },
           {
-            $unwind: '$creator',
+            $unwind: '$creator'
           },
           {
             $project: {
+              creatorName: '$creator.name',
               name: 1,
               categoryId: 1,
               description: 1,
@@ -246,19 +253,23 @@ export default class SetsDao {
               fromLanguage: 1,
               toLanguage: 1,
               creatorId: 1,
-              creatorName: '$creator.name',
               imgUrl: 1,
               lastUpdated: 1,
-              items: 1,
-              interactionCount: 1,
-            },
-          },
-        ])
+              interactionCount: 1
+            }
+          }])
         .toArray()
 
-      if (!sets) return []
+      if (!sets || sets.length === 0) {
+        return {}
+      }
 
-      return sets
+      var total = await _sets.find({
+        ...matchCondition,
+        delFlag: false,
+      }).count()
+
+      return { total, sets }
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return false
@@ -305,7 +316,7 @@ export default class SetsDao {
     try {
       const { keyword, skip, limit } = searchConditions
 
-      return await _sets
+      const sets = await _sets
         .aggregate([
           {
             $search: {
@@ -325,7 +336,7 @@ export default class SetsDao {
             $skip: skip
           },
           {
-            $limit: skip + limit
+            $limit: limit
           },
           {
             $lookup: {
@@ -352,8 +363,30 @@ export default class SetsDao {
               lastUpdated: 1,
             },
           },
+          {
+            $facet: {
+              sets: []
+            }
+          },
+          {
+            $project: {
+              total: { $first: '$sets.total' },
+              sets: 1
+            }
+          },
+          {
+            $project: {
+              'sets.total': 0
+            }
+          }
         ])
         .toArray()
+
+      if (!sets || sets.length === 0) {
+        return {}
+      }
+
+      return sets[0]
     } catch (e) {
       console.error(`Unable to execute search command, ${e}`)
       return []

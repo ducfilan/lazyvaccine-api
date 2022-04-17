@@ -1,4 +1,5 @@
 import usersServices from '../services/api/users.services'
+import { apiGetUserSetsValidator } from './validators/users.validator'
 
 export default class UsersController {
   static async me(req, res) {
@@ -15,10 +16,10 @@ export default class UsersController {
     }
   }
 
-  // TODO: Add pagination
   static async getUserSets(req, res) {
     try {
-      const sets = await usersServices.getUserSets(req.params.userId, req.query.interaction)
+      const { interaction, skip, limit } = apiGetUserSetsValidator(req.query)
+      const sets = await usersServices.getUserSets(req.params.userId, interaction, skip, limit)
 
       res.status(200).send(sets)
     } catch (e) {

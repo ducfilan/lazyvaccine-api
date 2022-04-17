@@ -132,15 +132,21 @@ export default class InteractionsDao {
     }
   }
 
-  static async getUserInteractedSets(userId, interaction) {
+  static async getUserInteractedSets(userId, interaction, skip, limit) {
     try {
-      return await _interactions
+      const sets = await _interactions
         .aggregate([
           {
             $match: {
               userId,
               actions: { $elemMatch: { $eq: interaction } },
             },
+          },
+          {
+            $skip: skip
+          },
+          {
+            $limit: limit
           },
           {
             $lookup: {
@@ -153,16 +159,36 @@ export default class InteractionsDao {
           {
             $unwind: '$set'
           },
-        ])
-        .project({
-          _id: 0,
-          setId: 0,
-          userId: 0,
-          lastUpdated: 0,
-          'set.items': 0,
-          'set.delFlag': 0,
-        })
+          {
+            $facet: {
+              total: [{
+                $count: 'total'
+              }],
+              sets: []
+            }
+          },
+          {
+            $project: {
+              total: {
+                $first: '$total.total'
+              },
+              'sets.actions': 1,
+              'sets.set': 1
+            }
+          },
+          {
+            $project: {
+              'sets.set.items': 0,
+              'sets.set.delFlag': 0
+            }
+          }])
         .toArray()
+
+      if (!sets || sets.length === 0) {
+        return {}
+      }
+
+      return sets[0]
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return []

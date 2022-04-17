@@ -43,7 +43,7 @@ export default {
   },
 
   searchSet: async (userId, searchConditions) => {
-    const sets = await SetsDao.searchSet(searchConditions)
+    const { sets, total } = await SetsDao.searchSet(searchConditions)
 
     const setIds = sets.map(({ _id }) => _id)
 
@@ -52,7 +52,7 @@ export default {
       interactions = await InteractionsDao.filterSetIds(userId, setIds)
     }
 
-    return { sets, interactions }
+    return { total, sets, interactions }
   },
 
   /**

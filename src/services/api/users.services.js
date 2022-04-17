@@ -42,20 +42,22 @@ export default {
   getUserInfo: async (userId) => {
     return await UsersDao.findOne({ _id: ObjectID(userId) })
   },
-  getUserSets: async (userId, interaction) => {
+  getUserSets: async (userId, interaction, skip, limit) => {
     switch (interaction) {
       case 'create':
-        const sets = await SetsDao.find({ creatorId: ObjectID(userId) })
-        const setIds = sets.map(({ _id }) => _id)
+        let resp = await SetsDao.find({ creatorId: ObjectID(userId) }, skip, limit)
+        const setIds = resp.sets.map(({ _id }) => _id)
 
         const interactions = await InteractionsDao.filterSetIds(userId, setIds) || []
 
-        return sets.map(set => ({
+        resp.sets.forEach((set, index) => resp.sets[index] = ({
           actions: interactions.find(i => i.setId == set._id)?.actions || [],
           set
         }))
+
+        return resp
       default:
-        return await InteractionsDao.getUserInteractedSets(ObjectID(userId), interaction)
+        return await InteractionsDao.getUserInteractedSets(ObjectID(userId), interaction, skip, limit)
     }
   },
   getUserRandomSet: async (userId, interaction) => {
