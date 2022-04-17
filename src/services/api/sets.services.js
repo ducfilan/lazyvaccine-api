@@ -23,7 +23,12 @@ export default {
   editSet: async (setInfo) => {
     setInfo = standardizeSetInfoProperties(setInfo)
 
-    return await SetsDao.replaceSet(setInfo)
+    const { creatorId, interactionCount } = (await SetsDao.getSet(setInfo._id) || {})
+
+    const isCreatorValid = creatorId === setInfo.creatorId
+    if (!isCreatorValid) throw new Error('no permission to edit set')
+
+    return await SetsDao.replaceSet({ ...setInfo, interactionCount })
   },
 
   getSet: async (userId, setId) => {

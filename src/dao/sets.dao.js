@@ -292,9 +292,7 @@ export default class SetsDao {
       const _id = ObjectID(set._id)
       delete set._id
 
-      const { interactionCount } = (await _sets.findOne({ _id }, { interactionCount: 1 })) || {}
-
-      await _sets.findOneAndReplace({ _id }, { ...set, interactionCount })
+      await _sets.findOneAndReplace({ _id }, set)
 
       return true
     } catch (e) {
