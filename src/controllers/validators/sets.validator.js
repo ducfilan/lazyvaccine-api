@@ -1,20 +1,35 @@
-import { MaxPaginationLimit } from '../../common/consts'
+import { validateSkip, validateLimit } from './common.validator'
 
 export const apiSearchSetValidator = ({ keyword, skip, limit }) => {
   skip = Number(skip)
   limit = Number(limit)
 
-  if (!Number.isInteger(skip) || limit < 0) {
-    return false
+  if (!validateSkip(skip)) {
+    throw new Error('invalid skip value')
   }
 
-  if (!Number.isInteger(limit) || limit > MaxPaginationLimit || limit < 0) {
-    return false
+  if (!validateLimit(limit)) {
+    throw new Error('invalid limit value')
   }
 
   if (!keyword) {
-    return false
+    throw new Error('keyword not provided')
   }
 
   return { keyword, skip, limit }
+}
+
+export const apiGetSetsInCategoriesValidator = ({ skip, limit }) => {
+  skip = Number(skip)
+  limit = Number(limit)
+
+  if (!validateSkip(skip)) {
+    throw new Error('invalid skip value')
+  }
+
+  if (!validateLimit(limit)) {
+    throw new Error('invalid limit value')
+  }
+
+  return { skip, limit }
 }

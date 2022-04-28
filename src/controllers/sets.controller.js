@@ -1,5 +1,5 @@
 import setsServices from '../services/api/sets.services'
-import { apiSearchSetValidator } from './validators/sets.validator'
+import { apiSearchSetValidator, apiGetSetsInCategoriesValidator } from './validators/sets.validator'
 
 export default class SetsController {
   static async apiCreateSet(req, res) {
@@ -62,14 +62,17 @@ export default class SetsController {
     }
   }
 
-  static async apiGetSetsInCategories(req, res, next) {
+  static async apiGetSetsInCategories(req, res) {
     try {
       const { categoryId } = req.params
+      const { skip, limit } = apiGetSetsInCategoriesValidator(req.query)
 
-      return res.json(await setsServices.getSetsInCategory(categoryId))
+      const sets = await setsServices.getSetsInCategory(categoryId, skip, limit)
+
+      return res.json(sets)
     } catch (e) {
       console.log(`api, ${e}`)
-      res.status(500).json({ error: e })
+      res.status(500).json({ error: e.message })
     }
   }
 
@@ -77,6 +80,7 @@ export default class SetsController {
     try {
       const { categoryId } = req.params
       const { lang } = req.query
+
       return res.json(await setsServices.getTopSetsInCategory(req.user?._id, lang, categoryId))
     } catch (e) {
       console.log(`api, ${e}`)

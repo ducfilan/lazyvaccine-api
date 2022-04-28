@@ -43,8 +43,8 @@ export default {
     return set
   },
 
-  getSetsInCategory: async categoryId => {
-    return await SetsDao.getSetsInCategory(categoryId)
+  getSetsInCategory: async (categoryId, skip, limit) => {
+    return await SetsDao.getSetsInCategory(categoryId, skip, limit)
   },
 
   searchSet: async (userId, searchConditions) => {
