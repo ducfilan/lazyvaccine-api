@@ -12,7 +12,7 @@ const app = express()
 var corsOptions = {
   origin: function (origin, callback) {
     ConfigsDao.getAllowedOrigins().then((origins) => {
-      if (origins.includes(origin) || true) {
+      if (origins.includes(origin) || true) { // TODO: Remove, this is for testing purpose.
         callback(null, origins)
       } else {
         callback(`cors error, not allowed: ${origin}`)

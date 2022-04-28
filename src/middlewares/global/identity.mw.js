@@ -6,7 +6,7 @@ export default async (req, res, next) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '')
     const loginType = req.header('X-Login-Type')
-    if (!token) next()
+    if (!token) return next()
 
     let email
     switch (loginType) {
@@ -15,19 +15,19 @@ export default async (req, res, next) => {
         break
 
       default:
-        next()
+        return next()
     }
 
-    if (!email) next()
+    if (!email) return next()
 
     const user = await UsersDao.findByEmail(email)
 
-    if (!user) next()
+    if (!user) return next()
 
     req.user = user
-    next()
+    return next()
   } catch (error) {
     console.log(error)
-    next()
+    return next()
   }
 }
