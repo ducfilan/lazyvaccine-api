@@ -67,9 +67,7 @@ export default class SetsController {
       const { categoryId } = req.params
       const { skip, limit } = apiGetSetsInCategoriesValidator(req.query)
 
-      const sets = await setsServices.getSetsInCategory(categoryId, skip, limit)
-
-      return res.json(sets)
+      return res.json(await setsServices.getSetsInCategory(categoryId, skip, limit))
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e.message })

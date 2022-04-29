@@ -402,7 +402,7 @@ export default class SetsDao {
     categoryId = ObjectID(categoryId)
 
     try {
-      return await _sets
+      const sets = await _sets
         .aggregate([
           {
             $match: {
@@ -442,6 +442,17 @@ export default class SetsDao {
           },
         ])
         .toArray()
+
+      if (!sets || sets.length === 0) {
+        return {}
+      }
+
+      var total = await _sets.find({
+        categoryId,
+        delFlag: false
+      }).count()
+
+      return { total, sets }
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return {}
