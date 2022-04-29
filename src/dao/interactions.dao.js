@@ -160,26 +160,15 @@ export default class InteractionsDao {
             $unwind: '$set'
           },
           {
-            $facet: {
-              total: [{
-                $count: 'total'
-              }],
-              sets: []
+            $project: {
+              'actions': 1,
+              'set': 1
             }
           },
           {
             $project: {
-              total: {
-                $first: '$total.total'
-              },
-              'sets.actions': 1,
-              'sets.set': 1
-            }
-          },
-          {
-            $project: {
-              'sets.set.items': 0,
-              'sets.set.delFlag': 0
+              'set.items': 0,
+              'set.delFlag': 0
             }
           }])
         .toArray()
@@ -188,7 +177,12 @@ export default class InteractionsDao {
         return {}
       }
 
-      return sets[0]
+      var total = await _interactions.find({
+        userId,
+        actions: { $elemMatch: { $eq: interaction } },
+      }).count()
+
+      return { total, sets }
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return []
