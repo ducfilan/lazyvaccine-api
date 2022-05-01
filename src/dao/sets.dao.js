@@ -289,7 +289,7 @@ export default class SetsDao {
 
   static async replaceSet(set) {
     try {
-      const _id = ObjectID(set._id)
+      const _id = set._id
       delete set._id
 
       await _sets.findOneAndReplace({ _id }, set)

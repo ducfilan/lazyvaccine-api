@@ -9,7 +9,12 @@ function standardizeSetInfoProperties(setInfo) {
 
   // Add _id to items.
   setInfo.items.forEach(item => item._id = item._id ? ObjectID(item._id) : ObjectID())
-  return { ...setInfo, categoryId: ObjectID(setInfo.categoryId), ...BaseCollectionProperties }
+  return {
+    ...setInfo,
+    _id: ObjectID(setInfo._id),
+    categoryId: ObjectID(setInfo.categoryId),
+    ...BaseCollectionProperties
+  }
 }
 
 export default {
@@ -25,8 +30,8 @@ export default {
 
     const { creatorId, interactionCount } = (await SetsDao.getSet(setInfo._id) || {})
 
-    const isCreatorValid = creatorId === setInfo.creatorId
-    if (!isCreatorValid) throw new Error('no permission to edit set')
+    const isCreatorValid = creatorId.equals(setInfo.creatorId)
+    if (!isCreatorValid) throw new Error(`no permission to edit set ${creatorId} != ${setInfo.creatorId}`)
 
     return await SetsDao.replaceSet({ ...setInfo, interactionCount })
   },
