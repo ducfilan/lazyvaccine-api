@@ -1,6 +1,7 @@
 import SetsDao from '../../dao/sets.dao'
 import TopSetsDao from '../../dao/top-sets.dao'
 import InteractionsDao from '../../dao/interactions.dao'
+import CategoriesDao from '../../dao/categories.dao'
 import { ObjectID } from 'mongodb'
 import { BaseCollectionProperties, SupportingTopSetsTypes } from '../../common/consts'
 
@@ -49,7 +50,8 @@ export default {
   },
 
   getSetsInCategory: async (categoryId, skip, limit) => {
-    return await SetsDao.getSetsInCategory(categoryId, skip, limit)
+    const subCategoriesIds = await CategoriesDao.getSubCategoriesIds(categoryId)
+    return await SetsDao.getSetsInCategory([ObjectID(categoryId), ...subCategoriesIds], skip, limit)
   },
 
   searchSet: async (userId, searchConditions) => {

@@ -43,4 +43,26 @@ export default class CategoriesDao {
       return []
     }
   }
+
+  static async getSubCategoriesIds(categoryId) {
+    try {
+      const categories = await _categories
+        .find({
+          path: { $regex: `,${categoryId},` }
+        })
+        .project({
+          _id: 1
+        })
+        .toArray()
+
+      if (!categories || !categories.length) {
+        return []
+      }
+
+      return categories.map(category => category._id)
+    } catch (e) {
+      console.error(`Unable to issue find command, ${e}`)
+      return []
+    }
+  }
 }

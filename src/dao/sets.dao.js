@@ -393,20 +393,18 @@ export default class SetsDao {
 
   /**
    * 
-   * @param {string} categoryId - category Id in string form
+   * @param {Array(ObjectId)} categoryIds - category Ids
    * @param {int} skip - number of items to skip
    * @param {int} limit - number of items to limit
    * @returns {Promise(Array)} - Returns the list of sets in the category
    */
-  static async getSetsInCategory(categoryId, skip, limit) {
-    categoryId = ObjectID(categoryId)
-
+  static async getSetsInCategory(categoryIds, skip, limit) {
     try {
       const sets = await _sets
         .aggregate([
           {
             $match: {
-              categoryId,
+              categoryId: { $in: categoryIds },
               delFlag: false
             },
           },
@@ -448,7 +446,7 @@ export default class SetsDao {
       }
 
       var total = await _sets.find({
-        categoryId,
+        categoryId: { $in: categoryIds },
         delFlag: false
       }).count()
 
