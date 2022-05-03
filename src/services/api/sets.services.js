@@ -34,7 +34,7 @@ export default {
     const isCreatorValid = creatorId.equals(setInfo.creatorId)
     if (!isCreatorValid) throw new Error(`no permission to edit set ${creatorId} != ${setInfo.creatorId}`)
 
-    return await SetsDao.replaceSet({ ...setInfo, interactionCount })
+    return await SetsDao.replaceSet(interactionCount ? { ...setInfo, interactionCount } : setInfo)
   },
 
   getSet: async (userId, setId) => {
