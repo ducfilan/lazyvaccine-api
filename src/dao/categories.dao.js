@@ -28,7 +28,8 @@ export default class CategoriesDao {
     let projectRules = {
       [`name.${lang}`]: 1,
       [`description.${lang}`]: 1,
-      'path': 1
+      'path': 1,
+      isTopCategory: 1
     }
 
     try {
