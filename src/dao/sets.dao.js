@@ -323,7 +323,8 @@ export default class SetsDao {
                 query: keyword,
                 path: {
                   'wildcard': '*'
-                }
+                },
+                fuzzy: {}
               },
               'count': {
                 'type': 'total'
