@@ -53,7 +53,11 @@ export const ItemsInteractionIgnore = 'ignore'
 export const ItemsInteractionForcedDone = 'forced-done'
 export const ItemsInteractionAnswerCorrect = 'answer-correct'
 export const ItemsInteractionAnswerIncorrect = 'answer-incorrect'
-export const ItemsInteractions = [ItemsInteractionShow, ItemsInteractionNext, ItemsInteractionAnswerCorrect, ItemsInteractionAnswerIncorrect, ItemsInteractionIgnore, ItemsInteractionForcedDone]
+export const ItemsInteractionStar = 'star'
+export const ItemsInteractions = [ItemsInteractionShow, ItemsInteractionNext, ItemsInteractionAnswerCorrect, ItemsInteractionAnswerIncorrect, ItemsInteractionIgnore, ItemsInteractionForcedDone, ItemsInteractionStar]
 
 export const MaxPaginationLimit = 100
-export const TopItemsLimit = 5
+export const DefaultMostItemsInteractionsLimit = 5
+
+export const AscOrder = 'asc'
+export const DescOrder = 'desc'

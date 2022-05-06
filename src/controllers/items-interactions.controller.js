@@ -1,4 +1,5 @@
 import setsServices from '../services/api/sets.services'
+import { apiGetTopInteractItemValidator } from './validators/items-interactions.validator'
 
 export default class ItemsInteractionsController {
   static async apiInteractItem(req, res) {
@@ -20,8 +21,9 @@ export default class ItemsInteractionsController {
       const { action } = req.query
       const { setId } = req.params
       const userId = req.user._id
+      const { limit, order } = apiGetTopInteractItemValidator(req.query)
 
-      return res.json(await setsServices.getTopInteractItem(action, userId, setId))
+      return res.json(await setsServices.getTopInteractItem(action, userId, setId, order, limit))
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })

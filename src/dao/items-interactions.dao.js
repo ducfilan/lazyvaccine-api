@@ -1,6 +1,6 @@
 import { ObjectID } from 'mongodb'
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { BaseCollectionProperties, TopItemsLimit, ItemsInteractions, ItemsInteractionsCollectionName } from '../common/consts'
+import { BaseCollectionProperties, DefaultMostItemsInteractionsLimit, ItemsInteractions, ItemsInteractionsCollectionName, DescOrder } from '../common/consts'
 
 let _itemsInteractions
 let _db
@@ -84,7 +84,7 @@ export default class ItemsInteractionsDao {
     }
   }
 
-  static async getTopInteractItem(action, userId, setId, limit = TopItemsLimit) {
+  static async getTopInteractItem(action, userId, setId, order, limit = DefaultMostItemsInteractionsLimit) {
     let sortField = `interactionCount.${action}`
     try {
       return await _itemsInteractions
@@ -95,7 +95,7 @@ export default class ItemsInteractionsDao {
               userId: ObjectID(userId)
             },
           },
-          { $sort: { [sortField]: -1 } },
+          { $sort: { [sortField]: order === DescOrder ? -1 : 1 } },
           {
             $limit: limit
           },

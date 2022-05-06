@@ -125,8 +125,8 @@ export default {
     await ItemsInteractionsDao.interactItem(action, userId, setId, itemId)
   },
 
-  getTopInteractItem: async (action, userId, setId) => {
-    return await ItemsInteractionsDao.getTopInteractItem(action, userId, setId)
+  getTopInteractItem: async (action, userId, setId, order, limit) => {
+    return await ItemsInteractionsDao.getTopInteractItem(action, userId, setId, order, limit)
   },
 
   undoInteractSet: async (action, userId, setId) => {
