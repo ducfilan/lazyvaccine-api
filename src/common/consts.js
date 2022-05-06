@@ -13,6 +13,7 @@ export const UsersCollectionName = 'users'
 export const SetsCollectionName = 'sets'
 export const TopSetsCollectionName = 'topSets'
 export const InteractionsCollectionName = 'interactions'
+export const ItemsInteractionsCollectionName = 'itemsInteractions'
 
 export const LoginTypes = {
   google: 'google'
@@ -46,4 +47,17 @@ export const InteractionLike = 'like'
 export const InteractionDislike = 'dislike'
 export const SetInteractions = [InteractionSubscribe, InteractionLike, InteractionDislike]
 
+export const ItemsInteractionShow = 'show'
+export const ItemsInteractionNext = 'next'
+export const ItemsInteractionIgnore = 'ignore'
+export const ItemsInteractionForcedDone = 'forced-done'
+export const ItemsInteractionAnswerCorrect = 'answer-correct'
+export const ItemsInteractionAnswerIncorrect = 'answer-incorrect'
+export const ItemsInteractionStar = 'star'
+export const ItemsInteractions = [ItemsInteractionShow, ItemsInteractionNext, ItemsInteractionAnswerCorrect, ItemsInteractionAnswerIncorrect, ItemsInteractionIgnore, ItemsInteractionForcedDone, ItemsInteractionStar]
+
 export const MaxPaginationLimit = 100
+export const DefaultMostItemsInteractionsLimit = 5
+
+export const AscOrder = 'asc'
+export const DescOrder = 'desc'

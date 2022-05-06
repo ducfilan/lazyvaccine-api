@@ -1,6 +1,7 @@
 import SetsDao from '../../dao/sets.dao'
 import TopSetsDao from '../../dao/top-sets.dao'
 import InteractionsDao from '../../dao/interactions.dao'
+import ItemsInteractionsDao from '../../dao/items-interactions.dao'
 import CategoriesDao from '../../dao/categories.dao'
 import { ObjectID } from 'mongodb'
 import { BaseCollectionProperties, SupportingTopSetsTypes } from '../../common/consts'
@@ -118,6 +119,14 @@ export default {
 
     // TODO: Use kafka, separate job to sync.
     await SetsDao.interactSet(action, setId)
+  },
+
+  interactItem: async (action, userId, setId, itemId) => {
+    await ItemsInteractionsDao.interactItem(action, userId, setId, itemId)
+  },
+
+  getTopInteractItem: async (action, userId, setId, order, limit) => {
+    return await ItemsInteractionsDao.getTopInteractItem(action, userId, setId, order, limit)
   },
 
   undoInteractSet: async (action, userId, setId) => {
