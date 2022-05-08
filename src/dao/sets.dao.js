@@ -112,7 +112,6 @@ export default class SetsDao {
                         type: 'array',
                         items: {
                           required: [
-                            'isCorrect',
                             'answer'
                           ],
                           type: 'object',

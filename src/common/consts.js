@@ -24,7 +24,7 @@ export const BaseCollectionProperties = {
   delFlag: false
 }
 
-export const SupportingSetTypes = ['term-def', 'question-answers', 'content']
+export const SupportingSetTypes = ['term-def', 'q&a', 'content']
 
 export const CaptchaVerificationUrl = (response) => `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${response}`;
 
