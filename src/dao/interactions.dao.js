@@ -1,6 +1,6 @@
 import { ObjectID } from 'mongodb'
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { BaseCollectionProperties, SetsCollectionName, InteractionsCollectionName, SetInteractions } from '../common/consts'
+import { BaseCollectionProperties, SetsCollectionName, InteractionsCollectionName, SetInteractions, ItemsInteractionsCollectionName } from '../common/consts'
 
 let _interactions
 let _db
@@ -213,6 +213,14 @@ export default class InteractionsDao {
           {
             $unwind: '$set'
           },
+          {
+            $lookup: {
+              from: ItemsInteractionsCollectionName,
+              localField: 'setId',
+              foreignField: 'setId',
+              as: 'set.itemsInteractions'
+            }
+          },
         ])
         .project({
           _id: 0,
@@ -220,6 +228,10 @@ export default class InteractionsDao {
           userId: 0,
           lastUpdated: 0,
           'set.delFlag': 0,
+          'set.itemsInteractions._id': 0,
+          'set.itemsInteractions.setId': 0,
+          'set.itemsInteractions.userId': 0,
+          'set.itemsInteractions.lastUpdated': 0,
         })
         .toArray()
 
