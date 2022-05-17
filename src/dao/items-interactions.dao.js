@@ -54,7 +54,8 @@ export default class ItemsInteractionsDao {
       })
 
       _itemsInteractions.createIndex({ userId: 1 })
-      _itemsInteractions.createIndex({ setId: 1, itemId: 1 }, { unique: true })
+      _itemsInteractions.createIndex({ setId: 1 })
+      _itemsInteractions.createIndex({ itemId: 1 }, { unique: true })
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in ItemsInteractionsDao: ${e}`,
