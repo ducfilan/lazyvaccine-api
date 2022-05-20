@@ -2,6 +2,7 @@ import { ObjectID } from 'mongodb'
 import UsersDao from '../../dao/users.dao'
 import InteractionsDao from '../../dao/interactions.dao'
 import SetsDao from '../../dao/sets.dao'
+import ItemsStatisticsDao from '../../dao/items-statistics.dao'
 import { isGoogleTokenValid } from '../support/google-auth.service'
 import { LoginTypes } from '../../common/consts'
 
@@ -68,5 +69,8 @@ export default {
   },
   logout: async ({ _id }) => {
     return await UsersDao.updateOne(_id, { $set: { jwtToken: null } })
+  },
+  getUserStatistics: async (_id, beginDate, endDate) => {
+    return await ItemsStatisticsDao.getUserStatistics(_id, beginDate, endDate)
   }
 }
