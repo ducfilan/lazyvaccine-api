@@ -26,8 +26,8 @@ export default class ItemsStatisticsDao {
         .find({
           userId,
           date: {
-            $gte: new Date(beginDate),
-            $lte: new Date(endDate)
+            $gte: beginDate,
+            $lte: endDate
           }
         })
         .toArray()

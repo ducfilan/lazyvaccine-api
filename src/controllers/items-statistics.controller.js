@@ -1,9 +1,10 @@
 import usersServices from '../services/api/users.services'
+import { apiGetStatisticsValidator } from './validators/items-statistics.validator'
 
-export default class StatisticController {
+export default class ItemsStatisticsController {
   static async apiGetStatistics(req, res) {
     try {
-      const { beginDate, endDate } = req.query
+      const { beginDate, endDate } = apiGetStatisticsValidator(req.query)
       const userId = req.user._id
       return res.json(await usersServices.getUserStatistics(userId, beginDate, endDate))
     } catch (e) {
