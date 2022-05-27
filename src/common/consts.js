@@ -15,6 +15,7 @@ export const TopSetsCollectionName = 'topSets'
 export const InteractionsCollectionName = 'interactions'
 export const ItemsInteractionsCollectionName = 'itemsInteractions'
 export const ItemsStatisticsCollectionName = 'itemsStatistics'
+export const SetsStatisticsCollectionName = 'setsStatistics'
 
 export const LoginTypes = {
   google: 'google'
