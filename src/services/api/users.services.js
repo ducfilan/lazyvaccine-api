@@ -3,6 +3,7 @@ import UsersDao from '../../dao/users.dao'
 import InteractionsDao from '../../dao/interactions.dao'
 import SetsDao from '../../dao/sets.dao'
 import ItemsStatisticsDao from '../../dao/items-statistics.dao'
+import SetsStatisticsDao from '../../dao/sets-statistics.dao'
 import { isGoogleTokenValid } from '../support/google-auth.service'
 import { LoginTypes } from '../../common/consts'
 
@@ -72,5 +73,8 @@ export default {
   },
   getUserStatistics: async (_id, beginDate, endDate) => {
     return await ItemsStatisticsDao.getUserStatistics(_id, beginDate, endDate)
+  },
+  getSetsStatistics: async (_id) => {
+    return await SetsStatisticsDao.getUserSetsStatistics(_id)
   }
 }
