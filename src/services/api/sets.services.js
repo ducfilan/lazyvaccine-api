@@ -134,5 +134,9 @@ export default {
 
     // TODO: Use kafka, separate job to sync.
     await SetsDao.interactSet(action, setId, -1)
+  },
+
+  uploadTestResult: async (userId, setId, result) => {
+    await InteractionsDao.uploadTestResult(userId, setId, result)
   }
 }
