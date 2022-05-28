@@ -40,7 +40,26 @@ export default class InteractionsDao {
               },
               lastUpdated: {
                 bsonType: 'date'
-              }
+              },
+              testResults: {
+                type: 'array',
+                items: {
+                  required: ['score', 'total', 'takenDateTime'],
+                  type: 'object',
+                  properties: {
+                    score: {
+                      bsonType: 'int'
+                    },
+                    total: {
+                      bsonType: 'int'
+                    },
+                    takenDateTime: {
+                      bsonType: 'date'
+                    }
+                  }
+                }
+              },
+
             },
             additionalProperties: false,
           }
@@ -87,6 +106,29 @@ export default class InteractionsDao {
           {
             $pull: {
               actions: action
+            },
+            $set: { lastUpdated: BaseCollectionProperties.lastUpdated }
+          }
+        )
+    } catch (e) {
+      console.error(`Unable to issue find command, ${e}`)
+    }
+  }
+
+  static async uploadTestResult(userId, setId, result) {
+    try {
+      await _interactions
+        .updateOne(
+          {
+            userId: ObjectID(userId),
+            setId: ObjectID(setId)
+          },
+          {
+            $addToSet: {
+              testResults: {
+                ...result,
+                takenDateTime: new Date()
+              }
             },
             $set: { lastUpdated: BaseCollectionProperties.lastUpdated }
           }

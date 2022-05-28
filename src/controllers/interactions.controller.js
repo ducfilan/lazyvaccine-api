@@ -30,4 +30,19 @@ export default class InteractionsController {
       res.status(500).json({ error: e })
     }
   }
+
+  static async apiUploadTestResult(req, res) {
+    try {
+      const setId = req.params.setId
+      const userId = req.user._id
+      const {result} = req.body
+
+      await setsServices.uploadTestResult(userId, setId, result)
+
+      res.status(200).send()
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
 }
