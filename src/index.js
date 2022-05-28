@@ -12,6 +12,7 @@ import ConfigsDao from './dao/configs.dao'
 import ItemsInteractionsDao from './dao/items-interactions.dao'
 import ItemsStatisticsDao from './dao/items-statistics.dao'
 import SetsStatisticsDao from './dao/sets-statistics.dao'
+import MissionsDao from './dao/missions.dao'
 
 const port = process.env.NODE_PORT || 8080
 
@@ -34,6 +35,7 @@ MongoClient.connect(
     await ItemsInteractionsDao.injectDB(client)
     await ItemsStatisticsDao.injectDB(client)
     await SetsStatisticsDao.injectDB(client)
+    await MissionsDao.injectDB(client)
 
     app.listen(port, () => {
       console.log(`listening on port ${port}`)
