@@ -30,6 +30,7 @@ export default class ItemsStatisticsDao {
             $lte: endDate
           }
         })
+        .sort({date: 1})
         .toArray()
     } catch (e) {
       console.error(`Error, ${e}, ${e.stack}`)
