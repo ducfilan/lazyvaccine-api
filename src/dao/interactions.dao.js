@@ -72,7 +72,7 @@ export default class InteractionsDao {
           }
         )
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
     }
   }
 
@@ -92,7 +92,7 @@ export default class InteractionsDao {
           }
         )
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
     }
   }
 
@@ -110,7 +110,7 @@ export default class InteractionsDao {
         })
         .toArray()
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return []
     }
   }
@@ -184,7 +184,7 @@ export default class InteractionsDao {
 
       return { total, sets }
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return []
     }
   }
@@ -239,7 +239,7 @@ export default class InteractionsDao {
 
       return set[0]
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return {}
     }
   }

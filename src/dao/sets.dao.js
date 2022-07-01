@@ -210,7 +210,7 @@ export default class SetsDao {
 
       return set[0]
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
   }
@@ -270,7 +270,7 @@ export default class SetsDao {
 
       return { total, sets }
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
   }
@@ -281,7 +281,7 @@ export default class SetsDao {
 
       return insertResult.insertedId
     } catch (e) {
-      console.error(`Unable to execute insert command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
   }
@@ -295,7 +295,7 @@ export default class SetsDao {
 
       return true
     } catch (e) {
-      console.error(`Unable to execute insert command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
   }
@@ -304,7 +304,7 @@ export default class SetsDao {
     try {
       return await this.findOneById(_id)
     } catch (e) {
-      console.error(`Unable to execute insert command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return null
     }
   }
@@ -386,7 +386,7 @@ export default class SetsDao {
 
       return sets[0]
     } catch (e) {
-      console.error(`Unable to execute search command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return []
     }
   }
@@ -452,7 +452,7 @@ export default class SetsDao {
 
       return { total, sets }
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return {}
     }
   }
@@ -475,7 +475,7 @@ export default class SetsDao {
           }
         )
     } catch (e) {
-      console.error(`Error in interactSet, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
   }

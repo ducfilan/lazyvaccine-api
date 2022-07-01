@@ -40,7 +40,7 @@ export default class CategoriesDao {
 
       return categories
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return []
     }
   }
@@ -62,7 +62,7 @@ export default class CategoriesDao {
 
       return categories.map(category => category._id)
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return []
     }
   }

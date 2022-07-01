@@ -62,7 +62,7 @@ export default class UsersDao {
       var user = await users.findOne({ email }, projection);
       return user;
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return false;
     }
   }
@@ -72,7 +72,7 @@ export default class UsersDao {
       await users.findOneAndUpdate({ _id }, updateOperations, defaultProjection)
       return true
     } catch (e) {
-      console.error(`Unable to update user, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
   }

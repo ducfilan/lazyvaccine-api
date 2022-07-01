@@ -36,7 +36,7 @@ export default class TagsDao {
           .toArray()
       )
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return {}
     }
   }
@@ -45,7 +45,7 @@ export default class TagsDao {
     try {
       return await tags.insertOne({ tag }).ops[0]
     } catch (e) {
-      console.error(`Unable to issue insert command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return {}
     }
   }

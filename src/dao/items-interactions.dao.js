@@ -83,7 +83,7 @@ export default class ItemsInteractionsDao {
           }
         )
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
   }
@@ -106,7 +106,7 @@ export default class ItemsInteractionsDao {
         ])
         .toArray()
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
   }
