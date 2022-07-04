@@ -52,13 +52,14 @@ export const SetInteractions = [InteractionSubscribe, InteractionLike, Interacti
 
 export const ItemsInteractionShow = 'show'
 export const ItemsInteractionNext = 'next'
+export const ItemsInteractionPrev = 'prev'
 export const ItemsInteractionIgnore = 'ignore'
 export const ItemsInteractionForcedDone = 'forced-done'
 export const ItemsInteractionAnswerCorrect = 'answer-correct'
 export const ItemsInteractionAnswerIncorrect = 'answer-incorrect'
 export const ItemsInteractionStar = 'star'
 export const ItemsInteractionFlip = 'flip'
-export const ItemsInteractions = [ItemsInteractionShow, ItemsInteractionNext, ItemsInteractionAnswerCorrect, ItemsInteractionAnswerIncorrect, ItemsInteractionIgnore, ItemsInteractionForcedDone, ItemsInteractionStar, ItemsInteractionFlip]
+export const ItemsInteractions = [ItemsInteractionShow, ItemsInteractionNext, ItemsInteractionPrev, ItemsInteractionAnswerCorrect, ItemsInteractionAnswerIncorrect, ItemsInteractionIgnore, ItemsInteractionForcedDone, ItemsInteractionStar, ItemsInteractionFlip]
 
 export const MaxPaginationLimit = 100
 export const DefaultMostItemsInteractionsLimit = 5
