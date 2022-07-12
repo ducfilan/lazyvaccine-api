@@ -4,6 +4,23 @@ export default {
 }
 
 export const SupportingLanguages = ['ar', 'zh', 'nl', 'en', 'de', 'it', 'ja', 'ko', 'mn', 'pt', 'ru', 'sl', 'es', 'vi']
+export const SupportingLanguagesMap = {
+  ar: true,
+  zh: true,
+  nl: true,
+  en: true,
+  de: true,
+  it: true,
+  ja: true,
+  ko: true,
+  mn: true,
+  pt: true,
+  ru: true,
+  sl: true,
+  es: true,
+  vi: true
+}
+
 export const SupportingTopSetsTypes = {
   Global: 0,
   Category: 1

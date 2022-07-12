@@ -311,22 +311,61 @@ export default class SetsDao {
 
   static async searchSet(searchConditions) {
     try {
-      const { keyword, skip, limit } = searchConditions
+      const { keyword, skip, limit, languages } = searchConditions
+
+      const languagesConditions = (languages && languages.length > 0) ? [
+        {
+          compound: {
+            should: [
+              ...languages.map(lang => ({
+                text: {
+                  query: lang,
+                  path: 'fromLanguage'
+                }
+              })),
+              ...languages.map(lang => ({
+                text: {
+                  query: lang,
+                  path: 'toLanguage'
+                }
+              }))
+            ],
+            minimumShouldMatch: 1
+          }
+        }
+      ] : []
 
       const sets = await _sets
         .aggregate([
           {
             $search: {
               index: 'setSearchIndex',
-              text: {
-                query: keyword,
-                path: {
-                  'wildcard': '*'
-                },
-                fuzzy: {}
+              compound: {
+                must: languagesConditions,
+                should: [{
+                  text: {
+                    query: keyword,
+                    path: 'name',
+                    fuzzy: {},
+                    score: { boost: { 'value': 2 } }
+                  }
+                }, {
+                  text: {
+                    query: keyword,
+                    path: 'description',
+                    fuzzy: {}
+                  }
+                }, {
+                  text: {
+                    query: keyword,
+                    path: 'tags',
+                    fuzzy: {}
+                  }
+                }],
+                minimumShouldMatch: 1
               },
-              'count': {
-                'type': 'total'
+              count: {
+                type: 'total'
               }
             },
           },

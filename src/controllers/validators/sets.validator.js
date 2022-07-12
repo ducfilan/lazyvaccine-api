@@ -1,6 +1,7 @@
+import { SupportingLanguagesMap } from '../../common/consts'
 import { validateSkip, validateLimit } from './common.validator'
 
-export const apiSearchSetValidator = ({ keyword, skip, limit }) => {
+export const apiSearchSetValidator = ({ keyword, skip, limit, languages }) => {
   skip = Number(skip)
   limit = Number(limit)
 
@@ -16,7 +17,12 @@ export const apiSearchSetValidator = ({ keyword, skip, limit }) => {
     throw new Error('keyword not provided')
   }
 
-  return { keyword, skip, limit }
+  languages = (languages || '').split(',')
+  if (!languages || languages.length === 0 || !languages.find(lang => SupportingLanguagesMap[lang])) {
+    languages = []
+  }
+
+  return { keyword, skip, limit, languages }
 }
 
 export const apiGetSetsInCategoriesValidator = ({ skip, limit }) => {

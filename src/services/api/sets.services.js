@@ -23,7 +23,7 @@ export default {
   createSet: async (setInfo) => {
     setInfo = standardizeSetInfoProperties(setInfo)
 
-    const insertedId = await SetsDao.createSet(setInfo)
+    const insertedId = SetsDao.createSet(setInfo)
     return insertedId
   },
 
@@ -35,7 +35,7 @@ export default {
     const isCreatorValid = creatorId.equals(setInfo.creatorId)
     if (!isCreatorValid) throw new Error(`no permission to edit set ${creatorId} != ${setInfo.creatorId}`)
 
-    return await SetsDao.replaceSet(interactionCount ? { ...setInfo, interactionCount } : setInfo)
+    return SetsDao.replaceSet(interactionCount ? { ...setInfo, interactionCount } : setInfo)
   },
 
   getSet: async (userId, setId) => {
@@ -52,7 +52,7 @@ export default {
 
   getSetsInCategory: async (categoryId, skip, limit) => {
     const subCategoriesIds = await CategoriesDao.getSubCategoriesIds(categoryId)
-    return await SetsDao.getSetsInCategory([ObjectID(categoryId), ...subCategoriesIds], skip, limit)
+    return SetsDao.getSetsInCategory([ObjectID(categoryId), ...subCategoriesIds], skip, limit)
   },
 
   searchSet: async (userId, searchConditions) => {
@@ -126,7 +126,7 @@ export default {
   },
 
   getTopInteractItem: async (action, userId, setId, order, limit) => {
-    return await ItemsInteractionsDao.getTopInteractItem(action, userId, setId, order, limit)
+    return ItemsInteractionsDao.getTopInteractItem(action, userId, setId, order, limit)
   },
 
   undoInteractSet: async (action, userId, setId) => {
