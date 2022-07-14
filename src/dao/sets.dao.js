@@ -128,6 +128,10 @@ export default class SetsDao {
                       question: {
                         minLength: 1,
                         type: 'string'
+                      },
+                      moreInfo: {
+                        minLength: 1,
+                        type: 'string'
                       }
                     },
                   }, {
