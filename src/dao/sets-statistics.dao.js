@@ -22,10 +22,21 @@ export default class SetsStatisticsDao {
 
   static async getUserSetsStatistics(userId) {
     try {
-      return await _setsStatistics
+      const result = await _setsStatistics
         .findOne({
           _id: userId,
         })
+
+      if (!result) {
+        return {
+          learntItemsCount: 0,
+          subscribedSetsCount: 0,
+          totalItemsCount: 0,
+          _id: ''
+        }
+      }
+
+      return result
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return false

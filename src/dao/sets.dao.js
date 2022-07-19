@@ -41,7 +41,7 @@ export default class SetsDao {
                 bsonType: 'objectId'
               },
               description: {
-                maxLength: 250,
+                maxLength: 500,
                 type: 'string'
               },
               tags: {

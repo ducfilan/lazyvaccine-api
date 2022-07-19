@@ -37,13 +37,13 @@ export default {
         throw Error('Not supported register type!')
     }
 
-    const registeredUser = await UsersDao.registerUser(userInfo)
+    return UsersDao.registerUser(userInfo)
+  },
 
-    return registeredUser
-  },
   getUserInfo: async (userId) => {
-    return await UsersDao.findOne({ _id: ObjectID(userId) })
+    return UsersDao.findOne({ _id: ObjectID(userId) })
   },
+
   getUserSets: async (userId, interaction, skip, limit) => {
     switch (interaction) {
       case 'create':
@@ -59,22 +59,27 @@ export default {
 
         return resp
       default:
-        return await InteractionsDao.getUserInteractedSets(ObjectID(userId), interaction, skip, limit)
+        return InteractionsDao.getUserInteractedSets(ObjectID(userId), interaction, skip, limit)
     }
   },
+
   getUserRandomSet: async (userId, interaction) => {
-    return await InteractionsDao.getUserRandomSet(ObjectID(userId), interaction)
+    return InteractionsDao.getUserRandomSet(ObjectID(userId), interaction)
   },
+
   update: async (_id, updateItems) => {
-    return await UsersDao.updateOne(_id, { $set: updateItems })
+    return UsersDao.updateOne(_id, { $set: updateItems })
   },
+
   logout: async ({ _id }) => {
-    return await UsersDao.updateOne(_id, { $set: { jwtToken: null } })
+    return UsersDao.updateOne(_id, { $set: { jwtToken: null } })
   },
+
   getUserStatistics: async (_id, beginDate, endDate) => {
-    return await ItemsStatisticsDao.getUserStatistics(_id, beginDate, endDate)
+    return ItemsStatisticsDao.getUserStatistics(_id, beginDate, endDate)
   },
+
   getSetsStatistics: async (_id) => {
-    return await SetsStatisticsDao.getUserSetsStatistics(_id)
+    return SetsStatisticsDao.getUserSetsStatistics(_id)
   }
 }
