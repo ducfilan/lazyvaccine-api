@@ -33,6 +33,7 @@ export default class ConfigsDao {
 
       return origins
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return []
     }

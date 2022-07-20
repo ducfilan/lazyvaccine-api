@@ -33,6 +33,7 @@ export default class ItemsStatisticsDao {
         .sort({date: 1})
         .toArray()
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return false
     }

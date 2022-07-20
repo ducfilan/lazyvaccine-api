@@ -54,16 +54,16 @@ export default class UsersDao {
   }
 
   static async findOne(query) {
-    return await users.findOne(query, defaultProjection)
+    return users.findOne(query, defaultProjection)
   }
 
   static async findByEmail(email, projection = defaultProjection) {
     try {
-      var user = await users.findOne({ email }, projection);
-      return user;
+      return await users.findOne({ email }, projection)
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
-      return false;
+      return false
     }
   }
 
@@ -72,6 +72,7 @@ export default class UsersDao {
       await users.findOneAndUpdate({ _id }, updateOperations, defaultProjection)
       return true
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return false
     }

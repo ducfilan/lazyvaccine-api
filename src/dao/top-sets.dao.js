@@ -116,6 +116,7 @@ export default class TopSetsDao {
 
       return topSets.length > 0 ? topSets[0]?.sets : []
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return {}
     }

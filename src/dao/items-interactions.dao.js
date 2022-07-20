@@ -53,7 +53,7 @@ export default class ItemsInteractionsDao {
         }
       })
 
-      _itemsInteractions.createIndex({ userId: 1, setId: 1, itemId: 1 }, {name: 'userId_1_setId_1_itemId_1'})
+      _itemsInteractions.createIndex({ userId: 1, setId: 1, itemId: 1 }, { name: 'userId_1_setId_1_itemId_1' })
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in ItemsInteractionsDao: ${e}`,
@@ -81,6 +81,7 @@ export default class ItemsInteractionsDao {
           }
         )
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
@@ -104,6 +105,7 @@ export default class ItemsInteractionsDao {
         ])
         .toArray()
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return false
     }

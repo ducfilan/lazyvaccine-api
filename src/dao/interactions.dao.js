@@ -91,6 +91,7 @@ export default class InteractionsDao {
           }
         )
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
     }
   }
@@ -111,6 +112,7 @@ export default class InteractionsDao {
           }
         )
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
     }
   }
@@ -152,6 +154,7 @@ export default class InteractionsDao {
         })
         .toArray()
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return []
     }
@@ -219,13 +222,14 @@ export default class InteractionsDao {
         return {}
       }
 
-      var total = await _interactions.find({
+      let total = await _interactions.find({
         userId,
         actions: { $elemMatch: { $eq: interaction } },
       }).count()
 
       return { total, sets }
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return []
     }
@@ -281,6 +285,7 @@ export default class InteractionsDao {
 
       return set[0]
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return {}
     }

@@ -33,13 +33,12 @@ export default class CategoriesDao {
     }
 
     try {
-      const categories = await _categories
+      return await _categories
         .find()
         .project(projectRules)
         .toArray()
-
-      return categories
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return []
     }
@@ -62,6 +61,7 @@ export default class CategoriesDao {
 
       return categories.map(category => category._id)
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return []
     }

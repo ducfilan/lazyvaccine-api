@@ -171,7 +171,7 @@ export default class SetsDao {
 
   static async findOneById(_id) {
     try {
-      var set = await _sets
+      let set = await _sets
         .aggregate([
           {
             $match: {
@@ -214,6 +214,7 @@ export default class SetsDao {
 
       return set[0]
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
@@ -221,7 +222,7 @@ export default class SetsDao {
 
   static async find(matchCondition, skip, limit) {
     try {
-      var sets = await _sets
+      let sets = await _sets
         .aggregate([
           {
             $match: {
@@ -267,13 +268,14 @@ export default class SetsDao {
         return {}
       }
 
-      var total = await _sets.find({
+      let total = await _sets.find({
         ...matchCondition,
         delFlag: false,
       }).count()
 
       return { total, sets }
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
@@ -285,6 +287,7 @@ export default class SetsDao {
 
       return insertResult.insertedId
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
@@ -299,6 +302,7 @@ export default class SetsDao {
 
       return true
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
@@ -308,6 +312,7 @@ export default class SetsDao {
     try {
       return await this.findOneById(_id)
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return null
     }
@@ -429,6 +434,7 @@ export default class SetsDao {
 
       return sets[0]
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return []
     }
@@ -488,13 +494,14 @@ export default class SetsDao {
         return {}
       }
 
-      var total = await _sets.find({
+      let total = await _sets.find({
         categoryId: { $in: categoryIds },
         delFlag: false
       }).count()
 
       return { total, sets }
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return {}
     }
@@ -518,6 +525,7 @@ export default class SetsDao {
           }
         )
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return false
     }

@@ -21,7 +21,7 @@ export default class TagsDao {
   }
 
   static async findOne(tag) {
-    return await tags.findOne({ tag })
+    return tags.findOne({ tag })
   }
 
   static async getTagsStartWith(start_with) {
@@ -36,6 +36,7 @@ export default class TagsDao {
           .toArray()
       )
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return {}
     }
@@ -45,6 +46,7 @@ export default class TagsDao {
     try {
       return await tags.insertOne({ tag }).ops[0]
     } catch (e) {
+      console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return {}
     }
