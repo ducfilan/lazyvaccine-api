@@ -265,7 +265,10 @@ export default class SetsDao {
         .toArray()
 
       if (!sets || sets.length === 0) {
-        return {}
+        return {
+          total: 0,
+          sets: []
+        }
       }
 
       let total = await _sets.find({

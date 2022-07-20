@@ -22,7 +22,7 @@ export default async (req, res, next) => {
 
         const user = await UsersDao.findByEmail(email)
 
-        if (!user) throw new Error('not found user')
+        if (!user) throw new Error('not found user with email: ' + email)
 
         req.user = user
         next()
