@@ -23,8 +23,7 @@ export default {
   createSet: async (setInfo) => {
     setInfo = standardizeSetInfoProperties(setInfo)
 
-    const insertedId = SetsDao.createSet(setInfo)
-    return insertedId
+    return SetsDao.createSet(setInfo)
   },
 
   editSet: async (setInfo) => {
