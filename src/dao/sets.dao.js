@@ -165,8 +165,8 @@ export default class SetsDao {
         }
       })
 
-      users.createIndex({ creatorId: 1 })
-      users.createIndex({ categoryId: 1 })
+      _sets.createIndex({ creatorId: 1 })
+      _sets.createIndex({ categoryId: 1 })
     } catch (e) {
       console.error(`Unable to establish a collection handle in setsDao: ${e}`)
     }
