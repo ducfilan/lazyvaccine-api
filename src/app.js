@@ -13,8 +13,10 @@ const isProdEnv = process.env.NODE_ENV === 'prod'
 
 let corsOptions = {
   origin: function (origin, callback) {
+    const sameSite = !origin
+
     ConfigsDao.getAllowedOrigins().then((origins) => {
-      if (origins.includes(origin) || !isProdEnv) {
+      if (sameSite || origins.includes(origin) || !isProdEnv) {
         callback(null, origins)
       } else {
         console.error(`cors error, not allowed: ${origin}`)
