@@ -9,12 +9,15 @@ import ConfigsDao from './dao/configs.dao'
 
 const app = express()
 
-var corsOptions = {
+const isProdEnv = process.env.NODE_ENV === 'prod'
+
+let corsOptions = {
   origin: function (origin, callback) {
     ConfigsDao.getAllowedOrigins().then((origins) => {
-      if (origins.includes(origin) || true) { // TODO: Remove, this is for testing purpose.
+      if (origins.includes(origin) || !isProdEnv) {
         callback(null, origins)
       } else {
+        console.error(`cors error, not allowed: ${origin}`)
         callback(`cors error, not allowed: ${origin}`)
       }
     })
@@ -23,7 +26,7 @@ var corsOptions = {
 }
 
 app.use(cors(corsOptions))
-process.env.NODE_ENV !== 'prod' && app.use(morgan('dev'))
+!isProdEnv && app.use(morgan('dev'))
 app.use(express.urlencoded({
   extended: true
 }))
