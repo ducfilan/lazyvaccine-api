@@ -21,9 +21,17 @@ export const getEmailFromGoogleToken = async (serviceAccessToken) => {
 }
 
 export const getTokenFromCode = async (code) => {
-  console.log(`-${process.env.GOOGLE_CLIENT_ID}-${process.env.GOOGLE_CLIENT_SECRET}-${process.env.GOOGLE_REDIRECT_URI}-`)
+  let { tokens: { access_token, refresh_token } } = await oAuth2Client.getToken(code)
 
-  let { tokens } = await oAuth2Client.getToken(code)
+  return { access_token, refresh_token }
+}
 
-  return tokens.access_token
+export const refreshAccessToken = async (refreshToken) => {
+  oAuth2Client.setCredentials({
+    refresh_token: refreshToken
+  })
+
+  let { tokens: { access_token, refresh_token } } = await oAuth2Client.getAccessToken()
+
+  return { access_token, refresh_token }
 }
