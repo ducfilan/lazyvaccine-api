@@ -31,7 +31,7 @@ export const refreshAccessToken = async (refreshToken) => {
     refresh_token: refreshToken
   })
 
-  let { tokens: { access_token, refresh_token } } = await oAuth2Client.getAccessToken()
+  let { token } = await oAuth2Client.getAccessToken()
 
-  return { access_token, refresh_token }
+  return { access_token: token, refresh_token: refreshToken }
 }
