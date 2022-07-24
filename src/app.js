@@ -28,7 +28,7 @@ let corsOptions = {
 }
 
 app.use(cors(corsOptions))
-!isProdEnv && app.use(morgan('dev'))
+isProdEnv ? app.use(morgan('combined')) : app.use(morgan('dev'))
 app.use(express.urlencoded({
   extended: true
 }))
