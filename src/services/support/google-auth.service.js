@@ -1,8 +1,18 @@
 const { OAuth2Client } = require('google-auth-library');
-const oAuth2Client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_REDIRECT_URI);
+const oAuth2Client = new OAuth2Client({
+  clientId: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  redirectUri: process.env.GOOGLE_REDIRECT_URI,
+  eagerRefreshThresholdMillis: 5000,
+  forceRefreshOnFailure: true
+})
 
 export const isGoogleTokenValid = async (serviceAccessToken, requestEmail) => {
   try {
+    if (oAuth2Client.isTokenExpiring(serviceAccessToken)) {
+      return false
+    }
+
     const { email: tokenInfoEmail } = await oAuth2Client.getTokenInfo(serviceAccessToken)
     return tokenInfoEmail.toLowerCase() === requestEmail.toLowerCase()
   } catch (error) {
@@ -12,6 +22,10 @@ export const isGoogleTokenValid = async (serviceAccessToken, requestEmail) => {
 
 export const getEmailFromGoogleToken = async (serviceAccessToken) => {
   try {
+    if (oAuth2Client.isTokenExpiring(serviceAccessToken)) {
+      return null
+    }
+
     const { email } = await oAuth2Client.getTokenInfo(serviceAccessToken)
     return email
   } catch (error) {
