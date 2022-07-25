@@ -30,7 +30,7 @@ export default class SetsDao {
                 pattern: `^${StaticBaseUrl}/[A-z0-9_]+?.(png|jpg|jpeg|PNG|JPG|JPEG)$`
               },
               name: {
-                maxLength: 60,
+                maxLength: 100,
                 minLength: 1,
                 type: 'string'
               },
