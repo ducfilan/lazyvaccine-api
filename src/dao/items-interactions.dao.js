@@ -1,6 +1,6 @@
 import { ObjectID } from 'mongodb'
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { BaseCollectionProperties, DefaultMostItemsInteractionsLimit, ItemsInteractions, ItemsInteractionsCollectionName, DescOrder } from '../common/consts'
+import { DefaultMostItemsInteractionsLimit, ItemsInteractions, ItemsInteractionsCollectionName, DescOrder } from '../common/consts'
 
 let _itemsInteractions
 let _db
@@ -74,7 +74,7 @@ export default class ItemsInteractionsDao {
             $inc: {
               [`interactionCount.${action}`]: increment
             },
-            $set: { lastUpdated: BaseCollectionProperties.lastUpdated }
+            $set: { lastUpdated: new Date() }
           },
           {
             upsert: true

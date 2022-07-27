@@ -1,6 +1,6 @@
 import { ObjectID } from 'mongodb'
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { BaseCollectionProperties, SetsCollectionName, InteractionsCollectionName, SetInteractions, ItemsInteractionsCollectionName } from '../common/consts'
+import { SetsCollectionName, InteractionsCollectionName, SetInteractions, ItemsInteractionsCollectionName } from '../common/consts'
 
 let _interactions
 let _db
@@ -84,7 +84,7 @@ export default class InteractionsDao {
             $addToSet: {
               actions: action
             },
-            $set: { lastUpdated: BaseCollectionProperties.lastUpdated }
+            $set: { lastUpdated: new Date() }
           },
           {
             upsert: true
@@ -108,7 +108,7 @@ export default class InteractionsDao {
             $pull: {
               actions: action
             },
-            $set: { lastUpdated: BaseCollectionProperties.lastUpdated }
+            $set: { lastUpdated: new Date() }
           }
         )
     } catch (e) {
@@ -132,7 +132,7 @@ export default class InteractionsDao {
                 takenDateTime: new Date()
               }
             },
-            $set: { lastUpdated: BaseCollectionProperties.lastUpdated }
+            $set: { lastUpdated: new Date() }
           }
         )
     } catch (e) {

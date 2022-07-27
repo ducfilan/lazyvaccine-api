@@ -1,6 +1,6 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
 import { ObjectID } from 'mongodb'
-import { SetsCollectionName, UsersCollectionName, SupportingSetTypes, SupportingLanguages, StaticBaseUrl, SetInteractions, BaseCollectionProperties } from '../common/consts'
+import { SetsCollectionName, UsersCollectionName, SupportingSetTypes, SupportingLanguages, StaticBaseUrl, SetInteractions } from '../common/consts'
 
 let _sets
 let _db
@@ -524,7 +524,7 @@ export default class SetsDao {
             $inc: {
               [`interactionCount.${action}`]: increment
             },
-            $set: { lastUpdated: BaseCollectionProperties.lastUpdated }
+            $set: { lastUpdated: new Date() }
           },
           {
             upsert: true

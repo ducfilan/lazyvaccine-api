@@ -39,10 +39,10 @@ export const LoginTypes = {
   google: 'google'
 }
 
-export const BaseCollectionProperties = {
+export const BaseCollectionProperties = () => ({
   lastUpdated: new Date(),
   delFlag: false
-}
+})
 
 export const SupportingSetTypes = ['term-def', 'q&a', 'content']
 
