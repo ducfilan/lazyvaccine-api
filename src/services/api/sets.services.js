@@ -43,7 +43,8 @@ export default {
 
     if (userId) {
       const { actions } = await InteractionsDao.filterSetId(userId, ObjectID(setId))
-      set = { ...set, actions }
+      const itemsInteractions = await ItemsInteractionsDao.getSetItemsInteract(userId, ObjectID(setId))
+      set = { ...set, actions, itemsInteractions }
     }
 
     return set

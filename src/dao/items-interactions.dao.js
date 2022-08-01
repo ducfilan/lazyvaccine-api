@@ -110,4 +110,25 @@ export default class ItemsInteractionsDao {
       return false
     }
   }
+
+  static async getSetItemsInteract(userId, setId) {
+    try {
+      return await _itemsInteractions
+        .find({
+          setId,
+          userId
+        }, {
+          projection: {
+            _id: 0,
+            itemId: 1,
+            interactionCount: 1
+          }
+        })
+        .toArray() || []
+    } catch (e) {
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return []
+    }
+  }
 }
