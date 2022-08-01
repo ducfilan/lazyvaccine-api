@@ -262,8 +262,22 @@ export default class InteractionsDao {
           {
             $lookup: {
               from: ItemsInteractionsCollectionName,
-              localField: 'setId',
-              foreignField: 'setId',
+              let: { iSetId: '$setId', iUserId: '$userId' },
+              pipeline: [
+                {
+                  $match:
+                  {
+                    $expr:
+                    {
+                      $and:
+                        [
+                          { $eq: ['$userId', '$$iUserId'] },
+                          { $eq: ['$setId', '$$iSetId'] }
+                        ]
+                    }
+                  }
+                }
+              ],
               as: 'set.itemsInteractions'
             }
           },
