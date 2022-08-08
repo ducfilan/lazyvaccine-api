@@ -9,8 +9,9 @@ import { securedMissionsRouter } from './missions.route'
 
 import tagsRouter from './tags.route'
 import imagesRouter from './images.route'
+import audioRouter from './audio.route'
 
-var securedRouter = Router()
+let securedRouter = Router()
 
 securedRouter.use('/users', securedUserRouter)
 securedRouter.use('/sets', securedSetsRouter)
@@ -21,5 +22,6 @@ securedRouter.use('/sets-statistics', securedSetsStatisticsRouter)
 securedRouter.use('/missions', securedMissionsRouter)
 securedRouter.use('/tags', tagsRouter)
 securedRouter.use('/images', imagesRouter)
+securedRouter.use('/audio', audioRouter)
 
 export default securedRouter

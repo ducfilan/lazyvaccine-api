@@ -39,9 +39,5 @@ function validateRequest(req) {
     return false
   }
 
-  if (!SupportingContentTypes.includes(contentType)) {
-    return false
-  }
-
-  return true
+  return !!(SupportingContentTypes.includes(contentType))
 }
