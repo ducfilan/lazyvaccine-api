@@ -5,13 +5,16 @@ import SetsDao from '../../dao/sets.dao'
 import ItemsStatisticsDao from '../../dao/items-statistics.dao'
 import SetsStatisticsDao from '../../dao/sets-statistics.dao'
 import { isGoogleTokenValid } from '../support/google-auth.service'
-import { LoginTypes } from '../../common/consts'
+import { LoginTypes, SupportingLanguagesMap, DefaultLangCode } from '../../common/consts'
 
 export default {
   register: async (requestBody) => {
-    const { type, serviceAccessToken, finishedRegisterStep,
+    let { type, serviceAccessToken, finishedRegisterStep,
       name, email, locale, password, picture: pictureUrl
     } = requestBody
+
+    locale = locale.substring(0, 2)
+    locale = SupportingLanguagesMap[locale] ? locale : DefaultLangCode
 
     let userInfo = {
       type,

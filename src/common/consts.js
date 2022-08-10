@@ -20,6 +20,7 @@ export const SupportingLanguagesMap = {
   es: true,
   vi: true
 }
+export const DefaultLangCode = 'en'
 
 export const SupportingTopSetsTypes = {
   Global: 0,
