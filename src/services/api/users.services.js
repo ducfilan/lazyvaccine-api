@@ -40,7 +40,7 @@ export default {
         throw Error('Not supported register type!')
     }
 
-    return UsersDao.registerUser(userInfo)
+    return UsersDao.registerUserIfNotFound(userInfo)
   },
 
   getUserInfo: async (userId) => {

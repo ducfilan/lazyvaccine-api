@@ -81,6 +81,7 @@ export const ItemsInteractions = [ItemsInteractionShow, ItemsInteractionNext, It
 
 export const MaxPaginationLimit = 100
 export const DefaultMostItemsInteractionsLimit = 5
+export const MaxRegistrationsStep = 3
 
 export const AscOrder = 'asc'
 export const DescOrder = 'desc'

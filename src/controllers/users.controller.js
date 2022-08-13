@@ -1,5 +1,5 @@
 import usersServices from '../services/api/users.services'
-import { apiGetUserSetsValidator } from './validators/users.validator'
+import { apiGetUserSetsValidator, apiUpdateUserValidator } from './validators/users.validator'
 
 export default class UsersController {
   static async me(req, res) {
@@ -49,9 +49,11 @@ export default class UsersController {
 
   static async update(req, res) {
     try {
-      const isSuccess = await usersServices.update(req.user._id, req.body)
+      const updateProperties = apiUpdateUserValidator(req.body)
+
+      const isSuccess = await usersServices.update(req.user._id, updateProperties)
       if (!isSuccess) {
-        res.status(400).json({ error: 'User not found' })
+        res.status(400).json({ error: 'update user failed' })
       }
 
       res.sendStatus(200)

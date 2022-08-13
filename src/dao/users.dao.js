@@ -82,7 +82,7 @@ export default class UsersDao {
     return !!this.findByEmail(email)
   }
 
-  static async registerUser(userInfo) {
+  static async registerUserIfNotFound(userInfo) {
     let user = await this.findByEmail(userInfo.email)
 
     if (!!user) {
