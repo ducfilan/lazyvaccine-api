@@ -1,5 +1,7 @@
 import usersServices from '../services/api/users.services'
+import setsServices from '../services/api/sets.services'
 import { apiGetUserSetsValidator, apiUpdateUserValidator } from './validators/users.validator'
+import { apiSearchSetValidator } from './validators/sets.validator'
 
 export default class UsersController {
   static async me(req, res) {
@@ -69,6 +71,18 @@ export default class UsersController {
       res.sendStatus(200)
     } catch (e) {
       res.status(400).send({ error: e.message })
+    }
+  }
+
+  static async apiSuggestSets(req, res) {
+    try {
+      const searchConditions = apiSearchSetValidator(req.query)
+      if (!searchConditions) res.sendStatus(400)
+
+      return res.json(await setsServices.suggestSets(req.user?._id, searchConditions))
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
     }
   }
 }

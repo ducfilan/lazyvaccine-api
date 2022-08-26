@@ -16,7 +16,8 @@ securedUserRouter.route('/me').get(auth, UsersController.me)
 securedUserRouter.route('/:userId').get(UsersController.getUserInfo)
 securedUserRouter.route('/:userId/sets').get(UsersController.getUserSets)
 securedUserRouter.route('/me/random-set').get(auth, UsersController.getUserRandomSet)
-securedUserRouter.route('/logout').get(auth, UsersController.logout)
+securedUserRouter.route('/me/suggestions').get(auth, UsersController.apiSuggestSets)
+securedUserRouter.route('/logout').get(auth, UsersController.logout) // TODO: Not in use.
 
 export {
   publicUserRouter,

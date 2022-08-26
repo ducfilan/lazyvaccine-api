@@ -68,6 +68,19 @@ export default {
     return { total, sets, interactions }
   },
 
+  suggestSets: async (userId, searchConditions) => {
+    const { sets, total } = await SetsDao.suggestSets({ userId, ...searchConditions })
+
+    const setIds = sets.map(({ _id }) => _id)
+
+    let interactions = []
+    if (userId) {
+      interactions = await InteractionsDao.filterSetIds(userId, setIds)
+    }
+
+    return { total, sets, interactions }
+  },
+
   /**
    * Get top sets global
    * @param {string} userId current user id

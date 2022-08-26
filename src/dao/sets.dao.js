@@ -1,6 +1,16 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
 import { ObjectID } from 'mongodb'
-import { SetsCollectionName, UsersCollectionName, SupportingSetTypes, SupportingLanguages, StaticBaseUrl, SetInteractions } from '../common/consts'
+import {
+  SetsCollectionName,
+  UsersCollectionName,
+  InteractionsCollectionName,
+  SupportingSetTypes,
+  SupportingLanguages,
+  StaticBaseUrl,
+  SetInteractions,
+  InteractionSubscribe,
+  InteractionDislike
+} from '../common/consts'
 
 let _sets
 let _db
@@ -328,27 +338,7 @@ export default class SetsDao {
     try {
       const { keyword, skip, limit, languages } = searchConditions
 
-      const languagesConditions = (languages && languages.length > 0) ? [
-        {
-          compound: {
-            should: [
-              ...languages.map(lang => ({
-                text: {
-                  query: lang,
-                  path: 'fromLanguage'
-                }
-              })),
-              ...languages.map(lang => ({
-                text: {
-                  query: lang,
-                  path: 'toLanguage'
-                }
-              }))
-            ],
-            minimumShouldMatch: 1
-          }
-        }
-      ] : []
+      const languagesConditions = this.toLanguagesConditions(languages)
 
       const sets = await _sets
         .aggregate([
@@ -446,6 +436,30 @@ export default class SetsDao {
     }
   }
 
+  static toLanguagesConditions(languages) {
+    return (languages && languages.length > 0) ? [
+      {
+        compound: {
+          should: [
+            ...languages.map(lang => ({
+              text: {
+                query: lang,
+                path: 'fromLanguage'
+              }
+            })),
+            ...languages.map(lang => ({
+              text: {
+                query: lang,
+                path: 'toLanguage'
+              }
+            }))
+          ],
+          minimumShouldMatch: 1
+        }
+      }
+    ] : []
+  }
+
   /**
    * 
    * @param {Array(ObjectId)} categoryIds - category Ids
@@ -534,6 +548,148 @@ export default class SetsDao {
       console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return false
+    }
+  }
+
+  static async suggestSets(searchConditions) {
+    try {
+      const { userId, keyword, skip, limit, languages } = searchConditions
+
+      const languagesConditions = this.toLanguagesConditions(languages)
+
+      const sets = await _sets
+        .aggregate([
+          {
+            $search: {
+              index: 'setSearchIndex',
+              compound: {
+                must: languagesConditions,
+                should: [{
+                  text: {
+                    query: keyword,
+                    path: 'name',
+                    fuzzy: {},
+                    score: { boost: { 'value': 2 } }
+                  }
+                }, {
+                  text: {
+                    query: keyword,
+                    path: 'description',
+                    fuzzy: {}
+                  }
+                }, {
+                  text: {
+                    query: keyword,
+                    path: 'tags',
+                    fuzzy: {}
+                  }
+                }],
+                minimumShouldMatch: 1
+              },
+              count: {
+                type: 'total'
+              }
+            },
+          }, {
+            $lookup: {
+              from: InteractionsCollectionName,
+              localField: '_id',
+              foreignField: 'setId',
+              pipeline: [
+                {
+                  $match: {
+                    '$expr': {
+                      '$and': [
+                        {
+                          '$eq': [
+                            '$userId', userId
+                          ]
+                        }, {
+                          '$not': {
+                            '$in': [
+                              '$actions', [
+                                InteractionSubscribe, InteractionDislike
+                              ]
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              'as': 'ignored_sets'
+            }
+          }, {
+            $match: {
+              'ignored_sets': {
+                '$eq': []
+              }
+            }
+          },
+          {
+            $skip: skip
+          },
+          {
+            $limit: limit
+          }, {
+            $project: {
+              'ignored_sets': 0
+            }
+          },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'creatorId',
+              foreignField: '_id',
+              as: 'creator',
+            },
+          },
+          {
+            $unwind: '$creator',
+          },
+          {
+            $project: {
+              total: '$$SEARCH_META.count.total',
+              name: 1,
+              description: 1,
+              creatorName: '$creator.name',
+              creatorImageUrl: '$creator.pictureUrl',
+              fromLanguage: 1,
+              toLanguage: 1,
+              tags: 1,
+              imgUrl: 1,
+              lastUpdated: 1,
+            },
+          },
+          {
+            $facet: {
+              sets: []
+            }
+          },
+          {
+            $project: {
+              total: { $first: '$sets.total' },
+              sets: 1
+            }
+          },
+          {
+            $project: {
+              'sets.total': 0
+            }
+          }
+        ])
+        .toArray()
+
+      if (!sets || sets.length === 0) {
+        return {}
+      }
+
+      return sets[0]
+    } catch (e) {
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return []
     }
   }
 }
