@@ -628,6 +628,9 @@ export default class SetsDao {
             }
           },
           {
+            $sample: { size: 1 }
+          },
+          {
             $skip: skip
           },
           {
