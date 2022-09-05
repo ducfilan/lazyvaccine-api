@@ -29,7 +29,7 @@ export default class SetsDao {
         collMod: SetsCollectionName,
         validator: {
           $jsonSchema: {
-            required: ['_id', 'name', 'categoryId', 'description', 'tags', 'fromLanguage', 'toLanguage', 'items', 'lastUpdated', 'delFlag'],
+            required: ['_id', 'name', 'categoryId', 'fromLanguage', 'toLanguage', 'items', 'lastUpdated', 'delFlag'],
             type: 'object',
             properties: {
               _id: {
