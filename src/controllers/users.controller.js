@@ -76,7 +76,7 @@ export default class UsersController {
 
   static async apiSuggestSets(req, res) {
     try {
-      const searchConditions = apiSearchSetValidator(req.query)
+      const searchConditions = apiSearchSetValidator(req.query, req.user.langCodes)
       if (!searchConditions) res.sendStatus(400)
 
       return res.json(await setsServices.suggestSets(req.user?._id, searchConditions))

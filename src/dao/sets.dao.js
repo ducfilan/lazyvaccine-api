@@ -556,6 +556,8 @@ export default class SetsDao {
       const { userId, keyword, skip, limit, languages } = searchConditions
 
       const languagesConditions = this.toLanguagesConditions(languages)
+      const maxItemsToSearchRelevantSets = 20
+      const resultLimit = Math.max(limit, maxItemsToSearchRelevantSets)
 
       const sets = await _sets
         .aggregate([
@@ -628,6 +630,9 @@ export default class SetsDao {
             }
           },
           {
+            $limit: resultLimit
+          },
+          {
             $sample: { size: 1 }
           },
           {
@@ -685,7 +690,7 @@ export default class SetsDao {
         .toArray()
 
       if (!sets || sets.length === 0) {
-        return {}
+        return []
       }
 
       return sets[0]
