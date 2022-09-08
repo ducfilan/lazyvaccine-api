@@ -1,6 +1,7 @@
 import UsersDao from '../../dao/users.dao'
 import { getEmailFromGoogleToken } from '../../services/support/google-auth.service'
 import { LoginTypes } from '../../common/consts'
+import { getCache, setCache } from '../../common/redis'
 
 export default async (req, res, next) => {
   try {
@@ -20,7 +21,16 @@ export default async (req, res, next) => {
 
     if (!email) throw new Error('invalid/expired token')
 
-    const user = await UsersDao.findByEmail(email)
+    let user
+    const cacheKey = `user_${email}`
+    const cachedSet = await getCache(cacheKey)
+
+    if (cachedSet) {
+      user = cachedSet
+    } else {
+      user = await UsersDao.findByEmail(email)
+      setCache(cacheKey, user)
+    }
 
     if (!user) throw new Error('not found user with email: ' + email)
 

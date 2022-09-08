@@ -1,5 +1,6 @@
 import setsServices from '../services/api/sets.services'
 import { apiSearchSetValidator, apiGetSetsInCategoriesValidator } from './validators/sets.validator'
+import { getCache, setCache, delCache } from '../common/redis'
 
 export default class SetsController {
   static async apiCreateSet(req, res) {
@@ -22,6 +23,8 @@ export default class SetsController {
       let setInfo = req.body
       setInfo.creatorId = req.user._id
 
+      await delCache(setInfo._id)
+
       const success = await setsServices.editSet(setInfo)
       if (!success) throw new Error('cannot update set')
 
@@ -34,7 +37,17 @@ export default class SetsController {
 
   static async apiGetSet(req, res) {
     try {
-      return res.json(await setsServices.getSet(req.user?._id, req.params.setId))
+      const cacheKey = `set_${req.params.setId}`
+      const cachedSet = await getCache(cacheKey)
+
+      if (cachedSet) {
+        return res.json(cachedSet)
+      } else {
+        const set = await setsServices.getSet(req.user?._id, req.params.setId)
+        setCache(cacheKey, set)
+
+        return res.json(set)
+      }
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })
