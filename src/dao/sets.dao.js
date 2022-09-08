@@ -1,4 +1,16 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { ObjectID } from 'mongodb'
+import {
+  SetsCollectionName,
+  UsersCollectionName,
+  InteractionsCollectionName,
+  SupportingSetTypes,
+  SupportingLanguages,
+  StaticBaseUrl,
+  SetInteractions,
+  InteractionSubscribe,
+  InteractionDislike
+} from '../common/consts'
 
 let _sets
 let _db
@@ -11,44 +23,304 @@ export default class SetsDao {
 
     try {
       _db = await conn.db(MongoClientConfigs.DatabaseName)
-      _sets = await conn.db(MongoClientConfigs.DatabaseName).collection('sets')
-    } catch (e) {
-      console.error(
-        `Unable to establish a collection handle in setsDao: ${e}`,
-      )
-    }
-  }
+      _sets = await conn.db(MongoClientConfigs.DatabaseName).collection(SetsCollectionName)
 
-  static async findOne(query) {
-    return await _sets.findOne(query)
+      _db.command({
+        collMod: SetsCollectionName,
+        validator: {
+          $jsonSchema: {
+            required: ['_id', 'name', 'categoryId', 'fromLanguage', 'toLanguage', 'items', 'lastUpdated', 'delFlag'],
+            type: 'object',
+            properties: {
+              _id: {
+                bsonType: 'objectId'
+              },
+              imgUrl: {
+                type: 'string',
+                pattern: `^${StaticBaseUrl}/[A-z0-9_]+?.(png|jpg|jpeg|PNG|JPG|JPEG)$`
+              },
+              name: {
+                maxLength: 100,
+                minLength: 1,
+                type: 'string'
+              },
+              creatorId: {
+                bsonType: 'objectId',
+              },
+              categoryId: {
+                bsonType: 'objectId'
+              },
+              description: {
+                maxLength: 500,
+                type: 'string'
+              },
+              tags: {
+                maxItems: 20,
+                type: 'array',
+                items: {
+                  uniqueItems: true,
+                  type: 'string'
+                }
+              },
+              interactionCount: {
+                type: 'object',
+                properties: {
+                  ...SetInteractions.reduce((previousValue, interaction) => ({
+                    ...previousValue, [interaction]: ({
+                      bsonType: 'int'
+                    })
+                  }), {})
+                },
+                additionalProperties: false
+              },
+              fromLanguage: {
+                enum: SupportingLanguages,
+                type: 'string'
+              },
+              toLanguage: {
+                enum: ['', ...SupportingLanguages],
+                type: 'string'
+              },
+              items: {
+                minItems: 2,
+                type: 'array',
+                items: {
+                  type: 'object',
+                  oneOf: [{
+                    required: ['_id', 'type', 'term', 'definition'],
+                    type: 'object',
+                    properties: {
+                      _id: {
+                        bsonType: 'objectId'
+                      },
+                      type: {
+                        enum: SupportingSetTypes,
+                        type: 'string'
+                      },
+                      term: {
+                        minLength: 1,
+                        type: 'string'
+                      },
+                      definition: {
+                        minLength: 1,
+                        type: 'string'
+                      }
+                    },
+                  }, {
+                    required: ['_id', 'type', 'answers', 'question'],
+                    type: 'object',
+                    properties: {
+                      _id: {
+                        bsonType: 'objectId'
+                      },
+                      type: {
+                        enum: SupportingSetTypes,
+                        type: 'string'
+                      },
+                      answers: {
+                        minItems: 2,
+                        type: 'array',
+                        items: {
+                          required: [
+                            'answer'
+                          ],
+                          type: 'object',
+                          properties: {
+                            isCorrect: {
+                              type: 'boolean'
+                            },
+                            answer: {
+                              type: 'string'
+                            }
+                          },
+                        }
+                      },
+                      question: {
+                        minLength: 1,
+                        type: 'string'
+                      },
+                      moreInfo: {
+                        minLength: 1,
+                        type: 'string'
+                      }
+                    },
+                  }, {
+                    required: ['_id', 'type', 'content'],
+                    type: 'object',
+                    properties: {
+                      _id: {
+                        bsonType: 'objectId'
+                      },
+                      type: {
+                        enum: SupportingSetTypes,
+                        type: 'string'
+                      },
+                      content: {
+                        minLength: 1,
+                        type: 'string'
+                      }
+                    },
+                  }]
+                }
+              },
+              lastUpdated: {
+                bsonType: 'date'
+              },
+              delFlag: {
+                type: 'boolean'
+              }
+            },
+            additionalProperties: false,
+          }
+        }
+      })
+
+      _sets.createIndex({ creatorId: 1 })
+      _sets.createIndex({ categoryId: 1 })
+    } catch (e) {
+      console.error(`Unable to establish a collection handle in setsDao: ${e}`)
+    }
   }
 
   static async findOneById(_id) {
     try {
-      var set = await _sets.findOne({ _id });
-      return set;
+      let set = await _sets
+        .aggregate([
+          {
+            $match: {
+              _id,
+              delFlag: false,
+            },
+          },
+          {
+            $lookup: {
+              from: UsersCollectionName,
+              localField: 'creatorId',
+              foreignField: '_id',
+              as: 'creator',
+            },
+          },
+          {
+            $unwind: '$creator',
+          },
+          {
+            $project: {
+              name: 1,
+              categoryId: 1,
+              description: 1,
+              tags: 1,
+              fromLanguage: 1,
+              toLanguage: 1,
+              creatorId: 1,
+              creatorName: '$creator.name',
+              imgUrl: 1,
+              lastUpdated: 1,
+              items: 1,
+              interactionCount: 1,
+            },
+          },
+        ])
+        .limit(1)
+        .toArray()
+
+      if (!set || set.length === 0) return {}
+
+      return set[0]
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
-      return false;
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return false
     }
   }
 
-  static async updateOne(_id, field, value) {
+  static async find(matchCondition, skip, limit) {
     try {
-      var user = await _sets.findOneAndUpdate({ _id }, { $set: { [field]: value } });
-      return user;
+      let sets = await _sets
+        .aggregate([
+          {
+            $match: {
+              ...matchCondition,
+              delFlag: false,
+            },
+          },
+          {
+            $skip: skip
+          },
+          {
+            $limit: limit
+          },
+          {
+            $lookup: {
+              from: UsersCollectionName,
+              localField: 'creatorId',
+              foreignField: '_id',
+              as: 'creator',
+            },
+          },
+          {
+            $unwind: '$creator'
+          },
+          {
+            $project: {
+              creatorName: '$creator.name',
+              name: 1,
+              categoryId: 1,
+              description: 1,
+              tags: 1,
+              fromLanguage: 1,
+              toLanguage: 1,
+              creatorId: 1,
+              imgUrl: 1,
+              lastUpdated: 1,
+              interactionCount: 1
+            }
+          }])
+        .toArray()
+
+      if (!sets || sets.length === 0) {
+        return {
+          total: 0,
+          sets: []
+        }
+      }
+
+      let total = await _sets.find({
+        ...matchCondition,
+        delFlag: false,
+      }).count()
+
+      return { total, sets }
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
-      return false;
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return false
     }
   }
 
   static async createSet(set) {
     try {
-      _sets.insert(set)
+      const insertResult = await _sets.insertOne(set)
+
+      return insertResult.insertedId
     } catch (e) {
-      console.error(`Unable to execute insert command, ${e}`)
-      return false;
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return false
+    }
+  }
+
+  static async replaceSet(set) {
+    try {
+      const _id = set._id
+      delete set._id
+
+      await _sets.findOneAndReplace({ _id }, set)
+
+      return true
+    } catch (e) {
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return false
     }
   }
 
@@ -56,8 +328,376 @@ export default class SetsDao {
     try {
       return await this.findOneById(_id)
     } catch (e) {
-      console.error(`Unable to execute insert command, ${e}`)
-      return false;
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return null
+    }
+  }
+
+  static async searchSet(searchConditions) {
+    try {
+      const { keyword, skip, limit, languages } = searchConditions
+
+      const languagesConditions = this.toLanguagesConditions(languages)
+
+      const sets = await _sets
+        .aggregate([
+          {
+            $search: {
+              index: 'setSearchIndex',
+              compound: {
+                must: languagesConditions,
+                should: [{
+                  text: {
+                    query: keyword,
+                    path: 'name',
+                    fuzzy: {},
+                    score: { boost: { 'value': 2 } }
+                  }
+                }, {
+                  text: {
+                    query: keyword,
+                    path: 'description',
+                    fuzzy: {}
+                  }
+                }, {
+                  text: {
+                    query: keyword,
+                    path: 'tags',
+                    fuzzy: {}
+                  }
+                }],
+                minimumShouldMatch: 1
+              },
+              count: {
+                type: 'total'
+              }
+            },
+          },
+          {
+            $skip: skip
+          },
+          {
+            $limit: limit
+          },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'creatorId',
+              foreignField: '_id',
+              as: 'creator',
+            },
+          },
+          {
+            $unwind: '$creator',
+          },
+          {
+            $project: {
+              total: '$$SEARCH_META.count.total',
+              name: 1,
+              description: 1,
+              creatorName: '$creator.name',
+              creatorImageUrl: '$creator.pictureUrl',
+              fromLanguage: 1,
+              toLanguage: 1,
+              tags: 1,
+              imgUrl: 1,
+              lastUpdated: 1,
+            },
+          },
+          {
+            $facet: {
+              sets: []
+            }
+          },
+          {
+            $project: {
+              total: { $first: '$sets.total' },
+              sets: 1
+            }
+          },
+          {
+            $project: {
+              'sets.total': 0
+            }
+          }
+        ])
+        .toArray()
+
+      if (!sets || sets.length === 0) {
+        return {}
+      }
+
+      return sets[0]
+    } catch (e) {
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return []
+    }
+  }
+
+  static toLanguagesConditions(languages) {
+    return (languages && languages.length > 0) ? [
+      {
+        compound: {
+          should: [
+            ...languages.map(lang => ({
+              text: {
+                query: lang,
+                path: 'fromLanguage'
+              }
+            })),
+            ...languages.map(lang => ({
+              text: {
+                query: lang,
+                path: 'toLanguage'
+              }
+            }))
+          ],
+          minimumShouldMatch: 1
+        }
+      }
+    ] : []
+  }
+
+  /**
+   * 
+   * @param {Array(ObjectId)} categoryIds - category Ids
+   * @param {int} skip - number of items to skip
+   * @param {int} limit - number of items to limit
+   * @returns {Promise(Array)} - Returns the list of sets in the category
+   */
+  static async getSetsInCategory(categoryIds, skip, limit) {
+    try {
+      const sets = await _sets
+        .aggregate([
+          {
+            $match: {
+              categoryId: { $in: categoryIds },
+              delFlag: false
+            },
+          },
+          {
+            $skip: skip
+          },
+          {
+            $limit: limit
+          },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'creatorId',
+              foreignField: '_id',
+              as: 'creator',
+            },
+          },
+          {
+            $unwind: '$creator',
+          },
+          {
+            $project: {
+              name: 1,
+              description: 1,
+              creatorName: '$creator.name',
+              creatorImageUrl: '$creator.pictureUrl',
+              fromLanguage: 1,
+              toLanguage: 1,
+              tags: 1,
+              imgUrl: 1,
+              lastUpdated: 1,
+            },
+          },
+        ])
+        .toArray()
+
+      if (!sets || sets.length === 0) {
+        return {}
+      }
+
+      let total = await _sets.find({
+        categoryId: { $in: categoryIds },
+        delFlag: false
+      }).count()
+
+      return { total, sets }
+    } catch (e) {
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return {}
+    }
+  }
+
+  static async interactSet(action, setId, increment = 1) {
+    try {
+      return await _sets
+        .updateOne(
+          {
+            _id: ObjectID(setId)
+          },
+          {
+            $inc: {
+              [`interactionCount.${action}`]: increment
+            },
+            $set: { lastUpdated: new Date() }
+          },
+          {
+            upsert: true
+          }
+        )
+    } catch (e) {
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return false
+    }
+  }
+
+  static async suggestSets(searchConditions) {
+    try {
+      const { userId, keyword, skip, limit, languages } = searchConditions
+
+      const languagesConditions = this.toLanguagesConditions(languages)
+      const maxItemsToSearchRelevantSets = 20
+      const resultLimit = Math.max(limit, maxItemsToSearchRelevantSets)
+
+      const sets = await _sets
+        .aggregate([
+          {
+            $search: {
+              index: 'setSearchIndex',
+              compound: {
+                must: languagesConditions,
+                should: [{
+                  text: {
+                    query: keyword,
+                    path: 'name',
+                    fuzzy: {},
+                    score: { boost: { 'value': 2 } }
+                  }
+                }, {
+                  text: {
+                    query: keyword,
+                    path: 'description',
+                    fuzzy: {}
+                  }
+                }, {
+                  text: {
+                    query: keyword,
+                    path: 'tags',
+                    fuzzy: {}
+                  }
+                }],
+                minimumShouldMatch: 1
+              },
+              count: {
+                type: 'total'
+              }
+            },
+          }, {
+            $lookup: {
+              from: InteractionsCollectionName,
+              localField: '_id',
+              foreignField: 'setId',
+              pipeline: [
+                {
+                  $match: {
+                    '$expr': {
+                      '$and': [
+                        {
+                          '$eq': [
+                            '$userId', userId
+                          ]
+                        }, {
+                          '$not': {
+                            '$in': [
+                              '$actions', [
+                                InteractionSubscribe, InteractionDislike
+                              ]
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              'as': 'ignored_sets'
+            }
+          }, {
+            $match: {
+              'ignored_sets': {
+                '$eq': []
+              }
+            }
+          },
+          {
+            $limit: resultLimit
+          },
+          {
+            $sample: { size: 1 }
+          },
+          {
+            $skip: skip
+          },
+          {
+            $limit: limit
+          }, {
+            $project: {
+              'ignored_sets': 0
+            }
+          },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'creatorId',
+              foreignField: '_id',
+              as: 'creator',
+            },
+          },
+          {
+            $unwind: '$creator',
+          },
+          {
+            $project: {
+              total: '$$SEARCH_META.count.total',
+              name: 1,
+              description: 1,
+              creatorName: '$creator.name',
+              creatorImageUrl: '$creator.pictureUrl',
+              fromLanguage: 1,
+              toLanguage: 1,
+              tags: 1,
+              imgUrl: 1,
+              lastUpdated: 1,
+            },
+          },
+          {
+            $facet: {
+              sets: []
+            }
+          },
+          {
+            $project: {
+              total: { $first: '$sets.total' },
+              sets: 1
+            }
+          },
+          {
+            $project: {
+              'sets.total': 0
+            }
+          }
+        ])
+        .toArray()
+
+      if (!sets || sets.length === 0) {
+        return []
+      }
+
+      return sets[0]
+    } catch (e) {
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return []
     }
   }
 }

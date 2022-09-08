@@ -1,25 +1,32 @@
-import { verify } from 'jsonwebtoken'
 import UsersDao from '../../dao/users.dao'
-import { ObjectId } from 'mongodb'
+import { getEmailFromGoogleToken } from '../../services/support/google-auth.service'
+import { LoginTypes } from '../../common/consts'
 
 export default async (req, res, next) => {
-    try {
-        next() // TODO: For testing without auth, need to remove.
-        return
-        const jwtToken = req.header('Authorization')?.replace('Bearer ', '')
-        if (!jwtToken) throw new Error('No Authorization token provided!')
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '')
+    const loginType = req.header('X-Login-Type')
+    if (!token) throw new Error('no Authorization token provided!')
 
-        const data = verify(jwtToken, process.env.JWT_KEY)
+    let email
+    switch (loginType) {
+      case LoginTypes.google:
+        email = await getEmailFromGoogleToken(token)
+        break
 
-        const user = await UsersDao.findOne({ _id: ObjectId(data._id), jwtToken: jwtToken })
-        if (!user) {
-            throw new Error()
-        }
-        req.user = user
-        req.jwtToken = jwtToken
-        next()
-    } catch (error) {
-        console.log(error)
-        res.status(401).send({ error: 'Not authorized to access this resource' })
+      default:
+        throw new Error('invalid login type')
     }
+
+    if (!email) throw new Error('invalid/expired token')
+
+    const user = await UsersDao.findByEmail(email)
+
+    if (!user) throw new Error('not found user with email: ' + email)
+
+    req.user = user
+    next()
+  } catch (error) {
+    res.status(401).send({ error: `Not authorized to access this resource, ${error.message}` })
+  }
 }

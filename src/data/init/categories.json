@@ -1,7 +1,7 @@
-{"name": {"en-us": "Languages","vi-vn": "Ngôn ngữ","ja-jp": "言語"},"description": {"en-us": "Learning any foreign languages","vi-vn": "Học bất kì ngoại ngữ nào","ja-jp": "何の外国言語を勉強しましょう！"},"path": null,"last_updated": "2019-12-11 23:15:33"}
-{"name": {"en-us": "Certificate practical questions","vi-vn": "Các loại chứng chỉ","ja-jp": "証明書の実用的な質問"},"description": {"en-us": "Practice questions for your next certificate","vi-vn": "Luyện tập cho các chứng chỉ mong muốn","ja-jp": "証明書の各質問を連取しましょう！"},"path": null,"last_updated": "2019-12-11 23:15:33"}
-{"name": {"en-us": "English","vi-vn": "Tiếng Anh","ja-jp": "英語"},"path": ",Languages,","last_updated": "2019-12-11 23:15:33"}
-{"name": {"en-us": "Japanese","vi-vn": "Tiếng Nhật","ja-jp": "日本語"},"path": ",Languages,","last_updated": "2019-12-11 23:15:33"}
-{"name": {"en-us": "English","vi-vn": "Tiếng Tây Ban Nha","ja-jp": "スペイン語"},"path": ",Languages,","last_updated": "2019-12-11 23:15:33"}
-{"name": {"en-us": "AWS Certifications","vi-vn": "Các chứng chỉ AWS","ja-jp": "AWS 各証明書"},"path": ",Languages,","last_updated": "2019-12-11 23:15:33"}
-{"name": {"en-us": "JLPT - Japanese-Language Proficiency Test","vi-vn": "JLPT - Năng lực tiếng Nhật","ja-jp": "JLPT - 日本語能力試験"},"path": ",Languages,","last_updated": "2019-12-11 23:15:33"}
+{"name": {"en": "Languages","vi": "Ngôn ngữ","ja": "言語"},"description": {"en": "Learning any foreign languages","vi": "Học bất kì ngoại ngữ nào","ja": "何の外国言語を勉強しましょう！"},"path": null,"last_updated": "2019-12-11 23:15:33"}
+{"name": {"en": "Certificate practical questions","vi": "Các loại chứng chỉ","ja": "証明書の実用的な質問"},"description": {"en": "Practice questions for your next certificate","vi": "Luyện tập cho các chứng chỉ mong muốn","ja": "証明書の各質問を連取しましょう！"},"path": null,"last_updated": "2019-12-11 23:15:33"}
+{"name": {"en": "English","vi": "Tiếng Anh","ja": "英語"},"path": ",Languages,","last_updated": "2019-12-11 23:15:33"}
+{"name": {"en": "Japanese","vi": "Tiếng Nhật","ja": "日本語"},"path": ",Languages,","last_updated": "2019-12-11 23:15:33"}
+{"name": {"en": "English","vi": "Tiếng Tây Ban Nha","ja": "スペイン語"},"path": ",Languages,","last_updated": "2019-12-11 23:15:33"}
+{"name": {"en": "AWS Certifications","vi": "Các chứng chỉ AWS","ja": "AWS 各証明書"},"path": ",Languages,","last_updated": "2019-12-11 23:15:33"}
+{"name": {"en": "JLPT - Japanese-Language Proficiency Test","vi": "JLPT - Năng lực tiếng Nhật","ja": "JLPT - 日本語能力試験"},"path": ",Languages,","last_updated": "2019-12-11 23:15:33"}

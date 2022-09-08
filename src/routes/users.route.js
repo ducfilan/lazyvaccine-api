@@ -9,12 +9,15 @@ const securedUserRouter = new Router()
 const upload = multer()
 
 publicUserRouter.route('/').post(upload.none(), UsersController.register)
-publicUserRouter.route('/login').post(upload.none(), UsersController.login)
 
-securedUserRouter.route('/').patch(auth, upload.none(), UsersController.update)
+securedUserRouter.route('/me').patch(auth, upload.none(), UsersController.update)
 
 securedUserRouter.route('/me').get(auth, UsersController.me)
-securedUserRouter.route('/logout').get(auth, UsersController.logout)
+securedUserRouter.route('/:userId').get(UsersController.getUserInfo)
+securedUserRouter.route('/:userId/sets').get(UsersController.getUserSets)
+securedUserRouter.route('/me/random-set').get(auth, UsersController.getUserRandomSet)
+securedUserRouter.route('/me/suggestions').get(auth, UsersController.apiSuggestSets)
+securedUserRouter.route('/logout').get(auth, UsersController.logout) // TODO: Not in use.
 
 export {
   publicUserRouter,

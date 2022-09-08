@@ -1,17 +1,17 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
 
-let categories
-let db
+let _categories
+let _db
 
 export default class CategoriesDao {
   static async injectDB(conn) {
-    if (categories) {
+    if (_categories) {
       return
     }
 
     try {
-      db = await conn.db(MongoClientConfigs.DatabaseName)
-      categories = await conn.db(MongoClientConfigs.DatabaseName).collection('categories')
+      _db = await conn.db(MongoClientConfigs.DatabaseName)
+      _categories = await conn.db(MongoClientConfigs.DatabaseName).collection('categories')
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in CategoriesDao: ${e}`,
@@ -26,26 +26,44 @@ export default class CategoriesDao {
    */
   static async getAllCategories(lang) {
     let projectRules = {
-      'name': 1,
-      'description': 1,
-      'path': 1
+      [`name.${lang}`]: 1,
+      [`description.${lang}`]: 1,
+      'path': 1,
+      isTopCategory: 1
     }
 
     try {
-      return (
-        await categories
-          .find()
-          .project(projectRules)
-          .toArray()
-      ).map(category => ({
-        _id: category._id,
-        name: category.name[lang],
-        description: category.description ? category.description[lang] : null,
-        path: category.path
-      }))
+      return await _categories
+        .find()
+        .project(projectRules)
+        .toArray()
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
-      return {}
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return []
+    }
+  }
+
+  static async getSubCategoriesIds(categoryId) {
+    try {
+      const categories = await _categories
+        .find({
+          path: { $regex: `,${categoryId},` }
+        })
+        .project({
+          _id: 1
+        })
+        .toArray()
+
+      if (!categories || !categories.length) {
+        return []
+      }
+
+      return categories.map(category => category._id)
+    } catch (e) {
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return []
     }
   }
 }

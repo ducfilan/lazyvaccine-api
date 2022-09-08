@@ -1,4 +1,5 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { SupportingLanguages, UsersCollectionName } from '../common/consts'
 
 let users
 let db
@@ -12,7 +13,39 @@ export default class UsersDao {
 
     try {
       db = await conn.db(MongoClientConfigs.DatabaseName)
-      users = await conn.db(MongoClientConfigs.DatabaseName).collection('users')
+      users = await conn.db(MongoClientConfigs.DatabaseName).collection(UsersCollectionName)
+
+      users.createIndex({ email: 1 }, { unique: true, sparse: true })
+
+      db.command({
+        collMod: UsersCollectionName,
+        validator: {
+          $jsonSchema: {
+            bsonType: 'object',
+            required: ['name', 'email', 'locale', 'finishedRegisterStep', 'langCodes'],
+            properties: {
+              name: {
+                bsonType: 'string',
+              },
+              email: {
+                bsonType: 'string',
+              },
+              locale: {
+                enum: SupportingLanguages
+              },
+              finishedRegisterStep: {
+                bsonType: 'int',
+              },
+              langCodes: {
+                bsonType: 'array',
+                items: [
+                  { enum: SupportingLanguages }
+                ]
+              }
+            }
+          }
+        }
+      })
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in usersDao: ${e}`,
@@ -21,25 +54,26 @@ export default class UsersDao {
   }
 
   static async findOne(query) {
-    return await users.findOne(query, defaultProjection)
+    return users.findOne(query, defaultProjection)
   }
 
-  static async findByEmail(email) {
+  static async findByEmail(email, projection = defaultProjection) {
     try {
-      var user = await users.findOne({ 'email': email }, defaultProjection);
-      return user;
+      return await users.findOne({ email }, projection)
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
-      return false;
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return false
     }
   }
 
   static async updateOne(_id, updateOperations) {
     try {
-      var updateResult = await users.findOneAndUpdate({ _id }, updateOperations, defaultProjection)
-      return updateResult
+      await users.findOneAndUpdate({ _id }, updateOperations, defaultProjection)
+      return true
     } catch (e) {
-      console.error(`Unable to issue find command, ${e}`)
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
   }
@@ -48,8 +82,9 @@ export default class UsersDao {
     return !!this.findByEmail(email)
   }
 
-  static async registerUser(userInfo) {
+  static async registerUserIfNotFound(userInfo) {
     let user = await this.findByEmail(userInfo.email)
+
     if (!!user) {
       return { isPreRegistered: true, ...user }
     }
@@ -59,7 +94,9 @@ export default class UsersDao {
         if (error) {
           reject(error)
         } else {
-          resolve(response.ops[0])
+          const insertedUser = response.ops[0]
+          delete insertedUser.password
+          resolve(insertedUser)
         }
       })
     })

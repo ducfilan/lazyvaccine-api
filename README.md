@@ -1,5 +1,5 @@
 
-## leanlearn API
+## lazy-vaccine API
 ### Docker configuration:
 #### Requirements:
 - docker
@@ -11,19 +11,15 @@
 #### Steps:
 - Create an `.env` file to config database information:
 	```bash
-	MONGO_USERNAME=[your-mongodb-username]
-	MONGO_PASSWORD=[your-mongodb-password]
+	MONGO_USERNAME=lazyvaccine
+	MONGO_PASSWORD=password
 	MONGO_PORT=27017
-	MONGO_DB=[your-mongodb-database-name]
+	MONGO_DB=lazyvaccine
 	NODE_PORT=8080
-	// Google authentication application config, get from https://manage.auth0.com/dashboard/us/<your-account-name>/applications
-	AUTH0_CLIENT_ID=[your-client-id]
-	AUTH0_DOMAIN=[your-google-authen-app-domain]   
-	AUTH0_CLIENT_SECRET=[your-client-secret]
-	AUTH0_CALLBACK_URL=[call-back-url]
-	JWK_URI=[your-google-authen-url].well-known/jwks.json
-	JWK_AUDIENCE=[your-application-url]
-	JWK_ISSUER=[your-google-authen-url]
+	NODE_ENV=dev
+	JWT_KEY=7eaa951e-6688-42cc-be3a-78a712da979d
+	GOOGLE_CLIENT_ID=45752199260-mh4bu2geh3f7bi39fvrni7ajsb30ck59.apps.googleusercontent.com
+	RECAPTCHA_SECRET_KEY=6LeZTkUcAAAAALyFMb7rWO-u-DgGqXbGn0O-EbmU
 	```
 - Run `docker-compose up` from terminal
 #### Usage:

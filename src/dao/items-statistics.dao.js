@@ -1,0 +1,41 @@
+import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { ItemsStatisticsCollectionName } from '../common/consts'
+
+let _itemsStatistics
+let _db
+
+export default class ItemsStatisticsDao {
+  static async injectDB(conn) {
+    if (_itemsStatistics) {
+      return
+    }
+
+    try {
+      _db = await conn.db(MongoClientConfigs.DatabaseName)
+      _itemsStatistics = await conn.db(MongoClientConfigs.DatabaseName).collection(ItemsStatisticsCollectionName)
+    } catch (e) {
+      console.error(
+        `Unable to establish a collection handle in ItemsStatisticsDao: ${e}`,
+      )
+    }
+  }
+
+  static async getUserStatistics(userId, beginDate, endDate) {
+    try {
+      return await _itemsStatistics
+        .find({
+          userId,
+          date: {
+            $gte: beginDate,
+            $lte: endDate
+          }
+        })
+        .sort({date: 1})
+        .toArray()
+    } catch (e) {
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return false
+    }
+  }
+}
