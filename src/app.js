@@ -40,6 +40,6 @@ app.use('/api/v1', securedRouteIndex);
 // TODO: remove this code and handle not found exception
 app.use('*', (req, res) => res.status(404).json({
   error: 'not found'
-}));
+}))
 
 export default app

@@ -1,6 +1,6 @@
-import app from './app'
+import app from './app.js'
 import { MongoClient } from 'mongodb'
-import MongoClientConfigs from './common/configs/mongodb-client.config'
+import MongoClientConfigs from './common/configs/mongodb-client.config.js'
 
 import UsersDao from './dao/users.dao'
 import CategoriesDao from './dao/categories.dao'
