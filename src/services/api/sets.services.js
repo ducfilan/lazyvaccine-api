@@ -81,7 +81,7 @@ export default {
   suggestSets: async (userId, searchConditions) => {
     const { keyword, skip, limit, languages } = searchConditions
 
-    const cacheKey = `suggestSet_${keyword}_${skip}_${limit}_${languages.join()}`
+    const cacheKey = `suggestSet_${userId}_${keyword}_${skip}_${limit}_${languages.join()}`
     let suggestResult = await getCache(cacheKey)
 
     if (!suggestResult) {
