@@ -5,6 +5,7 @@ import ItemsInteractionsDao from '../../dao/items-interactions.dao'
 import CategoriesDao from '../../dao/categories.dao'
 import { ObjectID } from 'mongodb'
 import { BaseCollectionProperties, SupportingTopSetsTypes } from '../../common/consts'
+import { getCache, setCache, delCache } from '../../common/redis'
 
 function standardizeSetInfoProperties(setInfo) {
   delete setInfo.captchaToken
@@ -27,6 +28,8 @@ export default {
   },
 
   editSet: async (setInfo) => {
+    await delCache(setInfo._id)
+
     setInfo = standardizeSetInfoProperties(setInfo)
 
     const { creatorId, interactionCount } = (await SetsDao.getSet(setInfo._id) || {})
@@ -38,8 +41,15 @@ export default {
   },
 
   getSet: async (userId, setId) => {
-    let set = await SetsDao.getSet(ObjectID(setId))
-    if (!set) return null
+    const cacheKey = `set_${req.params.setId}`
+    let set = await getCache(cacheKey)
+
+    if (!set) {
+      set = await SetsDao.getSet(ObjectID(setId))
+      if (!set) return null
+
+      setCache(cacheKey, set)
+    }
 
     if (userId) {
       const { actions } = await InteractionsDao.filterSetId(userId, ObjectID(setId))
@@ -69,7 +79,17 @@ export default {
   },
 
   suggestSets: async (userId, searchConditions) => {
-    const { sets, total } = await SetsDao.suggestSets({ userId, ...searchConditions })
+    const { keyword, skip, limit, languages } = searchConditions
+
+    const cacheKey = `suggestSet_${keyword}_${skip}_${limit}_${languages.join()}`
+    let suggestResult = await getCache(cacheKey)
+
+    if (!suggestResult) {
+      suggestResult = await SetsDao.suggestSets({ userId, ...searchConditions })
+      setCache(cacheKey, suggestResult, { EX: 600 })
+    }
+
+    const { sets, total } = suggestResult
 
     const setIds = sets.map(({ _id }) => _id)
 

@@ -10,7 +10,7 @@ export async function getClient() {
     }
 
     const url = `rediss://${process.env.REDIS_USERNAME}:${process.env.REDIS_PASSWORD}@${process.env.REDIS_ENDPOINT}:${process.env.REDIS_PORT}`
-    console.info('connecting to redis server: ' + url)
+    console.info('connecting to redis server: ' + process.env.REDIS_ENDPOINT)
 
     GlobalClient = createClient({
       url
@@ -27,12 +27,12 @@ export async function getClient() {
   }
 }
 
-export async function setCache(key: string, value, ignoreError = true) {
+export async function setCache(key: string, value, options = {}, ignoreError = true) {
   try {
     const client = await getClient()
     if (!client) return
 
-    await client.set(key, JSON.stringify(value))
+    await client.set(key, JSON.stringify(value), options)
   } catch (error) {
     if (!ignoreError) {
       throw error
