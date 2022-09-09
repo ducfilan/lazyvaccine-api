@@ -3,9 +3,11 @@ import UsersDao from '../../dao/users.dao'
 import InteractionsDao from '../../dao/interactions.dao'
 import SetsDao from '../../dao/sets.dao'
 import ItemsStatisticsDao from '../../dao/items-statistics.dao'
+import ItemsInteractionsDao from '../../dao/items-interactions.dao'
 import SetsStatisticsDao from '../../dao/sets-statistics.dao'
 import { isGoogleTokenValid } from '../support/google-auth.service'
 import { LoginTypes, SupportingLanguagesMap, DefaultLangCode } from '../../common/consts'
+import { getCache, setCache } from '../../common/redis'
 
 export default {
   register: async (requestBody) => {
@@ -67,7 +69,20 @@ export default {
   },
 
   getUserRandomSet: async (userId, interaction) => {
-    return InteractionsDao.getUserRandomSet(ObjectID(userId), interaction)
+    const cacheKey = `randomSet_${userId}_${interaction}`
+    userId = ObjectID(userId)
+    let result = await getCache(cacheKey)
+
+    if (!result) {
+      result = await InteractionsDao.getUserRandomSet(userId, interaction)
+      if (!result || Object.keys(result).length == 0) return {}
+
+      setCache(cacheKey, result, { EX: 600 })
+    }
+
+    result.set.itemsInteractions = await ItemsInteractionsDao.getSetItemsInteract(userId, ObjectID(result.set._id))
+
+    return result
   },
 
   update: async (_id, updateItems) => {

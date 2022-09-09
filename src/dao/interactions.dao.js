@@ -262,28 +262,6 @@ export default class InteractionsDao {
           {
             $unwind: '$set'
           },
-          {
-            $lookup: {
-              from: ItemsInteractionsCollectionName,
-              let: { iSetId: '$setId', iUserId: '$userId' },
-              pipeline: [
-                {
-                  $match:
-                  {
-                    $expr:
-                    {
-                      $and:
-                        [
-                          { $eq: ['$userId', '$$iUserId'] },
-                          { $eq: ['$setId', '$$iSetId'] }
-                        ]
-                    }
-                  }
-                }
-              ],
-              as: 'set.itemsInteractions'
-            }
-          },
         ])
         .project({
           _id: 0,
@@ -291,10 +269,6 @@ export default class InteractionsDao {
           userId: 0,
           lastUpdated: 0,
           'set.delFlag': 0,
-          'set.itemsInteractions._id': 0,
-          'set.itemsInteractions.setId': 0,
-          'set.itemsInteractions.userId': 0,
-          'set.itemsInteractions.lastUpdated': 0,
         })
         .toArray()
 
