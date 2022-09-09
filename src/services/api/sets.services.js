@@ -41,19 +41,21 @@ export default {
   },
 
   getSet: async (userId, setId) => {
-    const cacheKey = `set_${req.params.setId}`
+    const cacheKey = `set_${setId}`
     let set = await getCache(cacheKey)
 
+    setId = ObjectID(setId)
+
     if (!set) {
-      set = await SetsDao.getSet(ObjectID(setId))
+      set = await SetsDao.getSet(setId)
       if (!set) return null
 
       setCache(cacheKey, set)
     }
 
     if (userId) {
-      const { actions } = await InteractionsDao.filterSetId(userId, ObjectID(setId))
-      const itemsInteractions = await ItemsInteractionsDao.getSetItemsInteract(userId, ObjectID(setId))
+      const { actions } = await InteractionsDao.filterSetId(userId, setId)
+      const itemsInteractions = await ItemsInteractionsDao.getSetItemsInteract(userId, setId)
       set = { ...set, actions, itemsInteractions }
     }
 
@@ -84,7 +86,10 @@ export default {
     const cacheKey = `suggestSet_${userId}_${keyword}_${skip}_${limit}_${languages.join()}`
     let suggestResult = await getCache(cacheKey)
 
-    if (!suggestResult) {
+    if (suggestResult) {
+      suggestResult.sets.forEach(set => set._id = ObjectID(set._id))
+    }
+    else {
       suggestResult = await SetsDao.suggestSets({ userId, ...searchConditions })
       setCache(cacheKey, suggestResult, { EX: 600 })
     }

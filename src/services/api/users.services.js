@@ -73,14 +73,17 @@ export default {
     userId = ObjectID(userId)
     let result = await getCache(cacheKey)
 
-    if (!result) {
+    if (result) {
+      result.set._id = ObjectID(result.set._id)
+    }
+    else {
       result = await InteractionsDao.getUserRandomSet(userId, interaction)
       if (!result || Object.keys(result).length == 0) return {}
 
       setCache(cacheKey, result, { EX: 600 })
     }
 
-    result.set.itemsInteractions = await ItemsInteractionsDao.getSetItemsInteract(userId, ObjectID(result.set._id))
+    result.set.itemsInteractions = await ItemsInteractionsDao.getSetItemsInteract(userId, result.set._id)
 
     return result
   },
