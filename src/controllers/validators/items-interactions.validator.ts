@@ -16,11 +16,11 @@ export const apiGetTopInteractItemValidator = ({ limit, order }) => {
 
 export const apiGetInteractedItemsValidator = ({ limit, skip }) => {
   limit = Number(limit)
-
   if (!validateLimit(limit)) {
     throw new ValidationError('invalid limit value')
   }
 
+  skip = Number(skip)
   if (!validateSkip(skip)) {
     throw new ValidationError('invalid skip value')
   }
