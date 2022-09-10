@@ -40,7 +40,7 @@ export default {
     return SetsDao.replaceSet(interactionCount ? { ...setInfo, interactionCount } : setInfo)
   },
 
-  getSet: async (userId, setId) => {
+  getSet: async (userId: ObjectId, setId: string | ObjectId) => {
     const cacheKey = `set_${setId}`
     let set = await getCache(cacheKey)
 
@@ -72,7 +72,7 @@ export default {
 
     const setIds = sets.map(({ _id }) => _id)
 
-    let interactions = []
+    let interactions: any[] = []
     if (userId) {
       interactions = await InteractionsDao.filterSetIds(userId, setIds)
     }
@@ -98,7 +98,7 @@ export default {
 
     const setIds = sets.map(({ _id }) => _id)
 
-    let interactions = []
+    let interactions: any = []
     if (userId) {
       interactions = await InteractionsDao.filterSetIds(userId, setIds)
     }
@@ -120,7 +120,7 @@ export default {
 
     const topSetIds = topSets.map(({ _id }) => _id)
 
-    let interactions = []
+    let interactions: any[] = []
     if (userId) {
       interactions = await InteractionsDao.filterSetIds(userId, topSetIds)
     }
@@ -144,7 +144,7 @@ export default {
 
     const topSetIds = topSets.map(topSet => topSet._id)
 
-    let interactions = []
+    let interactions: any[] = []
     if (userId) {
       interactions = await InteractionsDao.filterSetIds(userId, topSetIds)
     }
@@ -169,6 +169,10 @@ export default {
 
   getInteractedItems: async (userId: ObjectId, interaction: string, skip: number, limit: number) => {
     return ItemsInteractionsDao.getInteractedItems(userId, interaction, skip, limit)
+  },
+
+  countInteractedItems: async (userId: ObjectId, interaction: string) => {
+    return ItemsInteractionsDao.countInteractedItems(userId, interaction)
   },
 
   undoInteractSet: async (action, userId, setId) => {

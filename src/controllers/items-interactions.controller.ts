@@ -51,4 +51,24 @@ export default class ItemsInteractionsController {
       }
     }
   }
+
+  static async apiCountInteractedItems(req, res) {
+    try {
+      const { interaction } = req.query
+
+      return res.json(await setsServices.countInteractedItems(req.user._id, interaction))
+    } catch (e) {
+      console.log(`api, ${e}`)
+
+      switch (e.constructor) {
+        case ValidationError:
+          res.status(400).json({ error: e })
+          break
+
+        default:
+          res.status(500).json({ error: e })
+          break
+      }
+    }
+  }
 }

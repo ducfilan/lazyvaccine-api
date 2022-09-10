@@ -1,19 +1,19 @@
-import { ObjectId } from 'mongodb'
+import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { SetsCollectionName, InteractionsCollectionName, SetInteractions, ItemsInteractionsCollectionName } from '../common/consts'
+import { SetsCollectionName, InteractionsCollectionName, SetInteractions } from '../common/consts'
 
-let _interactions
-let _db
+let _interactions: Collection
+let _db: Db
 
 export default class InteractionsDao {
-  static async injectDB(conn) {
+  static async injectDB(conn: MongoClient) {
     if (_interactions) {
       return
     }
 
     try {
-      _db = await conn.db(MongoClientConfigs.DatabaseName)
-      _interactions = await conn.db(MongoClientConfigs.DatabaseName).collection(InteractionsCollectionName)
+      _db = conn.db(MongoClientConfigs.DatabaseName)
+      _interactions = conn.db(MongoClientConfigs.DatabaseName).collection(InteractionsCollectionName)
 
       _db.command({
         collMod: InteractionsCollectionName,
@@ -163,16 +163,18 @@ export default class InteractionsDao {
     }
   }
 
-  static async filterSetId(userId, setId) {
+  static async filterSetId(userId: ObjectId, setId: ObjectId): Promise<any> {
     try {
-      return await _interactions
+      return _interactions
         .findOne({
-          userId: userId,
-          setId: setId
+          userId,
+          setId
         }, {
-          _id: 0,
-          setId: 1,
-          actions: 1,
+          projection: {
+            _id: 0,
+            setId: 1,
+            actions: 1,
+          }
         }) || {}
     } catch (e) {
       console.error(`Error in filterSetId, ${e}`)
@@ -225,16 +227,16 @@ export default class InteractionsDao {
         return {}
       }
 
-      let total = await _interactions.find({
+      let total: number = await _interactions.countDocuments({
         userId,
         actions: { $elemMatch: { $eq: interaction } },
-      }).count()
+      })
 
       return { total, sets }
     } catch (e) {
       console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
-      return []
+      return { total: 0, sets: [] }
     }
   }
 

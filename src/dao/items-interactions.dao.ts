@@ -12,8 +12,8 @@ export default class ItemsInteractionsDao {
     }
 
     try {
-      _db = await conn.db(MongoClientConfigs.DatabaseName)
-      _itemsInteractions = await conn.db(MongoClientConfigs.DatabaseName).collection(ItemsInteractionsCollectionName)
+      _db = conn.db(MongoClientConfigs.DatabaseName)
+      _itemsInteractions = conn.db(MongoClientConfigs.DatabaseName).collection(ItemsInteractionsCollectionName)
 
       _db.command({
         collMod: ItemsInteractionsCollectionName,
@@ -129,6 +129,20 @@ export default class ItemsInteractionsDao {
       console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return []
+    }
+  }
+
+  static async countInteractedItems(userId: ObjectId, interaction: string): Promise<number> {
+    try {
+      return await _itemsInteractions
+        .countDocuments({
+          userId,
+          [`interactionCount.${interaction}`]: { $gt: 0 }
+        })
+    } catch (e) {
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return 0
     }
   }
 
