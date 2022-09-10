@@ -1,5 +1,5 @@
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { ObjectID } from 'mongodb'
+import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
 import {
   SetsCollectionName,
   UsersCollectionName,
@@ -12,11 +12,11 @@ import {
   InteractionDislike
 } from '../common/consts'
 
-let _sets
-let _db
+let _sets: Collection
+let _db: Db
 
 export default class SetsDao {
-  static async injectDB(conn) {
+  static async injectDB(conn: MongoClient) {
     if (_sets) {
       return
     }
@@ -177,6 +177,7 @@ export default class SetsDao {
 
       _sets.createIndex({ creatorId: 1 })
       _sets.createIndex({ categoryId: 1 })
+      _sets.createIndex({ 'items._id': 1 })
     } catch (e) {
       console.error(`Unable to establish a collection handle in setsDao: ${e}`)
     }
@@ -532,7 +533,7 @@ export default class SetsDao {
       return await _sets
         .updateOne(
           {
-            _id: ObjectID(setId)
+            _id: new ObjectId(setId)
           },
           {
             $inc: {

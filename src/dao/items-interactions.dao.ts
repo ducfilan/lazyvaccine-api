@@ -1,12 +1,12 @@
-import { ObjectID } from 'mongodb'
+import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
 import { DefaultMostItemsInteractionsLimit, ItemsInteractions, ItemsInteractionsCollectionName, DescOrder } from '../common/consts'
 
-let _itemsInteractions
-let _db
+let _itemsInteractions: Collection
+let _db: Db
 
 export default class ItemsInteractionsDao {
-  static async injectDB(conn) {
+  static async injectDB(conn: MongoClient) {
     if (_itemsInteractions) {
       return
     }
@@ -66,9 +66,9 @@ export default class ItemsInteractionsDao {
       return await _itemsInteractions
         .updateOne(
           {
-            userId: ObjectID(userId),
-            setId: ObjectID(setId),
-            itemId: ObjectID(itemId)
+            userId: new ObjectId(userId),
+            setId: new ObjectId(setId),
+            itemId: new ObjectId(itemId)
           },
           {
             $inc: {
@@ -94,8 +94,8 @@ export default class ItemsInteractionsDao {
         .aggregate([
           {
             $match: {
-              setId: ObjectID(setId),
-              userId: ObjectID(userId)
+              setId: new ObjectId(setId),
+              userId: new ObjectId(userId)
             },
           },
           { $sort: { [sortField]: order === DescOrder ? -1 : 1 } },
@@ -129,6 +129,77 @@ export default class ItemsInteractionsDao {
       console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
       return []
+    }
+  }
+
+  static async getInteractedItems(userId: ObjectId, interaction: string, skip: number, limit: number) {
+    try {
+      return await _itemsInteractions
+        .aggregate([
+          {
+            '$match': {
+              'userId': userId,
+              [`interactionCount.${interaction}`]: {
+                '$gt': 0
+              }
+            }
+          }, {
+            '$addFields': {
+              'isStar': {
+                '$eq': [
+                  {
+                    '$mod': [
+                      '$interactionCount.star', 2
+                    ]
+                  }, 1
+                ]
+              }
+            }
+          }, {
+            '$match': {
+              'isStar': true
+            }
+          }, {
+            '$lookup': {
+              'from': 'sets',
+              'localField': 'setId',
+              'foreignField': '_id',
+              'as': 'set'
+            }
+          }, {
+            '$unwind': {
+              'path': '$set'
+            }
+          }, {
+            '$project': {
+              'item': {
+                '$filter': {
+                  'input': '$set.items',
+                  'as': 'items',
+                  'cond': {
+                    '$eq': [
+                      '$$items._id', '$itemId'
+                    ]
+                  }
+                }
+              },
+              '_id': 0
+            }
+          }, {
+            '$unwind': {
+              'path': '$item'
+            }
+          }, {
+            '$skip': skip
+          }, {
+            '$limit': limit
+          }
+        ])
+        .toArray()
+    } catch (e) {
+      console.log(arguments)
+      console.error(`Error, ${e}, ${e.stack}`)
+      return false
     }
   }
 }

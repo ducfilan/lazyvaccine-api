@@ -3,19 +3,19 @@ import TopSetsDao from '../../dao/top-sets.dao'
 import InteractionsDao from '../../dao/interactions.dao'
 import ItemsInteractionsDao from '../../dao/items-interactions.dao'
 import CategoriesDao from '../../dao/categories.dao'
-import { ObjectID } from 'mongodb'
 import { BaseCollectionProperties, SupportingTopSetsTypes } from '../../common/consts'
 import { getCache, setCache, delCache } from '../../common/redis'
+import { ObjectId } from 'mongodb'
 
 function standardizeSetInfoProperties(setInfo) {
   delete setInfo.captchaToken
 
   // Add _id to items.
-  setInfo.items.forEach(item => item._id = item._id ? ObjectID(item._id) : ObjectID())
+  setInfo.items.forEach(item => item._id = item._id ? new ObjectId(item._id) : new ObjectId())
   return {
     ...setInfo,
-    _id: ObjectID(setInfo._id),
-    categoryId: ObjectID(setInfo.categoryId),
+    _id: new ObjectId(setInfo._id),
+    categoryId: new ObjectId(setInfo.categoryId),
     ...BaseCollectionProperties()
   }
 }
@@ -44,7 +44,7 @@ export default {
     const cacheKey = `set_${setId}`
     let set = await getCache(cacheKey)
 
-    setId = ObjectID(setId)
+    setId = new ObjectId(setId)
 
     if (!set) {
       set = await SetsDao.getSet(setId)
@@ -64,7 +64,7 @@ export default {
 
   getSetsInCategory: async (categoryId, skip, limit) => {
     const subCategoriesIds = await CategoriesDao.getSubCategoriesIds(categoryId)
-    return SetsDao.getSetsInCategory([ObjectID(categoryId), ...subCategoriesIds], skip, limit)
+    return SetsDao.getSetsInCategory([new ObjectId(categoryId), ...subCategoriesIds], skip, limit)
   },
 
   searchSet: async (userId, searchConditions) => {
@@ -87,7 +87,7 @@ export default {
     let suggestResult = await getCache(cacheKey)
 
     if (suggestResult) {
-      suggestResult.sets.forEach(set => set._id = ObjectID(set._id))
+      suggestResult.sets.forEach(set => set._id = new ObjectId(set._id))
     }
     else {
       suggestResult = await SetsDao.suggestSets({ userId, ...searchConditions })
@@ -139,7 +139,7 @@ export default {
     const topSets = await TopSetsDao.getTopSets({
       langCode,
       type: SupportingTopSetsTypes.Category,
-      categoryId: ObjectID(categoryId)
+      categoryId: new ObjectId(categoryId)
     })
 
     const topSetIds = topSets.map(topSet => topSet._id)
@@ -165,6 +165,10 @@ export default {
 
   getTopInteractItem: async (action, userId, setId, order, limit) => {
     return ItemsInteractionsDao.getTopInteractItem(action, userId, setId, order, limit)
+  },
+
+  getInteractedItems: async (userId: ObjectId, interaction: string, skip: number, limit: number) => {
+    return ItemsInteractionsDao.getInteractedItems(userId, interaction, skip, limit)
   },
 
   undoInteractSet: async (action, userId, setId) => {

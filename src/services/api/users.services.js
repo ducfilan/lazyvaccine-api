@@ -1,4 +1,4 @@
-import { ObjectID } from 'mongodb'
+import { ObjectId } from 'mongodb'
 import UsersDao from '../../dao/users.dao'
 import InteractionsDao from '../../dao/interactions.dao'
 import SetsDao from '../../dao/sets.dao'
@@ -46,13 +46,13 @@ export default {
   },
 
   getUserInfo: async (userId) => {
-    return UsersDao.findOne({ _id: ObjectID(userId) })
+    return UsersDao.findOne({ _id: new ObjectId(userId) })
   },
 
   getUserSets: async (userId, interaction, skip, limit) => {
     switch (interaction) {
       case 'create':
-        let resp = await SetsDao.find({ creatorId: ObjectID(userId) }, skip, limit)
+        let resp = await SetsDao.find({ creatorId: new ObjectId(userId) }, skip, limit)
         const setIds = resp.sets.map(({ _id }) => _id)
 
         const interactions = await InteractionsDao.filterSetIds(userId, setIds) || []
@@ -64,17 +64,17 @@ export default {
 
         return resp
       default:
-        return InteractionsDao.getUserInteractedSets(ObjectID(userId), interaction, skip, limit)
+        return InteractionsDao.getUserInteractedSets(new ObjectId(userId), interaction, skip, limit)
     }
   },
 
   getUserRandomSet: async (userId, interaction) => {
     const cacheKey = `randomSet_${userId}_${interaction}`
-    userId = ObjectID(userId)
+    userId = new ObjectId(userId)
     let result = await getCache(cacheKey)
 
     if (result) {
-      result.set._id = ObjectID(result.set._id)
+      result.set._id = new ObjectId(result.set._id)
     }
     else {
       result = await InteractionsDao.getUserRandomSet(userId, interaction)
