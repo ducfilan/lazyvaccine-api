@@ -2,7 +2,7 @@ import UsersDao from '../../dao/users.dao'
 import { getEmailFromGoogleToken } from '../../services/support/google-auth.service'
 import { LoginTypes } from '../../common/consts'
 import { getCache, setCache } from '../../common/redis'
-import { ObjectID } from 'mongodb'
+import { ObjectId } from 'mongodb'
 
 export default async (req, res, next) => {
   try {
@@ -26,7 +26,7 @@ export default async (req, res, next) => {
     let user = await getCache(cacheKey)
 
     if (user) {
-      user._id = ObjectID(user._id)
+      user._id = new ObjectId(user._id)
     } else {
       user = await UsersDao.findByEmail(email)
       setCache(cacheKey, user)

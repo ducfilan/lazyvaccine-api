@@ -1,4 +1,4 @@
-import { ObjectID } from 'mongodb'
+import { ObjectId } from 'mongodb'
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
 import { SetsCollectionName, InteractionsCollectionName, SetInteractions, ItemsInteractionsCollectionName } from '../common/consts'
 
@@ -80,8 +80,8 @@ export default class InteractionsDao {
       await _interactions
         .updateOne(
           {
-            userId: ObjectID(userId),
-            setId: ObjectID(setId)
+            userId: new ObjectId(userId),
+            setId: new ObjectId(setId)
           },
           {
             $addToSet: {
@@ -104,8 +104,8 @@ export default class InteractionsDao {
       await _interactions
         .updateOne(
           {
-            userId: ObjectID(userId),
-            setId: ObjectID(setId)
+            userId: new ObjectId(userId),
+            setId: new ObjectId(setId)
           },
           {
             $pull: {
@@ -125,8 +125,8 @@ export default class InteractionsDao {
       await _interactions
         .updateOne(
           {
-            userId: ObjectID(userId),
-            setId: ObjectID(setId)
+            userId: new ObjectId(userId),
+            setId: new ObjectId(setId)
           },
           {
             $addToSet: {
