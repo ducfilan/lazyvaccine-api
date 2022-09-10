@@ -15,6 +15,6 @@ export default {
   Configs: {
     maxPoolSize: 100,
     retryWrites: true,
-    writeConcern: new WriteConcern('majority', 5000,), // ms 
+    writeConcern: new WriteConcern('majority', 5000), // ms 
   }
 }
