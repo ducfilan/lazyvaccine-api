@@ -234,7 +234,7 @@ export default class SetsDao {
     }
   }
 
-  static async find(matchCondition, skip, limit) {
+  static async find(matchCondition: {}, skip, limit) {
     try {
       let sets = await _sets
         .aggregate([
@@ -285,10 +285,10 @@ export default class SetsDao {
         }
       }
 
-      let total = await _sets.find({
+      let total: number = await _sets.countDocuments({
         ...matchCondition,
         delFlag: false,
-      }).count()
+      }) || 0
 
       return { total, sets }
     } catch (e) {
@@ -515,10 +515,10 @@ export default class SetsDao {
         return {}
       }
 
-      let total = await _sets.find({
+      let total = await _sets.countDocuments({
         categoryId: { $in: categoryIds },
         delFlag: false
-      }).count()
+      }) || 0
 
       return { total, sets }
     } catch (e) {

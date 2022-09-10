@@ -7,5 +7,6 @@ const securedItemsInteractionsRouter = Router()
 securedItemsInteractionsRouter.route('/:setId/items-interactions/:itemId').post(auth, ItemsInteractionsController.apiInteractItem)
 securedItemsInteractionsRouter.route('/:setId/item-interactions').get(auth, ItemsInteractionsController.apiGetTopInteractItem)
 securedItemsInteractionsRouter.route('/items').get(auth, ItemsInteractionsController.apiGetInteractedItems)
+securedItemsInteractionsRouter.route('/count').get(auth, ItemsInteractionsController.apiCountInteractedItems)
 
 export { securedItemsInteractionsRouter }
