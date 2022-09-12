@@ -37,17 +37,9 @@ export default class SetsController {
 
   static async apiGetSet(req, res) {
     try {
-      const cacheKey = `set_${req.params.setId}`
-      const cachedSet = await getCache(cacheKey)
+      const set = await setsServices.getSet(req.user?._id, req.params.setId)
 
-      if (cachedSet) {
-        return res.json(cachedSet)
-      } else {
-        const set = await setsServices.getSet(req.user?._id, req.params.setId)
-        setCache(cacheKey, set)
-
-        return res.json(set)
-      }
+      return res.json(set)
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })

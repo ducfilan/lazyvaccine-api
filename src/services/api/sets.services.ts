@@ -3,7 +3,7 @@ import TopSetsDao from '../../dao/top-sets.dao'
 import InteractionsDao from '../../dao/interactions.dao'
 import ItemsInteractionsDao from '../../dao/items-interactions.dao'
 import CategoriesDao from '../../dao/categories.dao'
-import { BaseCollectionProperties, CacheKeyRandomSet, InteractionSubscribe, SupportingTopSetsTypes } from '../../common/consts'
+import { BaseCollectionProperties, CacheKeyRandomSet, CacheKeySet, CacheKeySuggestSet, InteractionSubscribe, SupportingTopSetsTypes } from '../../common/consts'
 import { getCache, setCache, delCache } from '../../common/redis'
 import { ObjectId } from 'mongodb'
 
@@ -40,11 +40,11 @@ export default {
     return SetsDao.replaceSet(interactionCount ? { ...setInfo, interactionCount } : setInfo)
   },
 
-  getSet: async (userId: ObjectId, setId: string | ObjectId) => {
-    const cacheKey = `set_${setId}`
+  getSet: async (userId: ObjectId, setIdStr: string) => {
+    const cacheKey = CacheKeySet(setIdStr)
     let set = await getCache(cacheKey)
 
-    setId = new ObjectId(setId)
+    const setId = new ObjectId(setIdStr)
 
     if (!set) {
       set = await SetsDao.getSet(setId)
@@ -80,10 +80,10 @@ export default {
     return { total, sets, interactions }
   },
 
-  suggestSets: async (userId, searchConditions) => {
+  suggestSets: async (userId: ObjectId, searchConditions) => {
     const { keyword, skip, limit, languages } = searchConditions
 
-    const cacheKey = `suggestSet_${userId}_${keyword}_${skip}_${limit}_${languages.join()}`
+    const cacheKey = CacheKeySuggestSet(userId.toString(), keyword, skip, limit, languages)
     let suggestResult = await getCache(cacheKey)
 
     if (suggestResult) {

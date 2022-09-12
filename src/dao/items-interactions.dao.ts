@@ -91,7 +91,8 @@ export default class ItemsInteractionsDao {
             $inc: {
               [`interactionCount.${action}`]: increment
             },
-            $set: { lastUpdated: new Date() }
+            $set: { lastUpdated: new Date() },
+            $push: { interactionsDetail: { interaction: action, timing: new Date() } }
           },
           {
             upsert: true

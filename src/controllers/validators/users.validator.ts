@@ -1,19 +1,20 @@
 import { MaxPaginationLimit, MaxRegistrationsStep } from '../../common/consts'
+import { ValidationError } from './common.validator'
 
 export const apiGetUserSetsValidator = ({ interaction, skip, limit }) => {
   skip = Number(skip)
   limit = Number(limit)
 
   if (!Number.isInteger(skip) || skip < 0) {
-    return false
+    throw new ValidationError('invalid skip value: ' + skip)
   }
 
   if (!Number.isInteger(limit) || limit > MaxPaginationLimit || limit < 0) {
-    return false
+    throw new ValidationError('invalid limit value: ' + limit)
   }
 
   if (!interaction) {
-    return false
+    throw new ValidationError('no interaction specified')
   }
 
   return { interaction, skip, limit }

@@ -26,7 +26,7 @@ export const getEmailFromGoogleToken = async (serviceAccessToken) => {
   } catch (error) {
     console.log('getEmailFromGoogleToken:')
     console.log(error)
-    return false
+    return null
   }
 }
 

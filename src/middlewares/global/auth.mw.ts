@@ -10,7 +10,7 @@ export default async (req, res, next) => {
     const loginType = req.header('X-Login-Type')
     if (!token) throw new Error('no Authorization token provided!')
 
-    let email: string
+    let email: string | null | undefined
     switch (loginType) {
       case LoginTypes.google:
         email = await getEmailFromGoogleToken(token)

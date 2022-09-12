@@ -2,6 +2,7 @@ import usersServices from '../services/api/users.services'
 import setsServices from '../services/api/sets.services'
 import { apiGetUserSetsValidator, apiUpdateUserValidator } from './validators/users.validator'
 import { apiSearchSetValidator } from './validators/sets.validator'
+import { ValidationError } from './validators/common.validator'
 
 export default class UsersController {
   static async me(req, res) {
@@ -25,7 +26,17 @@ export default class UsersController {
 
       res.status(200).send(sets)
     } catch (e) {
-      res.status(500).json({ error: e.message })
+      console.log(`api, ${e}`)
+
+      switch (e.constructor) {
+        case ValidationError:
+          res.status(400).json({ error: e })
+          break
+
+        default:
+          res.status(500).json({ error: e })
+          break
+      }
     }
   }
 
@@ -79,7 +90,7 @@ export default class UsersController {
       const searchConditions = apiSearchSetValidator(req.query, req.user.langCodes)
       if (!searchConditions) res.sendStatus(400)
 
-      return res.json(await setsServices.suggestSets(req.user?._id, searchConditions))
+      return res.json(await setsServices.suggestSets(req.user._id, searchConditions))
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })

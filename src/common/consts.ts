@@ -87,3 +87,6 @@ export const AscOrder = 'asc'
 export const DescOrder = 'desc'
 
 export const CacheKeyRandomSet = (userId: string, interaction: string) => `randomSet_${userId}_${interaction}`
+export const CacheKeySet = (setId: string) => `set_${setId}`
+export const CacheKeyUser = (email: string) => `user_${email}`
+export const CacheKeySuggestSet = (userId: string, keyword: string, skip: number, limit: number, languages: string[]) => `suggestSet_${userId}_${keyword}_${skip}_${limit}_${languages.join()}`
