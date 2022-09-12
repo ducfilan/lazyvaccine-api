@@ -294,7 +294,7 @@ export default class SetsDao {
     } catch (e) {
       console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
-      return false
+      return { total: 0, sets: [] }
     }
   }
 

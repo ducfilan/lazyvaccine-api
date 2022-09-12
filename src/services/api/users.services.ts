@@ -6,7 +6,7 @@ import ItemsStatisticsDao from '../../dao/items-statistics.dao'
 import ItemsInteractionsDao from '../../dao/items-interactions.dao'
 import SetsStatisticsDao from '../../dao/sets-statistics.dao'
 import { isGoogleTokenValid } from '../support/google-auth.service'
-import { LoginTypes, SupportingLanguagesMap, DefaultLangCode } from '../../common/consts'
+import { LoginTypes, SupportingLanguagesMap, DefaultLangCode, CacheKeyRandomSet } from '../../common/consts'
 import { getCache, setCache } from '../../common/redis'
 
 export default {
@@ -68,8 +68,8 @@ export default {
     }
   },
 
-  getUserRandomSet: async (userId, interaction) => {
-    const cacheKey = `randomSet_${userId}_${interaction}`
+  getUserRandomSet: async (userId: ObjectId, interaction: string) => {
+    const cacheKey = CacheKeyRandomSet(userId.toString(), interaction)
     userId = new ObjectId(userId)
     let result = await getCache(cacheKey)
 

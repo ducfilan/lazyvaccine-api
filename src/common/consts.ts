@@ -62,7 +62,6 @@ export const HttpStatusUnauthorized = 401
 export const HttpStatusForbidden = 403
 export const HttpStatusInternalServer = 500
 
-
 export const InteractionSubscribe = 'subscribe'
 export const InteractionLike = 'like'
 export const InteractionDislike = 'dislike'
@@ -76,8 +75,9 @@ export const ItemsInteractionForcedDone = 'forced-done'
 export const ItemsInteractionAnswerCorrect = 'answer-correct'
 export const ItemsInteractionAnswerIncorrect = 'answer-incorrect'
 export const ItemsInteractionStar = 'star'
+export const ItemsInteractionReviewStar = 'review-star'
 export const ItemsInteractionFlip = 'flip'
-export const ItemsInteractions = [ItemsInteractionShow, ItemsInteractionNext, ItemsInteractionPrev, ItemsInteractionAnswerCorrect, ItemsInteractionAnswerIncorrect, ItemsInteractionIgnore, ItemsInteractionForcedDone, ItemsInteractionStar, ItemsInteractionFlip]
+export const ItemsInteractions = [ItemsInteractionShow, ItemsInteractionNext, ItemsInteractionPrev, ItemsInteractionAnswerCorrect, ItemsInteractionAnswerIncorrect, ItemsInteractionIgnore, ItemsInteractionForcedDone, ItemsInteractionStar, ItemsInteractionFlip, ItemsInteractionReviewStar]
 
 export const MaxPaginationLimit = 100
 export const DefaultMostItemsInteractionsLimit = 5
@@ -85,3 +85,5 @@ export const MaxRegistrationsStep = 3
 
 export const AscOrder = 'asc'
 export const DescOrder = 'desc'
+
+export const CacheKeyRandomSet = (userId: string, interaction: string) => `randomSet_${userId}_${interaction}`
