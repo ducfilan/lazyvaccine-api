@@ -1,4 +1,5 @@
-const { OAuth2Client } = require('google-auth-library');
+import { OAuth2Client } from 'google-auth-library'
+
 const oAuth2Client = new OAuth2Client({
   clientId: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -9,29 +10,21 @@ const oAuth2Client = new OAuth2Client({
 
 export const isGoogleTokenValid = async (serviceAccessToken, requestEmail) => {
   try {
-    if (oAuth2Client.isTokenExpiring(serviceAccessToken)) {
-      console.log('isGoogleTokenValid: token is expired')
-      return false
-    }
-
     const { email: tokenInfoEmail } = await oAuth2Client.getTokenInfo(serviceAccessToken)
-    return tokenInfoEmail.toLowerCase() === requestEmail.toLowerCase()
+    return tokenInfoEmail?.toLowerCase() === requestEmail.toLowerCase()
   } catch (error) {
-    console.log('isGoogleTokenValid: error' + error.message)
+    console.log('isGoogleTokenValid:')
+    console.log(error)
     return false
   }
 }
 
 export const getEmailFromGoogleToken = async (serviceAccessToken) => {
   try {
-    if (oAuth2Client.isTokenExpiring(serviceAccessToken)) {
-      console.log('getEmailFromGoogleToken: token is expired')
-      return null
-    }
-
     const { email } = await oAuth2Client.getTokenInfo(serviceAccessToken)
     return email
   } catch (error) {
+    console.log('getEmailFromGoogleToken:')
     console.log(error)
     return false
   }
