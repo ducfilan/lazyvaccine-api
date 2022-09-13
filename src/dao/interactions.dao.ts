@@ -165,7 +165,7 @@ export default class InteractionsDao {
 
   static async filterSetId(userId: ObjectId, setId: ObjectId): Promise<any> {
     try {
-      return _interactions
+      return (await _interactions
         .findOne({
           userId,
           setId
@@ -175,7 +175,7 @@ export default class InteractionsDao {
             setId: 1,
             actions: 1,
           }
-        }) || {}
+        })) || {}
     } catch (e) {
       console.error(`Error in filterSetId, ${e}`)
       return {}
