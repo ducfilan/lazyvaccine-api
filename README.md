@@ -17,9 +17,18 @@
 	MONGO_DB=lazyvaccine
 	NODE_PORT=8080
 	NODE_ENV=dev
-	JWT_KEY=7eaa951e-6688-42cc-be3a-78a712da979d
-	GOOGLE_CLIENT_ID=45752199260-mh4bu2geh3f7bi39fvrni7ajsb30ck59.apps.googleusercontent.com
-	RECAPTCHA_SECRET_KEY=6LeZTkUcAAAAALyFMb7rWO-u-DgGqXbGn0O-EbmU
+	JWT_KEY=
+	GOOGLE_CLIENT_ID=
+	RECAPTCHA_SECRET_KEY=
+
+	DO_SPACES_KEY=
+	DO_SPACES_SECRET=
+
+	REDIS_ENDPOINT=cache
+	REDIS_PORT=6379
+	REDIS_PASSWORD=zUCXCkxt
+	REDIS_USERNAME=default
+	REDIS_SCHEME=redis
 	```
 - Run `docker-compose up` from terminal
 #### Usage:
@@ -27,3 +36,6 @@
 
 	`docker exec -it <container name>`
 
+- Local redis access:
+
+	`docker exec -it cache redis-cli -u redis://default:zUCXCkxt@localhost`
