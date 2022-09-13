@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { DefaultMostItemsInteractionsLimit, ItemsInteractions, ItemsInteractionsCollectionName, DescOrder } from '../common/consts'
+import { DefaultMostItemsInteractionsLimit, ItemsInteractions, ItemsInteractionsCollectionName, DescOrder, ItemsInteractionReviewStar } from '../common/consts'
 
 let _itemsInteractions: Collection
 let _db: Db
@@ -44,6 +44,23 @@ export default class ItemsInteractionsDao {
                 },
                 additionalProperties: false
               },
+              interactionsDetail: {
+                bsonType: 'array',
+                additionalProperties: false,
+                items: {
+                  bsonType: 'object',
+                  required: ['interaction', 'timing'],
+                  properties: {
+                    interaction: {
+                      enum: ItemsInteractions,
+                      type: 'string',
+                    },
+                    timing: {
+                      bsonType: 'date'
+                    }
+                  }
+                }
+              },
               lastUpdated: {
                 bsonType: 'date'
               }
@@ -74,7 +91,8 @@ export default class ItemsInteractionsDao {
             $inc: {
               [`interactionCount.${action}`]: increment
             },
-            $set: { lastUpdated: new Date() }
+            $set: { lastUpdated: new Date() },
+            $push: { interactionsDetail: { interaction: action, timing: new Date() } }
           },
           {
             upsert: true
@@ -132,12 +150,13 @@ export default class ItemsInteractionsDao {
     }
   }
 
-  static async countInteractedItems(userId: ObjectId, interaction: string): Promise<number> {
+  static async countInteractedItems(userId: ObjectId, interactionInclude: string, interactionIgnore: string): Promise<number> {
     try {
       return await _itemsInteractions
         .countDocuments({
           userId,
-          [`interactionCount.${interaction}`]: { $gt: 0 }
+          [`interactionCount.${interactionInclude}`]: { $gt: 0 },
+          [`interactionCount.${interactionIgnore}`]: { $in: [null, 0] }
         })
     } catch (e) {
       console.log(arguments)
@@ -146,15 +165,18 @@ export default class ItemsInteractionsDao {
     }
   }
 
-  static async getInteractedItems(userId: ObjectId, interaction: string, skip: number, limit: number) {
+  static async getInteractedItems(userId: ObjectId, interactionInclude: string, interactionIgnore: string, skip: number, limit: number) {
     try {
       return await _itemsInteractions
         .aggregate([
           {
             '$match': {
               'userId': userId,
-              [`interactionCount.${interaction}`]: {
+              [`interactionCount.${interactionInclude}`]: {
                 '$gt': 0
+              },
+              [`interactionCount.${interactionIgnore}`]: {
+                '$in': [null, 0]
               }
             }
           }, {

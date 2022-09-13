@@ -9,7 +9,7 @@ export async function getClient() {
       return GlobalClient
     }
 
-    const url = `rediss://${process.env.REDIS_USERNAME}:${process.env.REDIS_PASSWORD}@${process.env.REDIS_ENDPOINT}:${process.env.REDIS_PORT}`
+    const url = `${process.env.REDIS_SCHEME}://${process.env.REDIS_USERNAME}:${process.env.REDIS_PASSWORD}@${process.env.REDIS_ENDPOINT}:${process.env.REDIS_PORT}`
     console.info('connecting to redis server: ' + process.env.REDIS_ENDPOINT)
 
     GlobalClient = createClient({

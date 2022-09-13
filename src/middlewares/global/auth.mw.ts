@@ -1,6 +1,6 @@
 import UsersDao from '../../dao/users.dao'
 import { getEmailFromGoogleToken } from '../../services/support/google-auth.service'
-import { LoginTypes } from '../../common/consts'
+import { CacheKeyUser, LoginTypes } from '../../common/consts'
 import { getCache, setCache } from '../../common/redis'
 import { ObjectId } from 'mongodb'
 
@@ -10,7 +10,7 @@ export default async (req, res, next) => {
     const loginType = req.header('X-Login-Type')
     if (!token) throw new Error('no Authorization token provided!')
 
-    let email
+    let email: string | null | undefined
     switch (loginType) {
       case LoginTypes.google:
         email = await getEmailFromGoogleToken(token)
@@ -22,7 +22,7 @@ export default async (req, res, next) => {
 
     if (!email) throw new Error('invalid/expired token')
 
-    const cacheKey = `user_${email}`
+    const cacheKey = CacheKeyUser(email)
     let user = await getCache(cacheKey)
 
     if (user) {

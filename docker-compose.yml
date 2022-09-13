@@ -6,6 +6,9 @@ services:
       context: .
       dockerfile: Dockerfile
     image: nodejs
+    depends_on:
+      - db
+      - cache
     container_name: nodejs
     restart: unless-stopped
     env_file: .env
@@ -16,6 +19,9 @@ services:
       - MONGO_PORT=$MONGO_PORT
       - MONGO_DB=$MONGO_DB
       - NODE_PORT=$NODE_PORT
+    links:
+      - db
+      - cache
     ports:
       - "80:8080"
       - "9229:9229"
@@ -39,6 +45,17 @@ services:
       - dbdata:/data/db
     networks:
       - app-network
+  cache:
+    image: redis:7.0.4-alpine
+    container_name: cache
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass zUCXCkxt
+    volumes:
+      - cache:/data
+    networks:
+      - app-network
 
 networks:
   app-network:
@@ -47,3 +64,5 @@ networks:
 volumes:
   dbdata:
   node_modules:
+  cache:
+    driver: local

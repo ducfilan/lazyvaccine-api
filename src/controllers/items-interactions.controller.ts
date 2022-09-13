@@ -33,10 +33,10 @@ export default class ItemsInteractionsController {
 
   static async apiGetInteractedItems(req, res) {
     try {
-      const { interaction } = req.query
+      const { interactionInclude, interactionIgnore } = req.query
       const { limit, skip } = apiGetInteractedItemsValidator(req.query)
 
-      return res.json(await setsServices.getInteractedItems(req.user._id, interaction, skip, limit))
+      return res.json(await setsServices.getInteractedItems(req.user._id, interactionInclude, interactionIgnore, skip, limit))
     } catch (e) {
       console.log(`api, ${e}`)
 
@@ -54,9 +54,9 @@ export default class ItemsInteractionsController {
 
   static async apiCountInteractedItems(req, res) {
     try {
-      const { interaction } = req.query
+      const { interactionInclude, interactionIgnore } = req.query
 
-      return res.json(await setsServices.countInteractedItems(req.user._id, interaction))
+      return res.json(await setsServices.countInteractedItems(req.user._id, interactionInclude, interactionIgnore))
     } catch (e) {
       console.log(`api, ${e}`)
 

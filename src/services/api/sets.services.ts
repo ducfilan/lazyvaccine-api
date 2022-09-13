@@ -3,7 +3,7 @@ import TopSetsDao from '../../dao/top-sets.dao'
 import InteractionsDao from '../../dao/interactions.dao'
 import ItemsInteractionsDao from '../../dao/items-interactions.dao'
 import CategoriesDao from '../../dao/categories.dao'
-import { BaseCollectionProperties, SupportingTopSetsTypes } from '../../common/consts'
+import { BaseCollectionProperties, CacheKeyRandomSet, CacheKeySet, CacheKeySuggestSet, InteractionSubscribe, SupportingTopSetsTypes } from '../../common/consts'
 import { getCache, setCache, delCache } from '../../common/redis'
 import { ObjectId } from 'mongodb'
 
@@ -40,11 +40,11 @@ export default {
     return SetsDao.replaceSet(interactionCount ? { ...setInfo, interactionCount } : setInfo)
   },
 
-  getSet: async (userId: ObjectId, setId: string | ObjectId) => {
-    const cacheKey = `set_${setId}`
+  getSet: async (userId: ObjectId, setIdStr: string) => {
+    const cacheKey = CacheKeySet(setIdStr)
     let set = await getCache(cacheKey)
 
-    setId = new ObjectId(setId)
+    const setId = new ObjectId(setIdStr)
 
     if (!set) {
       set = await SetsDao.getSet(setId)
@@ -80,10 +80,10 @@ export default {
     return { total, sets, interactions }
   },
 
-  suggestSets: async (userId, searchConditions) => {
+  suggestSets: async (userId: ObjectId, searchConditions) => {
     const { keyword, skip, limit, languages } = searchConditions
 
-    const cacheKey = `suggestSet_${userId}_${keyword}_${skip}_${limit}_${languages.join()}`
+    const cacheKey = CacheKeySuggestSet(userId.toString(), keyword, skip, limit, languages)
     let suggestResult = await getCache(cacheKey)
 
     if (suggestResult) {
@@ -167,15 +167,19 @@ export default {
     return ItemsInteractionsDao.getTopInteractItem(action, userId, setId, order, limit)
   },
 
-  getInteractedItems: async (userId: ObjectId, interaction: string, skip: number, limit: number) => {
-    return ItemsInteractionsDao.getInteractedItems(userId, interaction, skip, limit)
+  getInteractedItems: async (userId: ObjectId, interactionInclude: string, interactionIgnore: string, skip: number, limit: number) => {
+    return ItemsInteractionsDao.getInteractedItems(userId, interactionInclude, interactionIgnore, skip, limit)
   },
 
-  countInteractedItems: async (userId: ObjectId, interaction: string) => {
-    return ItemsInteractionsDao.countInteractedItems(userId, interaction)
+  countInteractedItems: async (userId: ObjectId, interactionInclude: string, interactionIgnore: string) => {
+    return ItemsInteractionsDao.countInteractedItems(userId, interactionInclude, interactionIgnore)
   },
 
-  undoInteractSet: async (action, userId, setId) => {
+  undoInteractSet: async (action, userId: ObjectId, setId) => {
+    if (action === InteractionSubscribe) {
+      delCache(CacheKeyRandomSet(userId.toString(), action))
+    }
+
     await InteractionsDao.undoInteractSet(action, userId, setId)
 
     // TODO: Use kafka, separate job to sync.
