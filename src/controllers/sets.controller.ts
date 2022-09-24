@@ -1,6 +1,7 @@
 import setsServices from '../services/api/sets.services'
-import { apiSearchSetValidator, apiGetSetsInCategoriesValidator } from './validators/sets.validator'
-import { getCache, setCache, delCache } from '../common/redis'
+import { apiSearchSetValidator, apiGetSetsInCategoriesValidator, apiGetSetValidator } from './validators/sets.validator'
+import { delCache } from '../common/redis'
+import { SupportingLanguages } from '../common/consts'
 
 export default class SetsController {
   static async apiCreateSet(req, res) {
@@ -37,7 +38,9 @@ export default class SetsController {
 
   static async apiGetSet(req, res) {
     try {
-      const set = await setsServices.getSet(req.user?._id, req.params.setId)
+      const { itemsSkip, itemsLimit } = req.query
+      const { skip, limit } = apiGetSetValidator({ skip: itemsSkip, limit: itemsLimit })
+      const set = await setsServices.getSet(req.user?._id, req.params.setId, skip, limit)
 
       return res.json(set)
     } catch (e) {
@@ -48,7 +51,7 @@ export default class SetsController {
 
   static async apiSearchSet(req, res) {
     try {
-      const searchConditions = apiSearchSetValidator(req.query)
+      const searchConditions = apiSearchSetValidator(req.query, req.user?.langCodes || SupportingLanguages)
       if (!searchConditions) res.sendStatus(400)
 
       return res.json(await setsServices.searchSet(req.user?._id, searchConditions))

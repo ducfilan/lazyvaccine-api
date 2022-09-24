@@ -40,14 +40,14 @@ export default {
     return SetsDao.replaceSet(interactionCount ? { ...setInfo, interactionCount } : setInfo)
   },
 
-  getSet: async (userId: ObjectId, setIdStr: string) => {
-    const cacheKey = CacheKeySet(setIdStr)
+  getSet: async (userId: ObjectId, setIdStr: string, itemsSkip: number, itemsLimit: number) => {
+    const cacheKey = CacheKeySet(setIdStr, itemsSkip, itemsLimit)
     let set = await getCache(cacheKey)
 
     const setId = new ObjectId(setIdStr)
 
     if (!set) {
-      set = await SetsDao.getSet(setId)
+      set = await SetsDao.getSet(setId, itemsSkip, itemsLimit)
       if (!set) return null
 
       setCache(cacheKey, set)

@@ -9,7 +9,8 @@ import {
   StaticBaseUrl,
   SetInteractions,
   InteractionSubscribe,
-  InteractionDislike
+  InteractionDislike,
+  MaxInt
 } from '../common/consts'
 
 let _sets: Collection
@@ -183,7 +184,7 @@ export default class SetsDao {
     }
   }
 
-  static async findOneById(_id) {
+  static async findOneById(_id: ObjectId, itemsSkip: number = 0, itemsLimit: number = MaxInt) {
     try {
       let set = await _sets
         .aggregate([
@@ -216,7 +217,8 @@ export default class SetsDao {
               creatorName: '$creator.name',
               imgUrl: 1,
               lastUpdated: 1,
-              items: 1,
+              items: { $slice: ['$items', itemsSkip, itemsLimit] },
+              totalItemsCount: { $size: '$items' },
               interactionCount: 1,
             },
           },
@@ -325,9 +327,9 @@ export default class SetsDao {
     }
   }
 
-  static async getSet(_id) {
+  static async getSet(_id: ObjectId, itemsSkip: number = 0, itemsLimit: number = Number.MIN_SAFE_INTEGER) {
     try {
-      return await this.findOneById(_id)
+      return await this.findOneById(_id, itemsSkip, itemsLimit)
     } catch (e) {
       console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
@@ -437,7 +439,7 @@ export default class SetsDao {
     }
   }
 
-  static toLanguagesConditions(languages) {
+  static toLanguagesConditions(languages: string[]): any[] {
     return (languages && languages.length > 0) ? [
       {
         compound: {
