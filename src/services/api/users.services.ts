@@ -68,8 +68,8 @@ export default {
     }
   },
 
-  getUserRandomSet: async (userId: ObjectId, interaction: string) => {
-    const cacheKey = CacheKeyRandomSet(userId.toString(), interaction)
+  getUserRandomSet: async (userId: ObjectId, interaction: string, itemsSkip: number, itemsLimit: number) => {
+    const cacheKey = CacheKeyRandomSet(userId.toString(), interaction, itemsSkip, itemsLimit)
     userId = new ObjectId(userId)
     let result = await getCache(cacheKey)
 
@@ -77,12 +77,13 @@ export default {
       result.set._id = new ObjectId(result.set._id)
     }
     else {
-      result = await InteractionsDao.getUserRandomSet(userId, interaction)
+      result = await InteractionsDao.getUserRandomSet(userId, interaction, itemsSkip, itemsLimit)
       if (!result || Object.keys(result).length == 0) return {}
 
       setCache(cacheKey, result, { EX: 600 })
     }
 
+    // TODO: Filter by items id, not get all.
     result.set.itemsInteractions = await ItemsInteractionsDao.getSetItemsInteract(userId, result.set._id)
 
     return result

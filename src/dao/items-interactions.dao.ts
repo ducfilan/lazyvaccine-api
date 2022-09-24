@@ -221,6 +221,7 @@ export default class ItemsInteractionsDao {
               },
               'fromLanguage': '$set.fromLanguage',
               'toLanguage': '$set.toLanguage',
+              'setId': '$set._id',
               '_id': 0
             }
           }, {
@@ -230,7 +231,8 @@ export default class ItemsInteractionsDao {
           }, {
             '$addFields': {
               'item.fromLanguage': '$fromLanguage',
-              'item.toLanguage': '$toLanguage'
+              'item.toLanguage': '$toLanguage',
+              'item.setId': '$setId'
             }
           }, {
             '$replaceRoot': {

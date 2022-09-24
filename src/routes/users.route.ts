@@ -3,8 +3,8 @@ import UsersController from '../controllers/users.controller'
 import multer from 'multer'
 import auth from '../middlewares/global/auth.mw'
 
-const publicUserRouter = new Router()
-const securedUserRouter = new Router()
+const publicUserRouter = Router()
+const securedUserRouter = Router()
 
 const upload = multer()
 

@@ -3,8 +3,8 @@ import TopSetsDao from '../../dao/top-sets.dao'
 import InteractionsDao from '../../dao/interactions.dao'
 import ItemsInteractionsDao from '../../dao/items-interactions.dao'
 import CategoriesDao from '../../dao/categories.dao'
-import { BaseCollectionProperties, CacheKeyRandomSet, CacheKeySet, CacheKeySuggestSet, InteractionSubscribe, SupportingTopSetsTypes } from '../../common/consts'
-import { getCache, setCache, delCache } from '../../common/redis'
+import { BaseCollectionProperties, CacheKeyRandomSetPrefix, CacheKeySet, CacheKeySuggestSet, InteractionSubscribe, SupportingTopSetsTypes } from '../../common/consts'
+import { getCache, setCache, delCache, delCacheByKeyPattern } from '../../common/redis'
 import { ObjectId } from 'mongodb'
 
 function standardizeSetInfoProperties(setInfo) {
@@ -177,7 +177,7 @@ export default {
 
   undoInteractSet: async (action, userId: ObjectId, setId) => {
     if (action === InteractionSubscribe) {
-      delCache(CacheKeyRandomSet(userId.toString(), action))
+      delCacheByKeyPattern(CacheKeyRandomSetPrefix(userId.toString(), action))
     }
 
     await InteractionsDao.undoInteractSet(action, userId, setId)

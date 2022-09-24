@@ -9,7 +9,7 @@ export default async (req, res, next) => {
 
     const verifyUrl = CaptchaVerificationUrl(captchaToken)
     const response = await fetch(verifyUrl)
-    const { success } = await response.json()
+    const { success }: any = await response.json()
 
     if (success) {
       next()
