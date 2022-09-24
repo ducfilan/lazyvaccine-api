@@ -1,38 +1,35 @@
-import { RedisClientType } from '@redis/client'
-import { createClient } from 'redis'
+import Redis from 'ioredis'
 
-let GlobalClient: RedisClientType
+let redis: Redis = null
 
-export async function getClient() {
+export function getClient() {
   try {
-    if (GlobalClient && GlobalClient.isOpen) {
-      return GlobalClient
+    if (redis) {
+      return redis
     }
 
     const url = `${process.env.REDIS_SCHEME}://${process.env.REDIS_USERNAME}:${process.env.REDIS_PASSWORD}@${process.env.REDIS_ENDPOINT}:${process.env.REDIS_PORT}`
     console.info('connecting to redis server: ' + process.env.REDIS_ENDPOINT)
 
-    GlobalClient = createClient({
-      url
-    })
+    redis = new Redis(url)
 
-    GlobalClient.on('error', (err) => console.error('Redis Client Error', err));
-
-    await GlobalClient.connect()
-
-    return GlobalClient
+    return redis
   }
   catch (error) {
     console.error(error)
   }
 }
 
-export async function setCache(key: string, value, options = {}, ignoreError = true) {
+export async function setCache(key: string, value, options: any = {}, ignoreError = true) {
   try {
-    const client = await getClient()
+    const client = getClient()
     if (!client) return
 
-    await client.set(key, JSON.stringify(value), options)
+    if (options.EX) {
+      await client.set(key, JSON.stringify(value), 'EX', options.EX)
+    } else {
+      await client.set(key, JSON.stringify(value))
+    }
   } catch (error) {
     if (!ignoreError) {
       throw error
@@ -41,15 +38,30 @@ export async function setCache(key: string, value, options = {}, ignoreError = t
 }
 
 export async function delCache(key: string) {
-  const client = await getClient()
+  const client = getClient()
   if (!client) throw new Error('client is not initialized')
 
   await client.del(key)
 }
 
+export async function delCacheByKeyPattern(keyPattern: string) {
+  const client = getClient()
+
+  var stream = client.scanStream({
+    match: keyPattern,
+    count: 100
+  });
+
+  stream.on('data', function (resultKeys) {
+    if (resultKeys.length) {
+      client.unlink(resultKeys)
+    }
+  })
+}
+
 export async function getCache(key: string, ignoreError = true, fallbackValue = null) {
   try {
-    const client = await getClient()
+    const client = getClient()
     if (!client) return null
 
     const cachedValue = await client.get(key)
