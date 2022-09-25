@@ -8,6 +8,7 @@ import SetsStatisticsDao from '../../dao/sets-statistics.dao'
 import { isGoogleTokenValid } from '../support/google-auth.service'
 import { LoginTypes, SupportingLanguagesMap, DefaultLangCode, CacheKeyRandomSet, CacheKeyUser } from '../../common/consts'
 import { delCache, getCache, setCache } from '../../common/redis'
+import { User } from '../../common/types'
 
 export default {
   register: async (requestBody) => {
@@ -89,7 +90,8 @@ export default {
     return result
   },
 
-  update: async (_id, updateItems) => {
+  update: async ({ _id, email }: User, updateItems) => {
+    await delCache(CacheKeyUser(email))
     return UsersDao.updateOne(_id, { $set: updateItems })
   },
 

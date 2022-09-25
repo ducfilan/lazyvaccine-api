@@ -66,7 +66,7 @@ export default class UsersController {
     try {
       const updateProperties = apiUpdateUserValidator(req.body)
 
-      const isSuccess = await usersServices.update(req.user._id, updateProperties)
+      const isSuccess = await usersServices.update(req.user, updateProperties)
       if (!isSuccess) {
         res.status(400).json({ error: 'update user failed' })
       }
