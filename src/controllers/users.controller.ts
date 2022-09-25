@@ -83,7 +83,7 @@ export default class UsersController {
 
       res.sendStatus(200)
     } catch (e) {
-      res.status(400).send({ error: e.message })
+      res.status(500).send({ error: e.message })
     }
   }
 

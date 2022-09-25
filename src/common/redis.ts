@@ -50,7 +50,7 @@ export async function delCacheByKeyPattern(keyPattern: string) {
   var stream = client.scanStream({
     match: keyPattern,
     count: 100
-  });
+  })
 
   stream.on('data', function (resultKeys) {
     if (resultKeys.length) {

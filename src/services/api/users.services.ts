@@ -6,8 +6,8 @@ import ItemsStatisticsDao from '../../dao/items-statistics.dao'
 import ItemsInteractionsDao from '../../dao/items-interactions.dao'
 import SetsStatisticsDao from '../../dao/sets-statistics.dao'
 import { isGoogleTokenValid } from '../support/google-auth.service'
-import { LoginTypes, SupportingLanguagesMap, DefaultLangCode, CacheKeyRandomSet } from '../../common/consts'
-import { getCache, setCache } from '../../common/redis'
+import { LoginTypes, SupportingLanguagesMap, DefaultLangCode, CacheKeyRandomSet, CacheKeyUser } from '../../common/consts'
+import { delCache, getCache, setCache } from '../../common/redis'
 
 export default {
   register: async (requestBody) => {
@@ -93,8 +93,8 @@ export default {
     return UsersDao.updateOne(_id, { $set: updateItems })
   },
 
-  logout: async ({ _id }) => {
-    return UsersDao.updateOne(_id, { $set: { jwtToken: null } })
+  logout: async ({ email }) => {
+    await delCache(CacheKeyUser(email))
   },
 
   getUserStatistics: async (_id, beginDate, endDate) => {
