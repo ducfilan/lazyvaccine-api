@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { SetsCollectionName, InteractionsCollectionName, SetInteractions } from '../common/consts'
+import { SetsCollectionName, InteractionsCollectionName, SetInteractions, MaxInt } from '../common/consts'
 
 let _interactions: Collection
 let _db: Db
@@ -240,9 +240,9 @@ export default class InteractionsDao {
     }
   }
 
-  static async getUserRandomSet(userId, interaction) {
+  static async getUserRandomSet(userId: ObjectId, interaction: string, itemsSkip: number = 0, itemsLimit: number = MaxInt) {
     try {
-      const set = await _interactions
+      const sets = await _interactions
         .aggregate([
           {
             $match: {
@@ -264,6 +264,12 @@ export default class InteractionsDao {
           {
             $unwind: '$set'
           },
+          {
+            $addFields: {
+              'set.totalItemsCount': { $size: '$set.items' },
+              'set.items': { $slice: ['$set.items', itemsSkip, itemsLimit] }
+            }
+          },
         ])
         .project({
           _id: 0,
@@ -274,9 +280,9 @@ export default class InteractionsDao {
         })
         .toArray()
 
-      if (!set || set.length === 0) return {}
+      if (!sets || sets.length === 0) return {}
 
-      return set[0]
+      return sets[0]
     } catch (e) {
       console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)

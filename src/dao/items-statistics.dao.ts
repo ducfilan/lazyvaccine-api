@@ -1,18 +1,20 @@
+import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
 import { ItemsStatisticsCollectionName } from '../common/consts'
 
-let _itemsStatistics
-let _db
+let _itemsStatistics: Collection<any>
+let _db: Db
 
 export default class ItemsStatisticsDao {
-  static async injectDB(conn) {
+  static async injectDB(conn: MongoClient) {
     if (_itemsStatistics) {
       return
     }
 
     try {
-      _db = await conn.db(MongoClientConfigs.DatabaseName)
-      _itemsStatistics = await conn.db(MongoClientConfigs.DatabaseName).collection(ItemsStatisticsCollectionName)
+      _db = conn.db(MongoClientConfigs.DatabaseName)
+      _itemsStatistics = _db.collection(ItemsStatisticsCollectionName)
+      _itemsStatistics.createIndex({ userId: -1, date: -1 }, { name: 'userId_-1_date_-1' })
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in ItemsStatisticsDao: ${e}`,
@@ -20,7 +22,7 @@ export default class ItemsStatisticsDao {
     }
   }
 
-  static async getUserStatistics(userId, beginDate, endDate) {
+  static async getUserStatistics(userId: ObjectId, beginDate: Date, endDate: Date) {
     try {
       return await _itemsStatistics
         .find({
@@ -30,7 +32,7 @@ export default class ItemsStatisticsDao {
             $lte: endDate
           }
         })
-        .sort({date: 1})
+        .sort({ date: 1 })
         .toArray()
     } catch (e) {
       console.log(arguments)

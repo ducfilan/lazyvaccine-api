@@ -3,8 +3,8 @@ import UsersController from '../controllers/users.controller'
 import multer from 'multer'
 import auth from '../middlewares/global/auth.mw'
 
-const publicUserRouter = new Router()
-const securedUserRouter = new Router()
+const publicUserRouter = Router()
+const securedUserRouter = Router()
 
 const upload = multer()
 
@@ -17,7 +17,7 @@ securedUserRouter.route('/:userId').get(UsersController.getUserInfo)
 securedUserRouter.route('/:userId/sets').get(UsersController.getUserSets)
 securedUserRouter.route('/me/random-set').get(auth, UsersController.getUserRandomSet)
 securedUserRouter.route('/me/suggestions').get(auth, UsersController.apiSuggestSets)
-securedUserRouter.route('/logout').get(auth, UsersController.logout) // TODO: Not in use.
+securedUserRouter.route('/logout').post(auth, UsersController.logout)
 
 export {
   publicUserRouter,

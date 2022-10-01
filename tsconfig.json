@@ -6,7 +6,8 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "strict": true,
+    "noImplicitAny": false,
+    "useUnknownInCatchVariables": false,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true

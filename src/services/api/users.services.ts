@@ -6,8 +6,9 @@ import ItemsStatisticsDao from '../../dao/items-statistics.dao'
 import ItemsInteractionsDao from '../../dao/items-interactions.dao'
 import SetsStatisticsDao from '../../dao/sets-statistics.dao'
 import { isGoogleTokenValid } from '../support/google-auth.service'
-import { LoginTypes, SupportingLanguagesMap, DefaultLangCode, CacheKeyRandomSet } from '../../common/consts'
-import { getCache, setCache } from '../../common/redis'
+import { LoginTypes, SupportingLanguagesMap, DefaultLangCode, CacheKeyRandomSet, CacheKeyUser } from '../../common/consts'
+import { delCache, getCache, setCache } from '../../common/redis'
+import { User } from '../../common/types'
 
 export default {
   register: async (requestBody) => {
@@ -68,8 +69,8 @@ export default {
     }
   },
 
-  getUserRandomSet: async (userId: ObjectId, interaction: string) => {
-    const cacheKey = CacheKeyRandomSet(userId.toString(), interaction)
+  getUserRandomSet: async (userId: ObjectId, interaction: string, itemsSkip: number, itemsLimit: number) => {
+    const cacheKey = CacheKeyRandomSet(userId.toString(), interaction, itemsSkip, itemsLimit)
     userId = new ObjectId(userId)
     let result = await getCache(cacheKey)
 
@@ -77,23 +78,25 @@ export default {
       result.set._id = new ObjectId(result.set._id)
     }
     else {
-      result = await InteractionsDao.getUserRandomSet(userId, interaction)
+      result = await InteractionsDao.getUserRandomSet(userId, interaction, itemsSkip, itemsLimit)
       if (!result || Object.keys(result).length == 0) return {}
 
       setCache(cacheKey, result, { EX: 600 })
     }
 
+    // TODO: Filter by items id, not get all.
     result.set.itemsInteractions = await ItemsInteractionsDao.getSetItemsInteract(userId, result.set._id)
 
     return result
   },
 
-  update: async (_id, updateItems) => {
+  update: async ({ _id, email }: User, updateItems) => {
+    await delCache(CacheKeyUser(email))
     return UsersDao.updateOne(_id, { $set: updateItems })
   },
 
-  logout: async ({ _id }) => {
-    return UsersDao.updateOne(_id, { $set: { jwtToken: null } })
+  logout: async ({ email }) => {
+    await delCache(CacheKeyUser(email))
   },
 
   getUserStatistics: async (_id, beginDate, endDate) => {

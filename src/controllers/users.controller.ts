@@ -1,6 +1,6 @@
 import usersServices from '../services/api/users.services'
 import setsServices from '../services/api/sets.services'
-import { apiGetUserSetsValidator, apiUpdateUserValidator } from './validators/users.validator'
+import { apiGetUserRandomSetValidator, apiGetUserSetsValidator, apiUpdateUserValidator } from './validators/users.validator'
 import { apiSearchSetValidator } from './validators/sets.validator'
 import { ValidationError } from './validators/common.validator'
 
@@ -42,7 +42,9 @@ export default class UsersController {
 
   static async getUserRandomSet(req, res) {
     try {
-      const set = await usersServices.getUserRandomSet(req.user._id, req.query.interaction)
+      const { itemsSkip, itemsLimit } = req.query
+      const { skip, limit } = apiGetUserRandomSetValidator({ skip: itemsSkip, limit: itemsLimit })
+      const set = await usersServices.getUserRandomSet(req.user._id, req.query.interaction, skip, limit)
 
       res.status(200).send(set)
     } catch (e) {
@@ -64,7 +66,7 @@ export default class UsersController {
     try {
       const updateProperties = apiUpdateUserValidator(req.body)
 
-      const isSuccess = await usersServices.update(req.user._id, updateProperties)
+      const isSuccess = await usersServices.update(req.user, updateProperties)
       if (!isSuccess) {
         res.status(400).json({ error: 'update user failed' })
       }
@@ -81,7 +83,7 @@ export default class UsersController {
 
       res.sendStatus(200)
     } catch (e) {
-      res.status(400).send({ error: e.message })
+      res.status(500).send({ error: e.message })
     }
   }
 

@@ -13,7 +13,7 @@ export default class ItemsInteractionsDao {
 
     try {
       _db = conn.db(MongoClientConfigs.DatabaseName)
-      _itemsInteractions = conn.db(MongoClientConfigs.DatabaseName).collection(ItemsInteractionsCollectionName)
+      _itemsInteractions = _db.collection(ItemsInteractionsCollectionName)
 
       _db.command({
         collMod: ItemsInteractionsCollectionName,
@@ -219,11 +219,24 @@ export default class ItemsInteractionsDao {
                   }
                 }
               },
+              'fromLanguage': '$set.fromLanguage',
+              'toLanguage': '$set.toLanguage',
+              'setId': '$set._id',
               '_id': 0
             }
           }, {
             '$unwind': {
               'path': '$item'
+            }
+          }, {
+            '$addFields': {
+              'item.fromLanguage': '$fromLanguage',
+              'item.toLanguage': '$toLanguage',
+              'item.setId': '$setId'
+            }
+          }, {
+            '$replaceRoot': {
+              'newRoot': '$item'
             }
           }, {
             '$skip': skip
