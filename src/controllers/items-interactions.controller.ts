@@ -56,7 +56,9 @@ export default class ItemsInteractionsController {
     try {
       const { interactionInclude, interactionIgnore } = req.query
 
-      return res.json(await setsServices.countInteractedItems(req.user._id, interactionInclude, interactionIgnore))
+      const itemsCount = await setsServices.countInteractedItems(req.user._id, interactionInclude, interactionIgnore)
+
+      return res.json(itemsCount || -1)
     } catch (e) {
       console.log(`api, ${e}`)
 
