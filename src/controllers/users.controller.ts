@@ -44,7 +44,7 @@ export default class UsersController {
     try {
       const { itemsSkip, itemsLimit } = req.query
       const { skip, limit } = apiGetUserRandomSetValidator({ skip: itemsSkip, limit: itemsLimit })
-      const set = await usersServices.getUserRandomSet(req.user._id, req.query.interaction, 0, 500)
+      const set = await usersServices.getUserRandomSet(req.user._id, req.query.interaction, skip, limit)
 
       res.status(200).send(set)
     } catch (e) {
