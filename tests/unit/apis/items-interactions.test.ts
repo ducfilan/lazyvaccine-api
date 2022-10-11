@@ -8,7 +8,6 @@ import { injectTables } from '../../../src/common/configs/mongodb-client.config'
 const mockUser = {
   "_id": new ObjectId("61ced7be4d51dc003e3615a8"),
   "type": "google",
-  "serviceAccessToken": "ya29.a0ARrdaM_ia2SHDXkryp8Wbr_ecQjEEdeZu348Fq345qg4gze8U0IB_WvPxUJovwwTdX-6dB1vNBuHb4NWt0wROWkp9OY91RAdFI5KSoDODF6VK5duO-0Y6GOGrF0ZdCFpB4N_00ac30bE0shwfnw99hCpwPjT",
   "finishedRegisterStep": 2,
   "name": "Duc Hoang",
   "email": "ducfilan@gmail.com",
