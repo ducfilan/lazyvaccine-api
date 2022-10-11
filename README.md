@@ -15,7 +15,7 @@
 	MONGO_PASSWORD=password
 	MONGO_PORT=27017
 	MONGO_DB=lazyvaccine
-	NODE_PORT=8080
+	NODE_PORT=80 (Need 80 to work with jest)
 	NODE_ENV=dev
 	JWT_KEY=
 	GOOGLE_CLIENT_ID=

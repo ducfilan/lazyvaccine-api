@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
-import { DefaultMostItemsInteractionsLimit, ItemsInteractions, ItemsInteractionsCollectionName, DescOrder, ItemsInteractionReviewStar } from '../common/consts'
+import { DefaultMostItemsInteractionsLimit, ItemsInteractions, ItemsInteractionsCollectionName, DescOrder } from '../common/consts'
 
 let _itemsInteractions: Collection
 let _db: Db
@@ -165,7 +165,7 @@ export default class ItemsInteractionsDao {
     }
   }
 
-  static async getInteractedItems(userId: ObjectId, interactionInclude: string, interactionIgnore: string, skip: number, limit: number) {
+  static async getInteractedItems(userId: ObjectId, interactionInclude: string, interactionsIgnore: string[], skip: number, limit: number) {
     try {
       return await _itemsInteractions
         .aggregate([
@@ -175,9 +175,9 @@ export default class ItemsInteractionsDao {
               [`interactionCount.${interactionInclude}`]: {
                 '$gt': 0
               },
-              [`interactionCount.${interactionIgnore}`]: {
+              ...Object.fromEntries(interactionsIgnore.map((interactionIgnore) => [`interactionCount.${interactionIgnore}`, {
                 '$in': [null, 0]
-              }
+              }]))
             }
           }, {
             '$addFields': {

@@ -168,7 +168,9 @@ export default {
   },
 
   getInteractedItems: async (userId: ObjectId, interactionInclude: string, interactionIgnore: string, skip: number, limit: number) => {
-    return ItemsInteractionsDao.getInteractedItems(userId, interactionInclude, interactionIgnore, skip, limit)
+    const interactionsIgnore = interactionIgnore.split(',')
+
+    return ItemsInteractionsDao.getInteractedItems(userId, interactionInclude, interactionsIgnore, skip, limit)
   },
 
   countInteractedItems: async (userId: ObjectId, interactionInclude: string, interactionIgnore: string) => {

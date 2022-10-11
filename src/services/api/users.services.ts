@@ -11,7 +11,7 @@ import { delCache, getCache, setCache } from '../../common/redis'
 import { User } from '../../common/types'
 
 export default {
-  register: async (requestBody) => {
+  register: async (requestBody): Promise<ObjectId> => {
     let { type, serviceAccessToken, finishedRegisterStep,
       name, email, locale, password, picture: pictureUrl
     } = requestBody
@@ -46,8 +46,8 @@ export default {
     return UsersDao.registerUserIfNotFound(userInfo)
   },
 
-  getUserInfo: async (userId) => {
-    return UsersDao.findOne({ _id: new ObjectId(userId) })
+  getUserInfoById: async (userId: ObjectId) => {
+    return UsersDao.findOne({ _id: userId })
   },
 
   getUserSets: async (userId, interaction, skip, limit) => {
