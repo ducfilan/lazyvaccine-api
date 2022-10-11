@@ -3,7 +3,7 @@ import InteractionsController from '../controllers/interactions.controller'
 import multer from 'multer'
 import auth from '../middlewares/global/auth.mw'
 
-const securedInteractionsRouter = new Router()
+const securedInteractionsRouter = Router()
 
 const upload = multer()
 

@@ -3,6 +3,7 @@ import setsServices from '../services/api/sets.services'
 import { apiGetUserRandomSetValidator, apiGetUserSetsValidator, apiUpdateUserValidator } from './validators/users.validator'
 import { apiSearchSetValidator } from './validators/sets.validator'
 import { ValidationError } from './validators/common.validator'
+import { ObjectId } from 'mongodb'
 
 export default class UsersController {
   static async me(req, res) {
@@ -11,7 +12,7 @@ export default class UsersController {
 
   static async getUserInfo(req, res) {
     try {
-      const userInfo = await usersServices.getUserInfo(req.params.userId)
+      const userInfo = await usersServices.getUserInfoById(new ObjectId(req.params.userId))
 
       res.status(200).send(userInfo)
     } catch (e) {
@@ -54,7 +55,8 @@ export default class UsersController {
 
   static async register(req, res) {
     try {
-      const registeredUser = await usersServices.register(req.body)
+      const registeredUserId = await usersServices.register(req.body)
+      const registeredUser = await usersServices.getUserInfoById(registeredUserId)
 
       res.status(200).send(registeredUser)
     } catch (e) {

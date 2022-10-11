@@ -8,7 +8,7 @@ const oAuth2Client = new OAuth2Client({
   forceRefreshOnFailure: true
 })
 
-export const isGoogleTokenValid = async (serviceAccessToken, requestEmail) => {
+export const isGoogleTokenValid = async (serviceAccessToken: string, requestEmail: string) => {
   try {
     const { email: tokenInfoEmail } = await oAuth2Client.getTokenInfo(serviceAccessToken)
     return tokenInfoEmail?.toLowerCase() === requestEmail.toLowerCase()

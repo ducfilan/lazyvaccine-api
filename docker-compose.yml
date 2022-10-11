@@ -23,7 +23,7 @@ services:
       - db
       - cache
     ports:
-      - "80:8080"
+      - "80:80"
       - "9229:9229"
     volumes:
       - .:/home/node/app

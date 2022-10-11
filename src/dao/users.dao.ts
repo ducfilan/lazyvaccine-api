@@ -1,23 +1,24 @@
+import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
 import MongoClientConfigs from '../common/configs/mongodb-client.config'
 import { SupportingLanguages, UsersCollectionName } from '../common/consts'
 
-let users
-let db
+let _users: Collection
+let _db: Db
 let defaultProjection = { projection: { password: 0 } }
 
 export default class UsersDao {
-  static async injectDB(conn) {
-    if (users) {
+  static async injectDB(conn: MongoClient) {
+    if (_users) {
       return
     }
 
     try {
-      db = await conn.db(MongoClientConfigs.DatabaseName)
-      users = await conn.db(MongoClientConfigs.DatabaseName).collection(UsersCollectionName)
+      _db = conn.db(MongoClientConfigs.DatabaseName)
+      _users = conn.db(MongoClientConfigs.DatabaseName).collection(UsersCollectionName)
 
-      users.createIndex({ email: 1 }, { unique: true, sparse: true })
+      _users.createIndex({ email: 1 }, { unique: true, sparse: true })
 
-      db.command({
+      _db.command({
         collMod: UsersCollectionName,
         validator: {
           $jsonSchema: {
@@ -54,12 +55,12 @@ export default class UsersDao {
   }
 
   static async findOne(query) {
-    return users.findOne(query, defaultProjection)
+    return _users.findOne(query, defaultProjection)
   }
 
   static async findByEmail(email, projection = defaultProjection) {
     try {
-      return await users.findOne({ email }, projection)
+      return await _users.findOne({ email }, projection)
     } catch (e) {
       console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)
@@ -69,7 +70,7 @@ export default class UsersDao {
 
   static async updateOne(_id, updateOperations) {
     try {
-      await users.findOneAndUpdate({ _id }, updateOperations, defaultProjection)
+      await _users.findOneAndUpdate({ _id }, updateOperations, defaultProjection)
       return true
     } catch (e) {
       console.log(arguments)
@@ -78,25 +79,24 @@ export default class UsersDao {
     }
   }
 
-  static async isUserExists(email) {
+  static async isUserExists(email: string) {
     return !!this.findByEmail(email)
   }
 
-  static async registerUserIfNotFound(userInfo) {
+  static async registerUserIfNotFound(userInfo): Promise<ObjectId> {
     let user = await this.findByEmail(userInfo.email)
 
     if (!!user) {
-      return { isPreRegistered: true, ...user }
+      return user._id
     }
 
     return new Promise((resolve, reject) => {
-      users.insertOne(userInfo, null, (error, response) => {
+      _users.insertOne(userInfo, null, (error, response) => {
         if (error) {
           reject(error)
         } else {
-          const insertedUser = response.ops[0]
-          delete insertedUser.password
-          resolve(insertedUser)
+          const insertedUserId = response.insertedId
+          resolve(insertedUserId)
         }
       })
     })

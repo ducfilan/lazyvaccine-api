@@ -8,10 +8,10 @@ COPY package*.json ./wait-for.sh ./
 
 USER node
 
-RUN npm install
+RUN yarn
 
 COPY --chown=node:node . .
 
-EXPOSE 8080 9292
+EXPOSE 80 9292
 
 CMD [ "npm", "start" ]

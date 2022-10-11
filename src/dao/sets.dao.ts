@@ -23,8 +23,8 @@ export default class SetsDao {
     }
 
     try {
-      _db = await conn.db(MongoClientConfigs.DatabaseName)
-      _sets = await conn.db(MongoClientConfigs.DatabaseName).collection(SetsCollectionName)
+      _db = conn.db(MongoClientConfigs.DatabaseName)
+      _sets = conn.db(MongoClientConfigs.DatabaseName).collection(SetsCollectionName)
 
       _db.command({
         collMod: SetsCollectionName,
