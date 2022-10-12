@@ -1,5 +1,6 @@
 import { Collection, Db, MongoClient } from 'mongodb'
 import { DatabaseName } from '../common/configs/mongodb-client.config'
+import { CategoriesCollectionName } from '../common/consts'
 
 let _categories: Collection
 let _db: Db
@@ -12,7 +13,7 @@ export default class CategoriesDao {
 
     try {
       _db = conn.db(DatabaseName)
-      _categories = conn.db(DatabaseName).collection('categories')
+      _categories = _db.collection(CategoriesCollectionName)
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in CategoriesDao: ${e}`,

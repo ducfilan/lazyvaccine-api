@@ -13,7 +13,7 @@ export default class SetsStatisticsDao {
 
     try {
       _db = conn.db(DatabaseName)
-      _setsStatistics = conn.db(DatabaseName).collection(SetsStatisticsCollectionName)
+      _setsStatistics = _db.collection(SetsStatisticsCollectionName)
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in SetsStatisticsDao: ${e}`,

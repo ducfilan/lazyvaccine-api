@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient } from 'mongodb'
 import { DatabaseName } from '../common/configs/mongodb-client.config'
-import Consts from '../common/consts'
+import Consts, { TagsCollectionName } from '../common/consts'
 
 let _tags: Collection
 let _db: Db
@@ -13,7 +13,7 @@ export default class TagsDao {
 
     try {
       _db = conn.db(DatabaseName)
-      _tags = _db.collection('tags')
+      _tags = _db.collection(TagsCollectionName)
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in TagsDao: ${e}`,

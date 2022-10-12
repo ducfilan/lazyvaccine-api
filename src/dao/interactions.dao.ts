@@ -13,7 +13,7 @@ export default class InteractionsDao {
 
     try {
       _db = conn.db(DatabaseName)
-      _interactions = conn.db(DatabaseName).collection(InteractionsCollectionName)
+      _interactions = _db.collection(InteractionsCollectionName)
 
       _db.command({
         collMod: InteractionsCollectionName,

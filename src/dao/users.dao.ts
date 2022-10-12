@@ -14,7 +14,7 @@ export default class UsersDao {
 
     try {
       _db = conn.db(DatabaseName)
-      _users = conn.db(DatabaseName).collection(UsersCollectionName)
+      _users = _db.collection(UsersCollectionName)
 
       _users.createIndex({ email: 1 }, { unique: true, sparse: true })
 

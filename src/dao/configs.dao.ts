@@ -1,5 +1,6 @@
 import { Collection, Db, MongoClient } from 'mongodb'
 import { DatabaseName } from '../common/configs/mongodb-client.config'
+import { ConfigsCollectionName } from '../common/consts'
 
 let _configs: Collection
 let _db: Db
@@ -12,7 +13,7 @@ export default class ConfigsDao {
 
     try {
       _db = conn.db(DatabaseName)
-      _configs = conn.db(DatabaseName).collection('configs')
+      _configs = _db.collection(ConfigsCollectionName)
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in ConfigsDao: ${e}`,

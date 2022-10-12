@@ -32,7 +32,7 @@ const Configs = {
 }
 
 export const injectTables = async () => {
-  return new Promise((resolve, reject) => {
+  return new Promise<MongoClient>((resolve, reject) => {
     MongoClient.connect(
       ConnectionString,
       Configs
@@ -53,7 +53,7 @@ export const injectTables = async () => {
         await SetsStatisticsDao.injectDB(client)
         await MissionsDao.injectDB(client)
 
-        resolve(true)
+        resolve(client)
       })
   })
 }

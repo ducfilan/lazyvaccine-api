@@ -13,7 +13,7 @@ export default class MissionsDao {
 
     try {
       _db = conn.db(DatabaseName)
-      _missions = conn.db(DatabaseName).collection(MissionsCollectionName)
+      _missions = _db.collection(MissionsCollectionName)
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in MissionsDao: ${e}`,

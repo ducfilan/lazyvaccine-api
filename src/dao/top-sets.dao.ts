@@ -13,7 +13,7 @@ export default class TopSetsDao {
 
     try {
       _db = conn.db(DatabaseName)
-      _topSets = conn.db(DatabaseName).collection(TopSetsCollectionName)
+      _topSets = _db.collection(TopSetsCollectionName)
 
       _db.command({
         collMod: TopSetsCollectionName,

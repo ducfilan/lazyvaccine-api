@@ -24,7 +24,7 @@ export default class SetsDao {
 
     try {
       _db = conn.db(DatabaseName)
-      _sets = conn.db(DatabaseName).collection(SetsCollectionName)
+      _sets = _db.collection(SetsCollectionName)
 
       _db.command({
         collMod: SetsCollectionName,
