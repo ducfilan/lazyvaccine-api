@@ -1,17 +1,18 @@
-import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { Collection, Db, MongoClient } from 'mongodb'
+import { DatabaseName } from '../common/configs/mongodb-client.config'
 
-let _configs
-let _db
+let _configs: Collection
+let _db: Db
 
 export default class ConfigsDao {
-  static async injectDB(conn) {
+  static async injectDB(conn: MongoClient) {
     if (_configs) {
       return
     }
 
     try {
-      _db = await conn.db(MongoClientConfigs.DatabaseName)
-      _configs = await conn.db(MongoClientConfigs.DatabaseName).collection('configs')
+      _db = conn.db(DatabaseName)
+      _configs = conn.db(DatabaseName).collection('configs')
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in ConfigsDao: ${e}`,
@@ -20,16 +21,20 @@ export default class ConfigsDao {
   }
 
   static async getAllowedOrigins() {
-    let projectRules = {
+    let projection = {
       _id: 0,
       origins: 1
     }
 
     try {
-      const { origins } = await _configs
+      const config = await _configs
         .findOne({
           type: 'allowed_origins'
-        }, projectRules)
+        }, {
+          projection
+        })
+
+      const origins = config?.origins
 
       return origins
     } catch (e) {

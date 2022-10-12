@@ -167,14 +167,16 @@ export default {
     return ItemsInteractionsDao.getTopInteractItem(action, userId, setId, order, limit)
   },
 
-  getInteractedItems: async (userId: ObjectId, interactionInclude: string, interactionIgnore: string, skip: number, limit: number) => {
-    const interactionsIgnore = interactionIgnore.split(',')
+  getInteractedItems: async (userId: ObjectId, interactionInclude: string, interactionsIgnoreStr: string, skip: number, limit: number) => {
+    const interactionsIgnore = interactionsIgnoreStr.split(',')
 
     return ItemsInteractionsDao.getInteractedItems(userId, interactionInclude, interactionsIgnore, skip, limit)
   },
 
-  countInteractedItems: async (userId: ObjectId, interactionInclude: string, interactionIgnore: string) => {
-    return ItemsInteractionsDao.countInteractedItems(userId, interactionInclude, interactionIgnore)
+  countInteractedItems: async (userId: ObjectId, interactionInclude: string, interactionsIgnoreStr: string) => {
+    const interactionsIgnore = interactionsIgnoreStr.split(',')
+
+    return ItemsInteractionsDao.countInteractedItems(userId, interactionInclude, interactionsIgnore)
   },
 
   undoInteractSet: async (action, userId: ObjectId, setId) => {

@@ -1,18 +1,19 @@
-import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { Collection, Db, MongoClient } from 'mongodb'
+import { DatabaseName } from '../common/configs/mongodb-client.config'
 import { SupportingTopSetsTypes, TopSetsCollectionName, SupportingLanguages } from '../common/consts'
 
-let _topSets
-let _db
+let _topSets: Collection
+let _db: Db
 
 export default class TopSetsDao {
-  static async injectDB(conn) {
+  static async injectDB(conn: MongoClient) {
     if (_topSets) {
       return
     }
 
     try {
-      _db = await conn.db(MongoClientConfigs.DatabaseName)
-      _topSets = await conn.db(MongoClientConfigs.DatabaseName).collection(TopSetsCollectionName)
+      _db = conn.db(DatabaseName)
+      _topSets = conn.db(DatabaseName).collection(TopSetsCollectionName)
 
       _db.command({
         collMod: TopSetsCollectionName,

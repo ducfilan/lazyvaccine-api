@@ -1,5 +1,4 @@
 import { MongoClient, WriteConcern } from 'mongodb'
-import app from '../../app';
 import CategoriesDao from '../../dao/categories.dao';
 import ConfigsDao from '../../dao/configs.dao';
 import InteractionsDao from '../../dao/interactions.dao';
@@ -59,8 +58,10 @@ export const injectTables = async () => {
   })
 }
 
+export const DatabaseName = MONGO_DB
+
 export default {
   ConnectionString,
-  DatabaseName: MONGO_DB,
+  DatabaseName,
   Configs
 }

@@ -1,5 +1,5 @@
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
-import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { DatabaseName } from '../common/configs/mongodb-client.config'
 import { SetsCollectionName, InteractionsCollectionName, SetInteractions, MaxInt } from '../common/consts'
 
 let _interactions: Collection
@@ -12,8 +12,8 @@ export default class InteractionsDao {
     }
 
     try {
-      _db = conn.db(MongoClientConfigs.DatabaseName)
-      _interactions = conn.db(MongoClientConfigs.DatabaseName).collection(InteractionsCollectionName)
+      _db = conn.db(DatabaseName)
+      _interactions = conn.db(DatabaseName).collection(InteractionsCollectionName)
 
       _db.command({
         collMod: InteractionsCollectionName,

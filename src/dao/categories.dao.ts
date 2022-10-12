@@ -1,17 +1,18 @@
-import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { Collection, Db, MongoClient } from 'mongodb'
+import { DatabaseName } from '../common/configs/mongodb-client.config'
 
-let _categories
-let _db
+let _categories: Collection
+let _db: Db
 
 export default class CategoriesDao {
-  static async injectDB(conn) {
+  static async injectDB(conn: MongoClient) {
     if (_categories) {
       return
     }
 
     try {
-      _db = await conn.db(MongoClientConfigs.DatabaseName)
-      _categories = await conn.db(MongoClientConfigs.DatabaseName).collection('categories')
+      _db = conn.db(DatabaseName)
+      _categories = conn.db(DatabaseName).collection('categories')
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in CategoriesDao: ${e}`,

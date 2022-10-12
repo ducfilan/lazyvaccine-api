@@ -48,6 +48,6 @@ describe('Items Interactions API test', () => {
       .get('/api/v1/items-interactions/count?interactionInclude=star&interactionIgnore=forced-done')
 
     expect(res.statusCode).toEqual(200)
-    expect(res.body).toBeGreaterThan(0)
+    expect(res.body).toEqual(-1)
   })
 })

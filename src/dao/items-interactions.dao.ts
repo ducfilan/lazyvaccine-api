@@ -1,5 +1,5 @@
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
-import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { DatabaseName } from '../common/configs/mongodb-client.config'
 import { DefaultMostItemsInteractionsLimit, ItemsInteractions, ItemsInteractionsCollectionName, DescOrder } from '../common/consts'
 
 let _itemsInteractions: Collection
@@ -12,7 +12,7 @@ export default class ItemsInteractionsDao {
     }
 
     try {
-      _db = conn.db(MongoClientConfigs.DatabaseName)
+      _db = conn.db(DatabaseName)
       _itemsInteractions = _db.collection(ItemsInteractionsCollectionName)
 
       _db.command({
@@ -150,13 +150,15 @@ export default class ItemsInteractionsDao {
     }
   }
 
-  static async countInteractedItems(userId: ObjectId, interactionInclude: string, interactionIgnore: string): Promise<number> {
+  static async countInteractedItems(userId: ObjectId, interactionInclude: string, interactionsIgnore: string[]): Promise<number> {
     try {
       return await _itemsInteractions
         .countDocuments({
           userId,
           [`interactionCount.${interactionInclude}`]: { $gt: 0 },
-          [`interactionCount.${interactionIgnore}`]: { $in: [null, 0] }
+          ...Object.fromEntries(interactionsIgnore.map((interactionIgnore) => [`interactionCount.${interactionIgnore}`, {
+            '$in': [null, 0]
+          }]))
         })
     } catch (e) {
       console.log(arguments)

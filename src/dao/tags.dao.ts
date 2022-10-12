@@ -1,18 +1,19 @@
-import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { Collection, Db, MongoClient } from 'mongodb'
+import { DatabaseName } from '../common/configs/mongodb-client.config'
 import Consts from '../common/consts'
 
-let tags
-let db
+let _tags: Collection
+let _db: Db
 
 export default class TagsDao {
-  static async injectDB(conn) {
-    if (tags) {
+  static async injectDB(conn: MongoClient) {
+    if (_tags) {
       return
     }
 
     try {
-      db = await conn.db(MongoClientConfigs.DatabaseName)
-      tags = await db.collection('tags')
+      _db = conn.db(DatabaseName)
+      _tags = _db.collection('tags')
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in TagsDao: ${e}`,
@@ -21,15 +22,15 @@ export default class TagsDao {
   }
 
   static async findOne(tag) {
-    return tags.findOne({ tag })
+    return _tags.findOne({ tag })
   }
 
-  static async getTagsStartWith(start_with) {
+  static async getTagsStartWith(startWith: string) {
     try {
       return (
-        await tags
+        await _tags
           .find(
-            { 'tag': { $regex: `^${start_with}`, $options: 'i' } },
+            { 'tag': { $regex: `^${startWith}`, $options: 'i' } },
             { limit: Consts.tagsSelectLimit }
           )
           .sort({ tag: 1 })
@@ -44,7 +45,7 @@ export default class TagsDao {
 
   static async createTag(tag) {
     try {
-      return await tags.insertOne({ tag }).ops[0]
+      return (await _tags.insertOne({ tag })).insertedId
     } catch (e) {
       console.log(arguments)
       console.error(`Error, ${e}, ${e.stack}`)

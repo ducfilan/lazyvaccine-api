@@ -1,18 +1,19 @@
-import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { Collection, Db, MongoClient } from 'mongodb'
+import { DatabaseName } from '../common/configs/mongodb-client.config'
 import { MissionsCollectionName } from '../common/consts'
 
-let _missions
-let _db
+let _missions: Collection
+let _db: Db
 
 export default class MissionsDao {
-  static async injectDB(conn) {
+  static async injectDB(conn: MongoClient) {
     if (_missions) {
       return
     }
 
     try {
-      _db = await conn.db(MongoClientConfigs.DatabaseName)
-      _missions = await conn.db(MongoClientConfigs.DatabaseName).collection(MissionsCollectionName)
+      _db = conn.db(DatabaseName)
+      _missions = conn.db(DatabaseName).collection(MissionsCollectionName)
     } catch (e) {
       console.error(
         `Unable to establish a collection handle in MissionsDao: ${e}`,
