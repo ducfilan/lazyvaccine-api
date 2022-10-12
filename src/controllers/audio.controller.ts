@@ -8,8 +8,8 @@ export default class AudioController {
     try {
       const request = {
         input: { text: req.query.text },
-        voice: { languageCode: req.query.langCode, ssmlGender: 'NEUTRAL' },
-        audioConfig: { audioEncoding: 'MP3' },
+        voice: { languageCode: req.query.langCode, ssmlGender: 'NEUTRAL' as const },
+        audioConfig: { audioEncoding: 'MP3' as const },
       }
 
       res.set({
