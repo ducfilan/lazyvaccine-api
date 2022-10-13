@@ -1,24 +1,34 @@
-import { MaxInt, MaxPaginationLimit, MaxRegistrationsStep } from '../common/consts'
-import { validateLimit, validateSkip, ValidationError } from './common.validator'
+import { MaxInt, MaxPaginationLimit, MaxRegistrationsStep, SupportingLanguages } from '../common/consts'
+import { check, validationResult } from 'express-validator'
 
-export const apiGetUserSetsValidator = ({ interaction, skip, limit }) => {
-  skip = Number(skip)
-  limit = Number(limit)
+export const validateApiGetUserSets = [
+  check('interaction')
+    .notEmpty()
+    .bail(),
+  check('limit')
+    .not()
+    .isEmpty()
+    .bail()
+    .isInt({ min: 1, max: MaxPaginationLimit })
+    .withMessage(`limit should be positive and less than or equal ${MaxPaginationLimit}!`)
+    .bail()
+    .toInt(),
+  check('skip')
+    .not()
+    .isEmpty()
+    .bail()
+    .isInt({ min: 0 })
+    .withMessage(`skip should be positive!`)
+    .bail()
+    .toInt(),
+  (req, res, next) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty())
+      return res.status(422).json({ errors: errors.array() })
 
-  if (!Number.isInteger(skip) || skip < 0) {
-    throw new ValidationError('invalid skip value: ' + skip)
-  }
-
-  if (!Number.isInteger(limit) || limit > MaxPaginationLimit || limit < 0) {
-    throw new ValidationError('invalid limit value: ' + limit)
-  }
-
-  if (!interaction) {
-    throw new ValidationError('no interaction specified')
-  }
-
-  return { interaction, skip, limit }
-}
+    next()
+  },
+]
 
 export const apiUpdateUserValidator = ({ langCodes, pages, finishedRegisterStep }) => {
   if (finishedRegisterStep) {
@@ -38,20 +48,62 @@ export const apiUpdateUserValidator = ({ langCodes, pages, finishedRegisterStep 
   return updateProperties
 }
 
-export const apiGetUserRandomSetValidator = ({ skip, limit }) => {
-  if (!skip) skip = 0
-  if (!limit) limit = MaxInt
+export const validateApiUpdateUser = [
+  check('finishedRegisterStep')
+    .not()
+    .isEmpty()
+    .bail()
+    .isInt({ min: 0, max: MaxRegistrationsStep })
+    .withMessage(`finishedRegisterStep should be positive and less than or equal ${MaxRegistrationsStep}!`)
+    .bail()
+    .toInt(),
+  check('langCodes')
+    .optional({ nullable: true, checkFalsy: true })
+    .isArray()
+    .isIn(SupportingLanguages),
+  check('pages')
+    .optional({ nullable: true, checkFalsy: true })
+    .isArray(),
+  (req, res, next) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty())
+      return res.status(422).json({ errors: errors.array() })
 
-  skip = Number(skip)
-  limit = Number(limit)
+    const { langCodes, pages, finishedRegisterStep } = req.body
+    let updateProperties = { langCodes, pages, finishedRegisterStep }
 
-  if (!validateSkip(skip)) {
-    throw new Error('invalid skip value')
-  }
+    if (!langCodes || !Array.isArray(langCodes) || langCodes.length === 0) delete updateProperties.langCodes
+    if (!pages || !Array.isArray(pages) || pages.length === 0) delete updateProperties.pages
+    if (!finishedRegisterStep) delete updateProperties.finishedRegisterStep
 
-  if (!validateLimit(limit, MaxInt)) {
-    throw new Error('invalid limit value')
-  }
+    req.body.updateProperties = updateProperties
 
-  return { skip, limit }
-}
+    next()
+  },
+]
+
+export const validateApiGetUserRandomSet = [
+  check('itemsLimit')
+    .not()
+    .isEmpty()
+    .bail()
+    .isInt({ min: 1, max: MaxInt })
+    .withMessage(`limit should be positive and less than or equal ${MaxInt}!`)
+    .bail()
+    .toInt(),
+  check('itemsSkip')
+    .not()
+    .isEmpty()
+    .bail()
+    .isInt({ min: 0 })
+    .withMessage(`skip should be positive!`)
+    .bail()
+    .toInt(),
+  (req, res, next) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty())
+      return res.status(422).json({ errors: errors.array() })
+
+    next()
+  },
+]

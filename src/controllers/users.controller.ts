@@ -1,8 +1,7 @@
 import usersServices from '../services/api/users.services'
 import setsServices from '../services/api/sets.services'
-import { apiGetUserRandomSetValidator, apiGetUserSetsValidator, apiUpdateUserValidator } from '../validators/users.validator'
+import { apiUpdateUserValidator } from '../validators/users.validator'
 import { apiSearchSetValidator } from '../validators/sets.validator'
-import { ValidationError } from '../validators/common.validator'
 import { ObjectId } from 'mongodb'
 
 export default class UsersController {
@@ -22,30 +21,20 @@ export default class UsersController {
 
   static async getUserSets(req, res) {
     try {
-      const { interaction, skip, limit } = apiGetUserSetsValidator(req.query)
+      const { interaction, skip, limit } = req.query
       const sets = await usersServices.getUserSets(req.params.userId, interaction, skip, limit)
 
       res.status(200).send(sets)
     } catch (e) {
       console.log(`api, ${e}`)
-
-      switch (e.constructor) {
-        case ValidationError:
-          res.status(400).json({ error: e })
-          break
-
-        default:
-          res.status(500).json({ error: e })
-          break
-      }
+      res.status(500).json({ error: e })
     }
   }
 
   static async getUserRandomSet(req, res) {
     try {
       const { itemsSkip, itemsLimit } = req.query
-      const { skip, limit } = apiGetUserRandomSetValidator({ skip: itemsSkip, limit: itemsLimit })
-      const set = await usersServices.getUserRandomSet(req.user._id, req.query.interaction, skip, limit)
+      const set = await usersServices.getUserRandomSet(req.user._id, req.query.interaction, itemsSkip, itemsLimit)
 
       res.status(200).send(set)
     } catch (e) {
@@ -66,9 +55,7 @@ export default class UsersController {
 
   static async update(req, res) {
     try {
-      const updateProperties = apiUpdateUserValidator(req.body)
-
-      const isSuccess = await usersServices.update(req.user, updateProperties)
+      const isSuccess = await usersServices.update(req.user, req.body.updateProperties)
       if (!isSuccess) {
         res.status(400).json({ error: 'update user failed' })
       }

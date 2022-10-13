@@ -7,7 +7,7 @@ export const validateApiGetInteractedItems = [
     .isEmpty()
     .bail()
     .isInt({ min: 1, max: MaxPaginationLimit })
-    .withMessage(`limit should be positive and less than ${MaxPaginationLimit}!`)
+    .withMessage(`limit should be positive and less than or equal ${MaxPaginationLimit}!`)
     .bail()
     .toInt(),
   check('skip')
@@ -33,7 +33,7 @@ export const validateApiGetTopInteractItem = [
     .isEmpty()
     .bail()
     .isInt({ min: 1, max: MaxPaginationLimit })
-    .withMessage(`limit should be positive and less than ${MaxPaginationLimit}!`)
+    .withMessage(`limit should be positive and less than or equal ${MaxPaginationLimit}!`)
     .bail()
     .toInt(),
   check('order')

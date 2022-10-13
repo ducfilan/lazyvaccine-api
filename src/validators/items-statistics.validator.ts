@@ -11,7 +11,7 @@ export const validateApiGetStatistics = [
     .bail()
     .toDate()
     .customSanitizer((value, { req }) => {
-      return req.query.beginDate = removeTimeInfo(value)
+      return removeTimeInfo(value)
     }),
   check('endDate')
     .not()
@@ -22,7 +22,7 @@ export const validateApiGetStatistics = [
     .bail()
     .toDate()
     .customSanitizer((value, { req }) => {
-      return req.query.endDate = removeTimeInfo(value)
+      return removeTimeInfo(value)
     }),
   (req, res, next) => {
     const errors = validationResult(req)
