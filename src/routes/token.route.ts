@@ -3,7 +3,7 @@ import {
 } from 'express'
 import TokenController from '../controllers/token.controller'
 
-const router = new Router()
+const router = Router()
 
 router.route('/').get(TokenController.apiGetTokenFromCode)
 router.route('/refresh').get(TokenController.refreshAccessToken)

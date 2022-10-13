@@ -5,7 +5,7 @@ import CategoriesController from '../controllers/categories.controller'
 import SetsController from '../controllers/sets.controller'
 import identity from '../middlewares/global/identity.mw'
 
-const router = new Router()
+const router = Router()
 
 router.route('/').get(CategoriesController.apiGetCategories)
 router.route('/:categoryId/sets').get(identity, SetsController.apiGetSetsInCategories)

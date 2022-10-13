@@ -1,4 +1,4 @@
-import { MaxInt, MaxPaginationLimit, MaxRegistrationsStep } from '../../common/consts'
+import { MaxInt, MaxPaginationLimit, MaxRegistrationsStep } from '../common/consts'
 import { validateLimit, validateSkip, ValidationError } from './common.validator'
 
 export const apiGetUserSetsValidator = ({ interaction, skip, limit }) => {

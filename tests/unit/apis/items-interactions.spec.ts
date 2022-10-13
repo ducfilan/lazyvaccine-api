@@ -8,37 +8,10 @@ import { injectTables } from '../../../src/common/configs/mongodb-client.config'
 import { ItemsInteractionForcedDone, ItemsInteractionIgnore, ItemsInteractionStar } from '../../../src/common/consts'
 import { resetDb } from '../../config/helpers'
 import { addItemsInteractions } from '../../repo/itemsInteractions'
-import { addUser } from '../../repo/users'
-
-const mockUser = {
-  "_id": new ObjectId("61ced7be4d51dc003e3615a8"),
-  "type": "google",
-  "finishedRegisterStep": 2,
-  "name": "Duc Hoang",
-  "email": "ducfilan@gmail.com",
-  "locale": "en",
-  "pictureUrl": "https://lh3.googleusercontent.com/a-/AOh14GgQdnguHUvyPcjZsAk7Dzz7sIe5zdmZD-JD0Je19g8=s96-c",
-  "langCodes": [
-    "en",
-    "zh",
-    "vi",
-    "ja"
-  ],
-  "pages": [
-    "facebook",
-    "youtube",
-    "amazon",
-    "twitter",
-    "google",
-    "reddit",
-    "messenger",
-    "ebay",
-    "pinterest"
-  ]
-}
+import { addUser, mockUserFinishedSetup } from '../../repo/users'
 
 jest.mock('../../../src/middlewares/global/auth.mw', () => jest.fn(async (req, res, next) => {
-  req.user = mockUser
+  req.user = mockUserFinishedSetup
 
   next()
 }))
@@ -69,12 +42,12 @@ describe('Items Interactions API test', () => {
   })
 
   test('apiCountInteractedItems_when_withIgnore_should_return_notIgnoredInteractionCount', async () => {
-    addUser(mongodbClient, mockUser)
+    addUser(mongodbClient, mockUserFinishedSetup)
 
     const itemsInteractions = [1, 2, 3].map(i => ({
       itemId: new ObjectId(),
       setId: new ObjectId(),
-      userId: mockUser._id,
+      userId: mockUserFinishedSetup._id,
       interactionCount: {
         [ItemsInteractionStar]: 1,
         [ItemsInteractionForcedDone]: i == 3 ? 1 : 0,
@@ -94,12 +67,12 @@ describe('Items Interactions API test', () => {
   })
 
   test('apiCountInteractedItems_when_withIgnoreMultipleTypes_should_return_notIgnoredInteractionCount', async () => {
-    addUser(mongodbClient, mockUser)
+    addUser(mongodbClient, mockUserFinishedSetup)
 
     const itemsInteractions = [1, 2, 3].map(i => ({
       itemId: new ObjectId(),
       setId: new ObjectId(),
-      userId: mockUser._id,
+      userId: mockUserFinishedSetup._id,
       interactionCount: {
         [ItemsInteractionStar]: 1,
         [ItemsInteractionForcedDone]: i == 3 ? 1 : 0,
@@ -120,12 +93,12 @@ describe('Items Interactions API test', () => {
   })
 
   test('apiCountInteractedItems_when_noIgnore_should_return_allInteractionCount', async () => {
-    addUser(mongodbClient, mockUser)
+    addUser(mongodbClient, mockUserFinishedSetup)
 
     const itemsInteractions = [1, 2, 3].map(_ => ({
       itemId: new ObjectId(),
       setId: new ObjectId(),
-      userId: mockUser._id,
+      userId: mockUserFinishedSetup._id,
       interactionCount: {
         [ItemsInteractionStar]: 1,
       },

@@ -1,6 +1,6 @@
 import setsServices from '../services/api/sets.services'
-import { ValidationError } from './validators/common.validator'
-import { apiGetTopInteractItemValidator, apiGetInteractedItemsValidator } from './validators/items-interactions.validator'
+import { ValidationError } from '../validators/common.validator'
+import { apiGetTopInteractItemValidator, apiGetInteractedItemsValidator } from '../validators/items-interactions.validator'
 
 export default class ItemsInteractionsController {
   static async apiInteractItem(req, res) {

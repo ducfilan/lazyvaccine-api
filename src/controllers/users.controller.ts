@@ -1,8 +1,8 @@
 import usersServices from '../services/api/users.services'
 import setsServices from '../services/api/sets.services'
-import { apiGetUserRandomSetValidator, apiGetUserSetsValidator, apiUpdateUserValidator } from './validators/users.validator'
-import { apiSearchSetValidator } from './validators/sets.validator'
-import { ValidationError } from './validators/common.validator'
+import { apiGetUserRandomSetValidator, apiGetUserSetsValidator, apiUpdateUserValidator } from '../validators/users.validator'
+import { apiSearchSetValidator } from '../validators/sets.validator'
+import { ValidationError } from '../validators/common.validator'
 import { ObjectId } from 'mongodb'
 
 export default class UsersController {
