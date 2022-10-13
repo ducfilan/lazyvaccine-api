@@ -1,29 +1,55 @@
-import { validateLimit, validateOrder, validateSkip, ValidationError } from './common.validator'
+import { check, validationResult } from 'express-validator'
+import { AscOrder, DescOrder, MaxPaginationLimit } from '../common/consts'
 
-export const apiGetTopInteractItemValidator = ({ limit, order }) => {
-  limit = Number(limit)
+export const validateApiGetInteractedItems = [
+  check('limit')
+    .not()
+    .isEmpty()
+    .bail()
+    .isInt({ min: 1, max: MaxPaginationLimit })
+    .withMessage(`limit should be positive and less than ${MaxPaginationLimit}!`)
+    .bail()
+    .toInt(),
+  check('skip')
+    .not()
+    .isEmpty()
+    .bail()
+    .isInt({ min: 0 })
+    .withMessage(`skip should be positive!`)
+    .bail()
+    .toInt(),
+  (req, res, next) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty())
+      return res.status(422).json({ errors: errors.array() })
 
-  if (!validateLimit(limit)) {
-    throw new Error('invalid limit value')
-  }
+    next()
+  },
+]
 
-  if (!validateOrder(order)) {
-    throw new Error('invalid order value')
-  }
+export const validateApiGetTopInteractItem = [
+  check('limit')
+    .not()
+    .isEmpty()
+    .bail()
+    .isInt({ min: 1, max: MaxPaginationLimit })
+    .withMessage(`limit should be positive and less than ${MaxPaginationLimit}!`)
+    .bail()
+    .toInt(),
+  check('order')
+    .not()
+    .isEmpty()
+    .bail()
+    .isString()
+    .trim()
+    .isIn([AscOrder, DescOrder])
+    .withMessage(`order should be ${AscOrder} or ${DescOrder}!`)
+    .bail(),
+  (req, res, next) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty())
+      return res.status(422).json({ errors: errors.array() })
 
-  return { limit, order }
-}
-
-export const apiGetInteractedItemsValidator = ({ limit, skip }) => {
-  limit = Number(limit)
-  if (!validateLimit(limit)) {
-    throw new ValidationError('invalid limit value')
-  }
-
-  skip = Number(skip)
-  if (!validateSkip(skip)) {
-    throw new ValidationError('invalid skip value')
-  }
-
-  return { limit, skip }
-}
+    next()
+  },
+]
