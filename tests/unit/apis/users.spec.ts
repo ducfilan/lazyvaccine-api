@@ -4,9 +4,10 @@ import { MongoClient } from 'mongodb'
 import supertest from 'supertest'
 import app from '../../../src/app'
 import { injectTables } from '../../../src/common/configs/mongodb-client.config'
-import { MaxRegistrationsStep } from '../../../src/common/consts'
+import { MaxRegistrationsStep, SupportingPagesLength } from '../../../src/common/consts'
 import { resetDb } from '../../config/helpers'
 import { addUser, getById, mockUserFinishedSetup } from '../../repo/users'
+import { genNumbersArray } from '../../../src/common/utils/arrayUtils'
 
 let mongodbClient: MongoClient
 let request: supertest.SuperTest<supertest.Test>
@@ -157,6 +158,19 @@ describe('Users API test', () => {
 
     expect(res.statusCode).toEqual(422)
     expect(res.body.error).toEqual('pages - Invalid value')
+  })
+
+  test('apiUpdateUser_when_sendTooLongArrayPages_should_responseValidationError', async () => {
+    await addUser(mongodbClient, mockUserFinishedSetup)
+
+    const res = await request
+      .patch('/api/v1/users/me')
+      .send({
+        pages: genNumbersArray(SupportingPagesLength + 11).map(number => `page_${number}`)
+      })
+
+    expect(res.statusCode).toEqual(422)
+    expect(res.body.error).toEqual(`pages - too many pages, supporting ${SupportingPagesLength}`)
   })
 
   test('apiUpdateUser_when_sendNotUpdatableProperty_should_notUpdate', async () => {

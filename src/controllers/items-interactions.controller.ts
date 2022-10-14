@@ -1,5 +1,4 @@
 import setsServices from '../services/api/sets.services'
-import { ValidationError } from '../validators/common.validator'
 
 export default class ItemsInteractionsController {
   static async apiInteractItem(req, res) {

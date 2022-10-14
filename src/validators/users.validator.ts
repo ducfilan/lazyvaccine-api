@@ -1,4 +1,4 @@
-import { MaxInt, MaxPaginationLimit, MaxRegistrationsStep, SupportingLanguages } from '../common/consts'
+import { MaxInt, MaxPaginationLimit, MaxRegistrationsStep, SupportingLanguages, SupportingPagesLength } from '../common/consts'
 import { check, validationResult } from 'express-validator'
 import { isEmpty } from '../common/utils/objectUtils'
 
@@ -62,7 +62,10 @@ export const validateApiUpdateUser = [
     .isIn(SupportingLanguages),
   check('pages')
     .optional({ nullable: true, checkFalsy: true })
-    .isArray(),
+    .isArray({ max: SupportingPagesLength })
+    .bail()
+    .withMessage(`too many pages, supporting ${SupportingPagesLength}`)
+    .bail(),
   (req, res, next) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {

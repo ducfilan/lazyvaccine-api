@@ -1,6 +1,5 @@
 import usersServices from '../services/api/users.services'
 import setsServices from '../services/api/sets.services'
-import { apiUpdateUserValidator } from '../validators/users.validator'
 import { apiSearchSetValidator } from '../validators/sets.validator'
 import { ObjectId } from 'mongodb'
 

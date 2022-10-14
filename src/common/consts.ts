@@ -22,6 +22,49 @@ export const SupportingLanguagesMap = {
 }
 export const DefaultLangCode = 'en'
 
+
+
+export const SupportingPages: { [brandName: string]: { key: string, title: string } } = {
+  facebook: {
+    key: "facebook",
+    title: "Facebook",
+  },
+  youtube: {
+    key: "youtube",
+    title: "Youtube",
+  },
+  amazon: {
+    key: "amazon",
+    title: "Amazon",
+  },
+  ebay: {
+    key: "ebay",
+    title: "Ebay",
+  },
+  twitter: {
+    key: "twitter",
+    title: "Twitter",
+  },
+  reddit: {
+    key: "reddit",
+    title: "Reddit",
+  },
+  google: {
+    key: "google",
+    title: "Google",
+  },
+  pinterest: {
+    key: "pinterest",
+    title: "Pinterest",
+  },
+  messenger: {
+    key: "messenger",
+    title: "FB Messenger",
+  },
+}
+
+export const SupportingPagesLength = Object.keys(SupportingPages).length
+
 export const SupportingTopSetsTypes = {
   Global: 0,
   Category: 1
