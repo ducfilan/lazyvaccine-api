@@ -112,12 +112,12 @@ describe('Items Interactions API test', () => {
     expect(res.body).toEqual(3)
   })
 
-  test('apiCountInteractedItems_when_noStar_should_return-1', async () => {
+  test('apiCountInteractedItems_when_noStar_should_returnZero', async () => {
     const res = await request
       .get('/api/v1/items-interactions/count?interactionInclude=star&interactionIgnore=forced-done')
 
     expect(res.statusCode).toEqual(200)
-    expect(res.body).toEqual(-1)
+    expect(res.body).toEqual(0)
   })
 
   test('apiGetInteractedItems_when_havingInteractedItemsWithSingleInteractionIgnore_should_returnCorrectItems', async () => {
