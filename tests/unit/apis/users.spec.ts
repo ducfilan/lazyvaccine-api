@@ -32,7 +32,7 @@ describe('Users API test', () => {
 
   afterAll(async () => {
     console.log("After all tests have executed")
-    await mongodbClient.close()
+    await mongodbClient.close(true)
   })
 
   test('apiUpdateUser_when_updateFinishedRegisterStep_should_finishedRegisterStepIsUpdated', async () => {
@@ -157,7 +157,7 @@ describe('Users API test', () => {
       })
 
     expect(res.statusCode).toEqual(422)
-    expect(res.body.error).toEqual('pages - Invalid value')
+    expect(res.body.error).toEqual('pages - too many pages, supporting 9')
   })
 
   test('apiUpdateUser_when_sendTooLongArrayPages_should_responseValidationError', async () => {

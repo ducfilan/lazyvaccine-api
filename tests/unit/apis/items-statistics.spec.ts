@@ -31,7 +31,7 @@ describe('Items Statistics API test', () => {
 
   afterAll(async () => {
     console.log("After all tests have executed")
-    await mongodbClient.close()
+    await mongodbClient.close(true)
   })
 
   test('apiGetStatistics_when_withEmptyBeginDate_should_return_Error', async () => {

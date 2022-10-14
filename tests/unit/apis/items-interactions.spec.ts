@@ -34,7 +34,7 @@ describe('Items Interactions API test', () => {
 
   afterAll(async () => {
     console.log("After all tests have executed")
-    await mongodbClient.close()
+    await mongodbClient.close(true)
   })
 
   test('apiCountInteractedItems_when_withIgnore_should_returnNotIgnoredInteractionCount', async () => {
