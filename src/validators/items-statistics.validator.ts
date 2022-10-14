@@ -1,4 +1,4 @@
-import { removeTimeInfo } from '../common/stringUtils'
+import { removeTimeInfo } from '../common/utils/stringUtils'
 import { check, validationResult } from 'express-validator'
 
 export const validateApiGetStatistics = [

@@ -1,5 +1,4 @@
 import { jest, describe, test, expect, beforeAll, afterAll, afterEach } from '@jest/globals'
-import { Server } from 'http'
 import { MongoClient, ObjectId } from 'mongodb'
 
 import supertest from 'supertest'
@@ -9,8 +8,11 @@ import { ItemsInteractionForcedDone, ItemsInteractionIgnore, ItemsInteractionSta
 import { resetDb } from '../../config/helpers'
 import { addItemsInteractions } from '../../repo/itemsInteractions'
 import { addUser, mockUserFinishedSetup } from '../../repo/users'
-import { genNumbersArray } from '../../../src/common/arrayUtils'
+import { genNumbersArray } from '../../../src/common/utils/arrayUtils'
 import { addSet } from '../../repo/sets'
+
+let mongodbClient: MongoClient
+let request: supertest.SuperTest<supertest.Test>
 
 jest.mock('../../../src/middlewares/global/auth.mw', () => jest.fn(async (req, res, next) => {
   req.user = mockUserFinishedSetup
@@ -18,20 +20,12 @@ jest.mock('../../../src/middlewares/global/auth.mw', () => jest.fn(async (req, r
   next()
 }))
 
-let mongodbClient: MongoClient
-let server: Server
-let request: supertest.SuperTest<supertest.Test>
-
 describe('Items Interactions API test', () => {
   beforeAll(async () => {
     jest.resetModules()
     mongodbClient = await injectTables()
 
-    server = app.listen(process.env.NODE_PORT, () => {
-      console.log(`listening on port ${process.env.NODE_PORT}`)
-    })
-
-    request = supertest(server)
+    request = supertest(app)
   })
 
   afterEach(async () => {
@@ -39,12 +33,12 @@ describe('Items Interactions API test', () => {
   })
 
   afterAll(async () => {
+    console.log("After all tests have executed")
     await mongodbClient.close()
-    server.close()
   })
 
   test('apiCountInteractedItems_when_withIgnore_should_returnNotIgnoredInteractionCount', async () => {
-    addUser(mongodbClient, mockUserFinishedSetup)
+    await addUser(mongodbClient, mockUserFinishedSetup)
 
     const itemsInteractions = [1, 2, 3].map(i => ({
       itemId: new ObjectId(),
@@ -57,8 +51,8 @@ describe('Items Interactions API test', () => {
       lastUpdated: new Date(),
       interactionsDetail: []
     }))
-    itemsInteractions.forEach(item => {
-      addItemsInteractions(mongodbClient, item)
+    itemsInteractions.forEach(async item => {
+      await addItemsInteractions(mongodbClient, item)
     })
 
     const res = await request
@@ -69,7 +63,7 @@ describe('Items Interactions API test', () => {
   })
 
   test('apiCountInteractedItems_when_withIgnoreMultipleTypes_should_returnNotIgnoredInteractionCount', async () => {
-    addUser(mongodbClient, mockUserFinishedSetup)
+    await addUser(mongodbClient, mockUserFinishedSetup)
 
     const itemsInteractions = [1, 2, 3].map(i => ({
       itemId: new ObjectId(),
@@ -83,8 +77,8 @@ describe('Items Interactions API test', () => {
       lastUpdated: new Date(),
       interactionsDetail: []
     }))
-    itemsInteractions.forEach(item => {
-      addItemsInteractions(mongodbClient, item)
+    itemsInteractions.forEach(async item => {
+      await addItemsInteractions(mongodbClient, item)
     })
 
     const res = await request
@@ -95,7 +89,7 @@ describe('Items Interactions API test', () => {
   })
 
   test('apiCountInteractedItems_when_noIgnore_should_returnAllInteractionCount', async () => {
-    addUser(mongodbClient, mockUserFinishedSetup)
+    await addUser(mongodbClient, mockUserFinishedSetup)
 
     const itemsInteractions = [1, 2, 3].map(_ => ({
       itemId: new ObjectId(),
@@ -107,8 +101,8 @@ describe('Items Interactions API test', () => {
       lastUpdated: new Date(),
       interactionsDetail: []
     }))
-    itemsInteractions.forEach(item => {
-      addItemsInteractions(mongodbClient, item)
+    itemsInteractions.forEach(async item => {
+      await addItemsInteractions(mongodbClient, item)
     })
 
     const res = await request
@@ -161,8 +155,8 @@ describe('Items Interactions API test', () => {
       lastUpdated: new Date(),
       interactionsDetail: []
     }))
-    itemsInteractions.forEach(item => {
-      addItemsInteractions(mongodbClient, item)
+    itemsInteractions.forEach(async item => {
+      await addItemsInteractions(mongodbClient, item)
     })
 
     const res = await request
@@ -207,8 +201,8 @@ describe('Items Interactions API test', () => {
       lastUpdated: new Date(),
       interactionsDetail: []
     }))
-    itemsInteractions.forEach(item => {
-      addItemsInteractions(mongodbClient, item)
+    itemsInteractions.forEach(async item => {
+      await addItemsInteractions(mongodbClient, item)
     })
 
     const res = await request
@@ -251,8 +245,8 @@ describe('Items Interactions API test', () => {
       lastUpdated: new Date(),
       interactionsDetail: []
     }))
-    itemsInteractions.forEach(item => {
-      addItemsInteractions(mongodbClient, item)
+    itemsInteractions.forEach(async item => {
+      await addItemsInteractions(mongodbClient, item)
     })
 
     const res = await request
@@ -295,8 +289,8 @@ describe('Items Interactions API test', () => {
       lastUpdated: new Date(),
       interactionsDetail: []
     }))
-    itemsInteractions.forEach(item => {
-      addItemsInteractions(mongodbClient, item)
+    itemsInteractions.forEach(async item => {
+      await addItemsInteractions(mongodbClient, item)
     })
 
     const res = await request

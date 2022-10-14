@@ -6,6 +6,10 @@ export const addUser = async (mongodbClient: MongoClient, userInfo: object): Pro
   return (await mongodbClient.db(DatabaseName).collection(UsersCollectionName).insertOne(userInfo)).insertedId
 }
 
+export const getById = async (mongodbClientConfig: MongoClient, userId: ObjectId) => {
+  return (await mongodbClientConfig.db(DatabaseName).collection(UsersCollectionName).findOne({ _id: userId }))
+}
+
 export const mockUserFinishedSetup = {
   "_id": new ObjectId("61ced7be4d51dc003e3615a8"),
   "type": "google",
