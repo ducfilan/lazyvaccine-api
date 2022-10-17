@@ -64,3 +64,5 @@ typings/
 .DS_Store
 
 build/*
+
+google_tts_keys.json

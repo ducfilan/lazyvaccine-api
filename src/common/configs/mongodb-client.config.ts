@@ -1,5 +1,4 @@
 import { MongoClient, WriteConcern } from 'mongodb'
-import app from '../../app';
 import CategoriesDao from '../../dao/categories.dao';
 import ConfigsDao from '../../dao/configs.dao';
 import InteractionsDao from '../../dao/interactions.dao';
@@ -33,7 +32,7 @@ const Configs = {
 }
 
 export const injectTables = async () => {
-  return new Promise((resolve, reject) => {
+  return new Promise<MongoClient>((resolve, reject) => {
     MongoClient.connect(
       ConnectionString,
       Configs
@@ -54,13 +53,15 @@ export const injectTables = async () => {
         await SetsStatisticsDao.injectDB(client)
         await MissionsDao.injectDB(client)
 
-        resolve(true)
+        resolve(client)
       })
   })
 }
 
+export const DatabaseName = MONGO_DB
+
 export default {
   ConnectionString,
-  DatabaseName: MONGO_DB,
+  DatabaseName,
   Configs
 }

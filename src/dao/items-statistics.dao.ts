@@ -1,5 +1,5 @@
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
-import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { DatabaseName } from '../common/configs/mongodb-client.config'
 import { ItemsStatisticsCollectionName } from '../common/consts'
 
 let _itemsStatistics: Collection<any>
@@ -12,7 +12,7 @@ export default class ItemsStatisticsDao {
     }
 
     try {
-      _db = conn.db(MongoClientConfigs.DatabaseName)
+      _db = conn.db(DatabaseName)
       _itemsStatistics = _db.collection(ItemsStatisticsCollectionName)
       _itemsStatistics.createIndex({ userId: -1, date: -1 }, { name: 'userId_-1_date_-1' })
     } catch (e) {

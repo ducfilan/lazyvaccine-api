@@ -3,7 +3,7 @@ import ImagesController from '../controllers/images.controller'
 import multer from 'multer'
 import auth from '../middlewares/global/auth.mw'
 
-const router = new Router()
+const router = Router()
 
 const upload = multer()
 

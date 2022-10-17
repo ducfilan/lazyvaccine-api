@@ -1,5 +1,5 @@
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
-import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { DatabaseName } from '../common/configs/mongodb-client.config'
 import { SupportingLanguages, UsersCollectionName } from '../common/consts'
 
 let _users: Collection
@@ -13,8 +13,8 @@ export default class UsersDao {
     }
 
     try {
-      _db = conn.db(MongoClientConfigs.DatabaseName)
-      _users = conn.db(MongoClientConfigs.DatabaseName).collection(UsersCollectionName)
+      _db = conn.db(DatabaseName)
+      _users = _db.collection(UsersCollectionName)
 
       _users.createIndex({ email: 1 }, { unique: true, sparse: true })
 

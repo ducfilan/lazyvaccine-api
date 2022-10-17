@@ -22,6 +22,49 @@ export const SupportingLanguagesMap = {
 }
 export const DefaultLangCode = 'en'
 
+
+
+export const SupportingPages: { [brandName: string]: { key: string, title: string } } = {
+  facebook: {
+    key: "facebook",
+    title: "Facebook",
+  },
+  youtube: {
+    key: "youtube",
+    title: "Youtube",
+  },
+  amazon: {
+    key: "amazon",
+    title: "Amazon",
+  },
+  ebay: {
+    key: "ebay",
+    title: "Ebay",
+  },
+  twitter: {
+    key: "twitter",
+    title: "Twitter",
+  },
+  reddit: {
+    key: "reddit",
+    title: "Reddit",
+  },
+  google: {
+    key: "google",
+    title: "Google",
+  },
+  pinterest: {
+    key: "pinterest",
+    title: "Pinterest",
+  },
+  messenger: {
+    key: "messenger",
+    title: "FB Messenger",
+  },
+}
+
+export const SupportingPagesLength = Object.keys(SupportingPages).length
+
 export const SupportingTopSetsTypes = {
   Global: 0,
   Category: 1
@@ -35,6 +78,9 @@ export const ItemsInteractionsCollectionName = 'itemsInteractions'
 export const ItemsStatisticsCollectionName = 'itemsStatistics'
 export const SetsStatisticsCollectionName = 'setsStatistics'
 export const MissionsCollectionName = 'missions'
+export const CategoriesCollectionName = 'categories'
+export const ConfigsCollectionName = 'configs'
+export const TagsCollectionName = 'tags'
 
 export const LoginTypes = {
   google: 'google'
@@ -91,5 +137,8 @@ export const CacheKeyRandomSet = (userId: string, interaction: string, itemsSkip
 export const CacheKeySet = (setId: string, itemsSkip: number, itemsLimit: number) => `set_${setId}_${itemsSkip}_${itemsLimit}`
 export const CacheKeyUser = (email: string) => `user_${email}`
 export const CacheKeySuggestSet = (userId: string, keyword: string, skip: number, limit: number, languages: string[]) => `suggestSet_${userId}_${keyword}_${skip}_${limit}_${languages.join()}`
+
+export const CacheTypeUserRandomSet = "user-random-set"
+export const CacheTypes = [CacheTypeUserRandomSet]
 
 export const MaxInt = 2147483647

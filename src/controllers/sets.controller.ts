@@ -1,5 +1,5 @@
 import setsServices from '../services/api/sets.services'
-import { apiSearchSetValidator, apiGetSetsInCategoriesValidator, apiGetSetValidator } from './validators/sets.validator'
+import { apiSearchSetValidator, apiGetSetsInCategoriesValidator, apiGetSetValidator } from '../validators/sets.validator'
 import { delCache } from '../common/redis'
 import { SupportingLanguages } from '../common/consts'
 

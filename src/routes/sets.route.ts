@@ -5,8 +5,8 @@ import auth from '../middlewares/global/auth.mw'
 import recaptcha from '../middlewares/global/recaptcha.mw'
 import identity from '../middlewares/global/identity.mw'
 
-const publicSetsRouter = new Router()
-const securedSetsRouter = new Router()
+const publicSetsRouter = Router()
+const securedSetsRouter = Router()
 
 const upload = multer()
 

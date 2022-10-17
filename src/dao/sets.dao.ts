@@ -1,4 +1,4 @@
-import MongoClientConfigs from '../common/configs/mongodb-client.config'
+import { DatabaseName } from '../common/configs/mongodb-client.config'
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
 import {
   SetsCollectionName,
@@ -23,8 +23,8 @@ export default class SetsDao {
     }
 
     try {
-      _db = conn.db(MongoClientConfigs.DatabaseName)
-      _sets = conn.db(MongoClientConfigs.DatabaseName).collection(SetsCollectionName)
+      _db = conn.db(DatabaseName)
+      _sets = _db.collection(SetsCollectionName)
 
       _db.command({
         collMod: SetsCollectionName,
