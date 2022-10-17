@@ -12,11 +12,6 @@
     "test:dev": "docker compose exec nodejs yarn test",
     "test:watch": "jest --passWithNoTests --watch"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": ""
-    }
-  },
   "lint-staged": {
     "linters": {
       "*.js": [
@@ -91,7 +86,6 @@
     "babel-jest": "^29.0.3",
     "body-parser": "^1.20.0",
     "google-auth-library": "^8.5.1",
-    "husky": "^8.0.1",
     "jest": "^29.1.2",
     "jest-cli": "^29.0.3",
     "jest-express": "^1.12.0",
