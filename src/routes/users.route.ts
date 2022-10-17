@@ -2,7 +2,7 @@ import { Router } from 'express'
 import UsersController from '../controllers/users.controller'
 import multer from 'multer'
 import auth from '../middlewares/global/auth.mw'
-import { validateApiGetUserRandomSet, validateApiGetUserSets, validateApiUpdateUser } from '../validators/users.validator'
+import { validateApiDeleteCache, validateApiGetUserRandomSet, validateApiGetUserSets, validateApiUpdateUser } from '../validators/users.validator'
 
 const publicUserRouter = Router()
 const securedUserRouter = Router()
@@ -19,6 +19,8 @@ securedUserRouter.route('/:userId/sets').get(validateApiGetUserSets, UsersContro
 securedUserRouter.route('/me/random-set').get(auth, validateApiGetUserRandomSet, UsersController.getUserRandomSet)
 securedUserRouter.route('/me/suggestions').get(auth, UsersController.apiSuggestSets)
 securedUserRouter.route('/logout').post(auth, UsersController.logout)
+
+securedUserRouter.route('/cache').delete(auth, validateApiDeleteCache, UsersController.apiDeleteCache)
 
 export {
   publicUserRouter,

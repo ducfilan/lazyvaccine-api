@@ -138,4 +138,7 @@ export const CacheKeySet = (setId: string, itemsSkip: number, itemsLimit: number
 export const CacheKeyUser = (email: string) => `user_${email}`
 export const CacheKeySuggestSet = (userId: string, keyword: string, skip: number, limit: number, languages: string[]) => `suggestSet_${userId}_${keyword}_${skip}_${limit}_${languages.join()}`
 
+export const CacheTypeUserRandomSet = "user-random-set"
+export const CacheTypes = [CacheTypeUserRandomSet]
+
 export const MaxInt = 2147483647

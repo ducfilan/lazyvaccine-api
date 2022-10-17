@@ -129,7 +129,7 @@ export default class ItemsInteractionsDao {
     }
   }
 
-  static async getSetItemsInteract(userId, setId) {
+  static async getSetItemsInteract(userId: ObjectId, setId: ObjectId) {
     try {
       return await _itemsInteractions
         .find({

@@ -2,6 +2,7 @@ import usersServices from '../services/api/users.services'
 import setsServices from '../services/api/sets.services'
 import { apiSearchSetValidator } from '../validators/sets.validator'
 import { ObjectId } from 'mongodb'
+import { deleteCache } from '../services/support/redis.service'
 
 export default class UsersController {
   static async me(req, res) {
@@ -81,6 +82,17 @@ export default class UsersController {
       if (!searchConditions) res.sendStatus(400)
 
       return res.json(await setsServices.suggestSets(req.user._id, searchConditions))
+    } catch (e) {
+      console.log(`api, ${e}`)
+      res.status(500).json({ error: e })
+    }
+  }
+
+  static async apiDeleteCache(req, res) {
+    try {
+      await deleteCache(req.user._id, req.query.cacheType)
+
+      res.status(200).send()
     } catch (e) {
       console.log(`api, ${e}`)
       res.status(500).json({ error: e })

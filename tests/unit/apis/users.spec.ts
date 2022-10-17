@@ -4,10 +4,11 @@ import { MongoClient } from 'mongodb'
 import supertest from 'supertest'
 import app from '../../../src/app'
 import { injectTables } from '../../../src/common/configs/mongodb-client.config'
-import { MaxRegistrationsStep, SupportingPagesLength } from '../../../src/common/consts'
+import { CacheKeyRandomSet, CacheTypeUserRandomSet, InteractionSubscribe, MaxRegistrationsStep, SupportingPagesLength } from '../../../src/common/consts'
 import { resetDb } from '../../config/helpers'
 import { addUser, getById, mockUserFinishedSetup } from '../../repo/users'
 import { genNumbersArray } from '../../../src/common/utils/arrayUtils'
+import { delCacheByKeyPattern, getCache, setCache } from '../../../src/common/redis'
 
 let mongodbClient: MongoClient
 let request: supertest.SuperTest<supertest.Test>
@@ -31,7 +32,7 @@ describe('Users API test', () => {
   })
 
   afterAll(async () => {
-    console.log("After all tests have executed")
+    console.log('After all tests have executed')
     await mongodbClient.close(true)
   })
 
@@ -189,5 +190,41 @@ describe('Users API test', () => {
     expect(res.statusCode).toEqual(200)
     expect(updatedUser).not.toBeNull()
     expect(updatedUser!.email).toEqual(mockUserFinishedSetup.email)
+  })
+
+  test('apiDeleteCache_when_noCacheType_should_responseValidationError', async () => {
+    const res = await request
+      .delete(`/api/v1/users/cache?cacheType=`)
+
+    expect(res.statusCode).toEqual(422)
+    expect(res.body.error).toEqual('cacheType - should not be empty!')
+  })
+
+  test('apiDeleteCache_when_wrongCacheType_should_responseValidationError', async () => {
+    const res = await request
+      .delete(`/api/v1/users/cache?cacheType=not-allowed`)
+
+    expect(res.statusCode).toEqual(422)
+    expect(res.body.error).toEqual('cacheType - invalid value!')
+  })
+
+  test('apiDeleteCache_when_correctCacheType_should_removeTargetCache', async () => {
+    const userId = await addUser(mongodbClient, mockUserFinishedSetup)
+
+    const cacheKeys = [[0, 20], [20, 40]].map(([skip, limit]) => CacheKeyRandomSet(userId.toString(), InteractionSubscribe, skip, limit))
+    await Promise.all(cacheKeys.map(key => setCache(key, `test - ${key}`)))
+    let redisValues = await Promise.all(cacheKeys.map(key => getCache(key)))
+
+    redisValues.forEach((value, i) => expect(value).toEqual(`test - ${cacheKeys[i]}`))
+
+    const res = await request
+      .delete(`/api/v1/users/cache?cacheType=${CacheTypeUserRandomSet}`)
+
+    await new Promise((r) => setTimeout(r, 100))
+
+    expect(res.statusCode).toEqual(200)
+
+    redisValues = await Promise.all(cacheKeys.map(key => getCache(key)))
+    redisValues.forEach(value => expect(value).toBeNull())
   })
 })
