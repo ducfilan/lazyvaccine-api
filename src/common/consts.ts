@@ -22,7 +22,7 @@ export const SupportingLanguagesMap = {
 }
 export const DefaultLangCode = 'en'
 
-
+export const SupportingUiLanguages = ['en', 'vi', 'zh', 'ja']
 
 export const SupportingPages: { [brandName: string]: { key: string, title: string } } = {
   facebook: {
@@ -127,7 +127,7 @@ export const ItemsInteractions = [ItemsInteractionShow, ItemsInteractionNext, It
 
 export const MaxPaginationLimit = 100
 export const DefaultMostItemsInteractionsLimit = 5
-export const MaxRegistrationsStep = 3
+export const MaxRegistrationsStep = 2
 
 export const AscOrder = 'asc'
 export const DescOrder = 'desc'
