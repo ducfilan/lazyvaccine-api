@@ -24,9 +24,10 @@ export default class CategoriesDao {
   /**
    * 
    * @param {string} lang - Target language for displaying in UI
+   * @param {boolean} isTopCategory - If true, get only top categories
    * @returns {Array} - Returns the list of categories and subs
    */
-  static async getAllCategories(lang) {
+  static async getCategories(lang: string, isTopCategory: boolean = false) {
     let projectRules = {
       [`name.${lang}`]: 1,
       [`description.${lang}`]: 1,
@@ -34,9 +35,11 @@ export default class CategoriesDao {
       isTopCategory: 1
     }
 
+    const findCondition = isTopCategory ? { isTopCategory } : {}
+
     try {
       return await _categories
-        .find()
+        .find(findCondition)
         .project(projectRules)
         .toArray()
     } catch (e) {
