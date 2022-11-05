@@ -20,7 +20,7 @@ jest.mock('../../../src/middlewares/global/auth.mw', () => jest.fn(async (req, r
   next()
 }))
 
-describe('Items Interactions API test', () => {
+describe('Items Interactions APIs test', () => {
   beforeAll(async () => {
     jest.resetModules()
     mongodbClient = await injectTables()

@@ -8,7 +8,7 @@ import { CacheKeyRandomSet, CacheTypeUserRandomSet, InteractionLike, Interaction
 import { resetDb } from '../../config/helpers'
 import { addUser, getById, mockUserFinishedSetup } from '../../repo/users'
 import { genNumbersArray } from '../../../src/common/utils/arrayUtils'
-import { delCacheByKeyPattern, getCache, setCache } from '../../../src/common/redis'
+import { getCache, setCache } from '../../../src/common/redis'
 import { addSet } from '../../repo/sets'
 import { addInteraction } from '../../repo/interactions'
 
@@ -21,7 +21,7 @@ jest.mock('../../../src/middlewares/global/auth.mw', () => jest.fn(async (req, r
   next()
 }))
 
-describe('Users API test', () => {
+describe('Users APIs test', () => {
   beforeAll(async () => {
     jest.resetModules()
     mongodbClient = await injectTables()
@@ -228,24 +228,6 @@ describe('Users API test', () => {
 
     redisValues = await Promise.all(cacheKeys.map(key => getCache(key)))
     redisValues.forEach(value => expect(value).toBeNull())
-  })
-})
-
-describe('getUserSets API test', () => {
-  beforeAll(async () => {
-    jest.resetModules()
-    mongodbClient = await injectTables()
-
-    request = supertest(app)
-  })
-
-  afterEach(async () => {
-    await resetDb(mongodbClient)
-  })
-
-  afterAll(async () => {
-    console.log('After all tests have executed')
-    await mongodbClient.close(true)
   })
 
   test('getUserSets_when_noLimit_should_responseValidationError', async () => {

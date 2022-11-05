@@ -1,7 +1,7 @@
 import setsServices from '../services/api/sets.services'
 import { apiSearchSetValidator, apiGetSetsInCategoriesValidator, apiGetSetValidator } from '../validators/sets.validator'
 import { delCache } from '../common/redis'
-import { SupportingLanguages } from '../common/consts'
+import { InteractionSubscribe, SupportingLanguages } from '../common/consts'
 
 export default class SetsController {
   static async apiCreateSet(req, res) {
@@ -11,6 +11,8 @@ export default class SetsController {
 
       const registeredSetId = await setsServices.createSet(setInfo)
       if (!registeredSetId) throw new Error('cannot insert set')
+
+      await setsServices.interactSet(InteractionSubscribe, req.user._id, registeredSetId)
 
       res.status(200).send(registeredSetId)
     } catch (e) {

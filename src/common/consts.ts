@@ -133,7 +133,7 @@ export const AscOrder = 'asc'
 export const DescOrder = 'desc'
 
 export const CacheKeyRandomSetPrefix = (userId: string, interaction: string) => `randomSet_${userId}_${interaction}`
-export const CacheKeyRandomSet = (userId: string, interaction: string, itemsSkip: number, itemsLimit: number) => `randomSet_${userId}_${interaction}_${itemsSkip}_${itemsLimit}`
+export const CacheKeyRandomSet = (userId: string, interactions: string[], itemsSkip: number, itemsLimit: number) => `randomSet_${userId}_${interactions.join('-')}_${itemsSkip}_${itemsLimit}`
 export const CacheKeySet = (setId: string, itemsSkip: number, itemsLimit: number) => `set_${setId}_${itemsSkip}_${itemsLimit}`
 export const CacheKeyUser = (email: string) => `user_${email}`
 export const CacheKeySuggestSet = (userId: string, keyword: string, skip: number, limit: number, languages: string[]) => `suggestSet_${userId}_${keyword}_${skip}_${limit}_${languages.join()}`

@@ -21,7 +21,13 @@ jest.mock('../../../src/middlewares/global/auth.mw', () => jest.fn(async (req, r
   next()
 }))
 
-describe('apiGetCategories API test', () => {
+jest.mock('../../../src/middlewares/global/identity.mw', () => jest.fn(async (req, res, next) => {
+  req.user = mockUserFinishedSetup
+
+  next()
+}))
+
+describe('Categories APIs test', () => {
   beforeAll(async () => {
     jest.resetModules()
     mongodbClient = await injectTables()
@@ -76,30 +82,6 @@ describe('apiGetCategories API test', () => {
 
     expect(res.statusCode).toEqual(200)
     expect(res.body.map(c => c.isTopCategory)).toHaveLength(res.body.length)
-  })
-})
-
-jest.mock('../../../src/middlewares/global/identity.mw', () => jest.fn(async (req, res, next) => {
-  req.user = mockUserFinishedSetup
-
-  next()
-}))
-
-describe('apiGetTopSetsInCategories API test', () => {
-  beforeAll(async () => {
-    jest.resetModules()
-    mongodbClient = await injectTables()
-
-    request = supertest(app)
-  })
-
-  afterEach(async () => {
-    await resetDb(mongodbClient)
-  })
-
-  afterAll(async () => {
-    console.log("After all tests have executed")
-    await mongodbClient.close(true)
   })
 
   test('apiGetTopSetsInCategories_when_noLang_should_return_Error', async () => {

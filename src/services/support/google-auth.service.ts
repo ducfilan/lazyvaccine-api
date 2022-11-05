@@ -19,7 +19,7 @@ export const isGoogleTokenValid = async (serviceAccessToken: string, requestEmai
   }
 }
 
-export const getEmailFromGoogleToken = async (serviceAccessToken) => {
+export const getEmailFromGoogleToken = async (serviceAccessToken: string): Promise<string | null> => {
   try {
     const { email } = await oAuth2Client.getTokenInfo(serviceAccessToken)
     return email

@@ -3,6 +3,7 @@ import setsServices from '../services/api/sets.services'
 import { apiSearchSetValidator } from '../validators/sets.validator'
 import { ObjectId } from 'mongodb'
 import { deleteCache } from '../services/support/redis.service'
+import { User } from '../common/types'
 
 export default class UsersController {
   static async me(req, res) {
@@ -31,10 +32,10 @@ export default class UsersController {
     }
   }
 
-  static async getUserRandomSet(req, res) {
+  static async getUserRandomSet(req: { query: { interactions: string[], itemsSkip: number, itemsLimit: number }, user: User }, res) {
     try {
-      const { itemsSkip, itemsLimit } = req.query
-      const set = await usersServices.getUserRandomSet(req.user._id, req.query.interaction, itemsSkip, itemsLimit)
+      const { interactions, itemsSkip, itemsLimit } = req.query
+      const set = await usersServices.getUserRandomSet(req.user._id, interactions, itemsSkip, itemsLimit)
 
       res.status(200).send(set)
     } catch (e) {

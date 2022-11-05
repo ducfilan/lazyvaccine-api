@@ -8,7 +8,7 @@ export default async (req, res, next) => {
     const loginType = req.header('X-Login-Type')
     if (!token) return next()
 
-    let email
+    let email: string | null
     switch (loginType) {
       case LoginTypes.google:
         email = await getEmailFromGoogleToken(token)

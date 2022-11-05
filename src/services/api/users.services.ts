@@ -50,27 +50,27 @@ export default {
     return UsersDao.findOne({ _id: userId })
   },
 
-  getUserSets: async (userId, interaction, skip, limit) => {
+  getUserSets: async (creatorId: ObjectId, interaction: string, skip: number, limit: number) => {
     switch (interaction) {
       case 'create':
-        let resp = await SetsDao.find({ creatorId: new ObjectId(userId) }, skip, limit)
+        let resp = await SetsDao.find({ creatorId }, skip, limit)
         const setIds = resp.sets.map(({ _id }) => _id)
 
-        const interactions = await InteractionsDao.filterSetIds(userId, setIds) || []
+        const interactions = await InteractionsDao.filterSetIds(creatorId, setIds) || []
 
         resp.sets.forEach((set, index) => resp.sets[index] = ({
-          actions: interactions.find(i => i.setId == set._id)?.actions || [],
+          actions: interactions.find(i => i.setId.equals(set._id))?.actions || [],
           set
         }))
 
         return resp
       default:
-        return InteractionsDao.getUserInteractedSets(new ObjectId(userId), interaction, skip, limit)
+        return InteractionsDao.getUserInteractedSets(creatorId, interaction, skip, limit)
     }
   },
 
-  getUserRandomSet: async (userId: ObjectId, interaction: string, itemsSkip: number, itemsLimit: number) => {
-    const cacheKey = CacheKeyRandomSet(userId.toString(), interaction, itemsSkip, itemsLimit)
+  getUserRandomSet: async (userId: ObjectId, interactions: string[], itemsSkip: number, itemsLimit: number) => {
+    const cacheKey = CacheKeyRandomSet(userId.toString(), interactions, itemsSkip, itemsLimit)
     userId = new ObjectId(userId)
     let result = await getCache(cacheKey)
 
@@ -78,7 +78,7 @@ export default {
       result.set._id = new ObjectId(result.set._id)
     }
     else {
-      result = await InteractionsDao.getUserRandomSet(userId, interaction, itemsSkip, itemsLimit)
+      result = await InteractionsDao.getUserRandomSet(userId, interactions, itemsSkip, itemsLimit)
       if (!result || Object.keys(result).length == 0) return {}
 
       setCache(cacheKey, result, { EX: 600 })
