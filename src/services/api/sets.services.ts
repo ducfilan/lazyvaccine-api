@@ -135,11 +135,11 @@ export default {
    * @param {string} categoryId id for the category
    * @returns Array of top sets
    */
-  getTopSetsInCategory: async (userId, langCode, categoryId) => {
+  getTopSetsInCategory: async (userId: ObjectId, langCode: string, categoryId: ObjectId) => {
     const topSets = await TopSetsDao.getTopSets({
       langCode,
       type: SupportingTopSetsTypes.Category,
-      categoryId: new ObjectId(categoryId)
+      categoryId
     })
 
     const topSetIds = topSets.map(topSet => topSet._id)

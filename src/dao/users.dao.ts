@@ -68,7 +68,7 @@ export default class UsersDao {
     }
   }
 
-  static async updateOne(_id, updateOperations) {
+  static async updateOne(_id: ObjectId, updateOperations) {
     try {
       await _users.findOneAndUpdate({ _id }, updateOperations, defaultProjection)
       return true

@@ -1,6 +1,7 @@
 import { CacheTypes, MaxInt, MaxPaginationLimit, MaxRegistrationsStep, SupportingLanguages, SupportingPagesLength } from '../common/consts'
 import { check, validationResult } from 'express-validator'
 import { isEmpty } from '../common/utils/objectUtils'
+import { ObjectId } from 'mongodb'
 
 export const validateApiGetUserSets = [
   check('interaction')
@@ -22,10 +23,13 @@ export const validateApiGetUserSets = [
     .withMessage(`skip should be positive!`)
     .bail()
     .toInt(),
+  check('userId').customSanitizer(userId => new ObjectId(userId)),
   (req, res, next) => {
     const errors = validationResult(req)
-    if (!errors.isEmpty())
-      return res.status(422).json({ errors: errors.array() })
+    if (!errors.isEmpty()) {
+      const { msg, param } = errors.array({ onlyFirstError: true })[0]
+      return res.status(422).json({ error: `${param} - ${msg}` })
+    }
 
     next()
   },
@@ -107,11 +111,14 @@ export const validateApiGetUserRandomSet = [
     .withMessage(`skip should be positive!`)
     .bail()
     .toInt(),
+  check('interaction')
+    .customSanitizer(interactions => interactions.split(',')),
   (req, res, next) => {
     const errors = validationResult(req)
     if (!errors.isEmpty())
       return res.status(422).json({ errors: errors.array() })
 
+    req.query.interactions = req.query.interaction
     next()
   },
 ]

@@ -143,11 +143,11 @@ export default class InteractionsDao {
     }
   }
 
-  static async filterSetIds(userId, setIds) {
+  static async filterSetIds(userId: ObjectId, setIds: ObjectId[]) {
     try {
       return await _interactions
         .find({
-          userId: userId,
+          userId,
           setId: { $in: setIds }
         })
         .project({
@@ -182,7 +182,7 @@ export default class InteractionsDao {
     }
   }
 
-  static async getUserInteractedSets(userId, interaction, skip, limit) {
+  static async getUserInteractedSets(userId: ObjectId, interaction: string, skip: number, limit: number) {
     try {
       const sets = await _interactions
         .aggregate([
@@ -240,14 +240,14 @@ export default class InteractionsDao {
     }
   }
 
-  static async getUserRandomSet(userId: ObjectId, interaction: string, itemsSkip: number = 0, itemsLimit: number = MaxInt) {
+  static async getUserRandomSet(userId: ObjectId, interactions: string[], itemsSkip: number = 0, itemsLimit: number = MaxInt) {
     try {
       const sets = await _interactions
         .aggregate([
           {
             $match: {
               userId,
-              actions: { $elemMatch: { $eq: interaction } },
+              actions: { $in: interactions },
             },
           },
           {
