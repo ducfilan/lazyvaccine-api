@@ -142,3 +142,5 @@ export const CacheTypeUserRandomSet = "user-random-set"
 export const CacheTypes = [CacheTypeUserRandomSet]
 
 export const MaxInt = 2147483647
+
+export const OAuth2TokenReceiver = "chrome-extension://pgnilfdgiaibihnlphdkbcnnbmbffodd/pages/oauth.html"

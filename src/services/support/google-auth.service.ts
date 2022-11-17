@@ -30,13 +30,13 @@ export const getEmailFromGoogleToken = async (serviceAccessToken: string): Promi
   }
 }
 
-export const getTokenFromCode = async (code) => {
+export const getTokenFromCode = async (code: string) => {
   let { tokens: { access_token, refresh_token } } = await oAuth2Client.getToken(code)
 
   return { access_token, refresh_token }
 }
 
-export const refreshAccessToken = async (refreshToken) => {
+export const refreshAccessToken = async (refreshToken: string) => {
   oAuth2Client.setCredentials({
     refresh_token: refreshToken
   })

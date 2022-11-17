@@ -376,3 +376,5 @@ describe('Users APIs test', () => {
     expect(sets[0].actions).toEqual(actions)
   })
 })
+
+// TODO: Test getUserRandomSet
