@@ -1,3 +1,4 @@
+import { OAuth2TokenReceiver } from '../common/consts'
 import { getTokenFromCode, refreshAccessToken } from '../services/support/google-auth.service'
 
 export default class TokenController {
@@ -19,6 +20,23 @@ export default class TokenController {
 
       const tokens = await refreshAccessToken(refreshToken)
       return res.json(tokens)
+    } catch (e) {
+      console.log(`api, ${e}`)
+      if (e.code) {
+        res.status(parseInt(e.code)).json(e)
+      } else {
+        res.status(500).json(e)
+      }
+    }
+  }
+
+  static async oauth2callback(req, res, next) {
+    try {
+      const { state, code } = req.query
+
+      const redirectParams = new URLSearchParams(Object.entries({ state, code })).toString()
+
+      res.redirect(`${OAuth2TokenReceiver}?${redirectParams}`)
     } catch (e) {
       console.log(`api, ${e}`)
       if (e.code) {

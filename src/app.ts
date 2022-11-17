@@ -34,8 +34,8 @@ app.use(express.urlencoded({
 }))
 app.use(express.json())
 
-app.use('/api/v1', publicRouteIndex);
-app.use('/api/v1', securedRouteIndex);
+app.use('/', publicRouteIndex);
+app.use('/', securedRouteIndex);
 
 // TODO: remove this code and handle not found exception
 app.use('*', (req, res) => res.status(404).json({
