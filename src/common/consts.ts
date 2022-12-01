@@ -143,4 +143,11 @@ export const CacheTypes = [CacheTypeUserRandomSet]
 
 export const MaxInt = 2147483647
 
-export const OAuth2TokenReceiver = "chrome-extension://pgnilfdgiaibihnlphdkbcnnbmbffodd/pages/oauth.html"
+export const ExtensionIdChrome = "pgnilfdgiaibihnlphdkbcnnbmbffodd"
+export const ExtensionIdEdge = "caigmdkjonhkmnmglimmdkkgkomgkakl"
+export const BrowserToExtensionId = {
+  "chrome": ExtensionIdChrome,
+  "edge": ExtensionIdEdge,
+}
+
+export const OAuth2TokenReceiver = (extensionId: string) => `chrome-extension://${extensionId}/pages/oauth.html`
