@@ -16,6 +16,7 @@ function standardizeSetInfoProperties(setInfo) {
     ...setInfo,
     _id: new ObjectId(setInfo._id),
     categoryId: new ObjectId(setInfo.categoryId),
+    totalItemsCount: setInfo.items.length,
     ...BaseCollectionProperties()
   }
 }

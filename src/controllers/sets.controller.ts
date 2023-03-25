@@ -26,8 +26,6 @@ export default class SetsController {
       let setInfo = req.body
       setInfo.creatorId = req.user._id
 
-      await delCache(setInfo._id)
-
       const success = await setsServices.editSet(setInfo)
       if (!success) throw new Error('cannot update set')
 
