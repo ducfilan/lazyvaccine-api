@@ -10,7 +10,8 @@ import {
   SetInteractions,
   InteractionSubscribe,
   InteractionDislike,
-  MaxInt
+  MaxInt,
+  ItemsInteractions
 } from '../common/consts'
 
 let _sets: Collection
@@ -74,6 +75,9 @@ export default class SetsDao {
                 },
                 additionalProperties: false
               },
+              totalItemsCount: {
+                bsonType: 'int'
+              },
               fromLanguage: {
                 enum: SupportingLanguages,
                 type: 'string'
@@ -105,7 +109,18 @@ export default class SetsDao {
                       definition: {
                         minLength: 1,
                         type: 'string'
-                      }
+                      },
+                      interactionCount: {
+                        type: 'object',
+                        properties: {
+                          ...ItemsInteractions.reduce((previousValue, interaction) => ({
+                            ...previousValue, [interaction]: ({
+                              bsonType: 'int'
+                            })
+                          }), {})
+                        },
+                        additionalProperties: false
+                      },
                     },
                   }, {
                     required: ['_id', 'type', 'answers', 'question'],
@@ -143,7 +158,18 @@ export default class SetsDao {
                       moreInfo: {
                         minLength: 1,
                         type: 'string'
-                      }
+                      },
+                      interactionCount: {
+                        type: 'object',
+                        properties: {
+                          ...ItemsInteractions.reduce((previousValue, interaction) => ({
+                            ...previousValue, [interaction]: ({
+                              bsonType: 'int'
+                            })
+                          }), {})
+                        },
+                        additionalProperties: false
+                      },
                     },
                   }, {
                     required: ['_id', 'type', 'content'],
@@ -159,7 +185,18 @@ export default class SetsDao {
                       content: {
                         minLength: 1,
                         type: 'string'
-                      }
+                      },
+                      interactionCount: {
+                        type: 'object',
+                        properties: {
+                          ...ItemsInteractions.reduce((previousValue, interaction) => ({
+                            ...previousValue, [interaction]: ({
+                              bsonType: 'int'
+                            })
+                          }), {})
+                        },
+                        additionalProperties: false
+                      },
                     },
                   }]
                 }
@@ -321,13 +358,13 @@ export default class SetsDao {
 
       return true
     } catch (e) {
-      console.log(arguments)
+      console.log(JSON.stringify(arguments[0]))
       console.error(`Error, ${e}, ${e.stack}`)
       return false
     }
   }
 
-  static async getSet(_id: ObjectId, itemsSkip: number = 0, itemsLimit: number = Number.MIN_SAFE_INTEGER) {
+  static async getSet(_id: ObjectId, itemsSkip: number = 0, itemsLimit: number = MaxInt) {
     try {
       return await this.findOneById(_id, itemsSkip, itemsLimit)
     } catch (e) {
