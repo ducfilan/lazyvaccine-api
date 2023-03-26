@@ -47,7 +47,7 @@ export async function delCache(key: string) {
 export async function delCacheByKeyPattern(keyPattern: string) {
   const client = getClient()
 
-  var stream = client.scanStream({
+  let stream = client.scanStream({
     match: `${keyPattern}*`,
     count: 100
   })

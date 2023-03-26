@@ -3,7 +3,7 @@ import TopSetsDao from '../../dao/top-sets.dao'
 import InteractionsDao from '../../dao/interactions.dao'
 import ItemsInteractionsDao from '../../dao/items-interactions.dao'
 import CategoriesDao from '../../dao/categories.dao'
-import { BaseCollectionProperties, CacheKeyRandomSetPrefix, CacheKeySet, CacheKeySuggestSet, InteractionSubscribe, SupportingTopSetsTypes } from '../../common/consts'
+import { BaseCollectionProperties, CacheKeyRandomSetPrefix, CacheKeySet, CacheKeySetPrefix, CacheKeySuggestSet, InteractionSubscribe, SupportingTopSetsTypes } from '../../common/consts'
 import { getCache, setCache, delCache, delCacheByKeyPattern } from '../../common/redis'
 import { ObjectId } from 'mongodb'
 
@@ -30,6 +30,7 @@ export default {
 
   editSet: async (setInfo) => {
     await delCache(setInfo._id)
+    await delCacheByKeyPattern(CacheKeySetPrefix(setInfo._id))
 
     setInfo = standardizeSetInfoProperties(setInfo)
 
