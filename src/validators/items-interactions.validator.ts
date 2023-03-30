@@ -1,5 +1,5 @@
 import { check, validationResult } from 'express-validator'
-import { AscOrder, DescOrder, MaxPaginationLimit } from '../common/consts'
+import { AscOrder, DescOrder, MaxPaginationLimit } from '@common/consts'
 
 export const validateApiGetInteractedItems = [
   check('limit')

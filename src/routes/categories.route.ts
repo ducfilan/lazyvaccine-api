@@ -1,10 +1,10 @@
 import {
   Router
 } from 'express'
-import CategoriesController from '../controllers/categories.controller'
-import SetsController from '../controllers/sets.controller'
-import identity from '../middlewares/global/identity.mw'
-import { validateApiGetCategories, validateApiGetTopSetsInCategories } from '../validators/categories.validator'
+import CategoriesController from '@controllers/categories.controller'
+import SetsController from '@controllers/sets.controller'
+import identity from '@middlewares/global/identity.mw'
+import { validateApiGetCategories, validateApiGetTopSetsInCategories } from '@validators/categories.validator'
 
 const router = Router()
 

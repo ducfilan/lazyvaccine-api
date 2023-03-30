@@ -1,4 +1,4 @@
-import usersServices from '../services/api/users.services'
+import usersServices from '@services/api/users.services'
 
 export default class ItemsStatisticsController {
   static async apiGetStatistics(req, res) {

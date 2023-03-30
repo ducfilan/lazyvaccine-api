@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
-import { DatabaseName } from '../common/configs/mongodb-client.config'
-import { DefaultMostItemsInteractionsLimit, ItemsInteractions, ItemsInteractionsCollectionName, DescOrder } from '../common/consts'
+import { DatabaseName } from '@common/configs/mongodb-client.config'
+import { DefaultMostItemsInteractionsLimit, ItemsInteractions, ItemsInteractionsCollectionName, DescOrder } from '@common/consts'
 
 let _itemsInteractions: Collection
 let _db: Db

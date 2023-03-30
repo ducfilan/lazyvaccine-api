@@ -1,4 +1,4 @@
-import setsServices from '../services/api/sets.services'
+import setsServices from '@services/api/sets.services'
 
 export default class InteractionsController {
   static async apiInteractSet(req, res) {

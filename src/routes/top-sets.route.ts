@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import SetsController from '../controllers/sets.controller'
-import identity from '../middlewares/global/identity.mw'
+import SetsController from '@controllers/sets.controller'
+import identity from '@middlewares/global/identity.mw'
 
 const publicTopSetRouter = Router()
 

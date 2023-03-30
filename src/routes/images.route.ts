@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import ImagesController from '../controllers/images.controller'
+import ImagesController from '@controllers/images.controller'
 import multer from 'multer'
-import auth from '../middlewares/global/auth.mw'
+import auth from '@middlewares/global/auth.mw'
 
 const router = Router()
 

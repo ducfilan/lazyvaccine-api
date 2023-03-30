@@ -1,15 +1,15 @@
 import { MongoClient, WriteConcern } from 'mongodb'
-import CategoriesDao from '../../dao/categories.dao';
-import ConfigsDao from '../../dao/configs.dao';
-import InteractionsDao from '../../dao/interactions.dao';
-import ItemsInteractionsDao from '../../dao/items-interactions.dao';
-import ItemsStatisticsDao from '../../dao/items-statistics.dao';
-import MissionsDao from '../../dao/missions.dao';
-import SetsStatisticsDao from '../../dao/sets-statistics.dao';
-import SetsDao from '../../dao/sets.dao';
-import TagsDao from '../../dao/tags.dao';
-import TopSetsDao from '../../dao/top-sets.dao';
-import UsersDao from '../../dao/users.dao';
+import CategoriesDao from '@dao/categories.dao';
+import ConfigsDao from '@dao/configs.dao';
+import InteractionsDao from '@dao/interactions.dao';
+import ItemsInteractionsDao from '@dao/items-interactions.dao';
+import ItemsStatisticsDao from '@dao/items-statistics.dao';
+import MissionsDao from '@dao/missions.dao';
+import SetsStatisticsDao from '@dao/sets-statistics.dao';
+import SetsDao from '@dao/sets.dao';
+import TagsDao from '@dao/tags.dao';
+import TopSetsDao from '@dao/top-sets.dao';
+import UsersDao from '@dao/users.dao';
 
 const {
   NODE_ENV,

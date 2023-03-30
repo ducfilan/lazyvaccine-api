@@ -1,5 +1,5 @@
 import AWS from 'aws-sdk'
-import { DoSpaceName, DoEndpoint, DoPreSignExpirationInSecond, SupportingContentTypes, HttpStatusBadRequest } from '../common/consts'
+import { DoSpaceName, DoEndpoint, DoPreSignExpirationInSecond, SupportingContentTypes, HttpStatusBadRequest } from '@common/consts'
 
 const spacesEndpoint = new AWS.Endpoint(DoEndpoint)
 const s3 = new AWS.S3({

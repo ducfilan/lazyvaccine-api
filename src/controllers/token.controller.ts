@@ -1,5 +1,5 @@
-import { BrowserToExtensionId, ExtensionIdChrome, OAuth2TokenReceiver } from '../common/consts'
-import { getTokenFromCode, refreshAccessToken } from '../services/support/google-auth.service'
+import { BrowserToExtensionId, ExtensionIdChrome, OAuth2TokenReceiver } from '@common/consts'
+import { getTokenFromCode, refreshAccessToken } from '@services/support/google-auth.service'
 
 export default class TokenController {
   static async apiGetTokenFromCode(req, res, next) {

@@ -1,4 +1,4 @@
-import MissionsDao from '../../dao/missions.dao'
+import MissionsDao from '@dao/missions.dao'
 
 export default {
   getMissions: async (ids) => {

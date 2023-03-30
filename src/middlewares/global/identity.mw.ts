@@ -1,6 +1,6 @@
-import UsersDao from '../../dao/users.dao'
-import { getEmailFromGoogleToken } from '../../services/support/google-auth.service'
-import { LoginTypes } from '../../common/consts'
+import UsersDao from '@dao/users.dao'
+import { getEmailFromGoogleToken } from '@services/support/google-auth.service'
+import { LoginTypes } from '@common/consts'
 
 export default async (req, res, next) => {
   try {

@@ -1,9 +1,9 @@
-import usersServices from '../services/api/users.services'
-import setsServices from '../services/api/sets.services'
-import { apiSearchSetValidator } from '../validators/sets.validator'
+import usersServices from '@services/api/users.services'
+import setsServices from '@services/api/sets.services'
+import { apiSearchSetValidator } from '@validators/sets.validator'
 import { ObjectId } from 'mongodb'
-import { deleteCache } from '../services/support/redis.service'
-import { User } from '../common/types'
+import { deleteCache } from '@services/support/redis.service'
+import { User } from '@common/types'
 
 export default class UsersController {
   static async me(req, res) {

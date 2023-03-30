@@ -1,7 +1,7 @@
-import setsServices from '../services/api/sets.services'
-import { apiSearchSetValidator, apiGetSetsInCategoriesValidator, apiGetSetValidator } from '../validators/sets.validator'
-import { delCache } from '../common/redis'
-import { InteractionSubscribe, SupportingLanguages } from '../common/consts'
+import setsServices from '@services/api/sets.services'
+import { apiSearchSetValidator, apiGetSetsInCategoriesValidator, apiGetSetValidator } from '@validators/sets.validator'
+import { delCache } from '@common/redis'
+import { InteractionSubscribe, SupportingLanguages } from '@common/consts'
 
 export default class SetsController {
   static async apiCreateSet(req, res) {

@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
-import { DatabaseName } from '../common/configs/mongodb-client.config'
-import { SupportingLanguages, UsersCollectionName } from '../common/consts'
+import { DatabaseName } from '@common/configs/mongodb-client.config'
+import { SupportingLanguages, UsersCollectionName } from '@common/consts'
 
 let _users: Collection
 let _db: Db

@@ -1,4 +1,4 @@
-import usersServices from '../services/api/users.services'
+import usersServices from '@services/api/users.services'
 
 export default class SetsStatisticController {
   static async apiGetSetsStatistics(req, res) {

@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import ItemsInteractionsController from '../controllers/items-interactions.controller'
-import auth from '../middlewares/global/auth.mw'
-import { validateApiGetInteractedItems, validateApiGetTopInteractItem } from '../validators/items-interactions.validator'
+import ItemsInteractionsController from '@controllers/items-interactions.controller'
+import auth from '@middlewares/global/auth.mw'
+import { validateApiGetInteractedItems, validateApiGetTopInteractItem } from '@validators/items-interactions.validator'
 
 const securedItemsInteractionsRouter = Router()
 

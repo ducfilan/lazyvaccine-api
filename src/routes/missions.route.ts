@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import MissionsController from '../controllers/missions.controller'
-import auth from '../middlewares/global/auth.mw'
+import MissionsController from '@controllers/missions.controller'
+import auth from '@middlewares/global/auth.mw'
 
 const securedMissionsRouter = Router()
 

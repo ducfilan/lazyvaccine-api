@@ -1,4 +1,4 @@
-import missionsServices from '../services/api/missions.services'
+import missionsServices from '@services/api/missions.services'
 
 export default class MissionsController {
   static async apiGetMissions(req, res) {
