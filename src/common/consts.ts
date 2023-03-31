@@ -95,6 +95,7 @@ export const SupportingSetTypes = ['term-def', 'q&a', 'content']
 
 export const CaptchaVerificationUrl = (response) => `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${response}`;
 
+export const S3RegionSEA = 'ap-southeast-1'
 export const DoSpaceName = 'lazy-vaccine-static'
 export const DoEndpoint = 'sgp1.digitaloceanspaces.com'
 export const DoPreSignExpirationInSecond = 600 // 10 minutes
