@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import SetsStatisticsController from '../controllers/sets-statistics.controller'
-import auth from '../middlewares/global/auth.mw'
+import SetsStatisticsController from '@controllers/sets-statistics.controller'
+import auth from '@middlewares/global/auth.mw'
 
 const securedSetsStatisticsRouter = Router()
 

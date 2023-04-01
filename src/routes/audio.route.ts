@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import AudioController from '../controllers/audio.controller'
-import auth from '../middlewares/global/auth.mw'
+import AudioController from '@controllers/audio.controller'
+import auth from '@middlewares/global/auth.mw'
 
 const router = Router()
 

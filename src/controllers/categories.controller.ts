@@ -1,4 +1,4 @@
-import CategoryServices from '../services/api/categories.services'
+import CategoryServices from '@services/api/categories.services'
 
 export default class CategoriesController {
   static async apiGetCategories(req: { query: { lang: string; isTopCategory: boolean } }, res, next) {

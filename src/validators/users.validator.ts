@@ -1,6 +1,6 @@
-import { CacheTypes, MaxInt, MaxPaginationLimit, MaxRegistrationsStep, SupportingLanguages, SupportingPagesLength } from '../common/consts'
+import { CacheTypes, MaxInt, MaxPaginationLimit, MaxRegistrationsStep, SupportingLanguages, SupportingPagesLength } from '@common/consts'
 import { check, validationResult } from 'express-validator'
-import { isEmpty } from '../common/utils/objectUtils'
+import { isEmpty } from '@common/utils/objectUtils'
 import { ObjectId } from 'mongodb'
 
 export const validateApiGetUserSets = [

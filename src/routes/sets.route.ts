@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import SetsController from '../controllers/sets.controller'
+import SetsController from '@controllers/sets.controller'
 import multer from 'multer'
-import auth from '../middlewares/global/auth.mw'
-import recaptcha from '../middlewares/global/recaptcha.mw'
-import identity from '../middlewares/global/identity.mw'
+import auth from '@middlewares/global/auth.mw'
+import recaptcha from '@middlewares/global/recaptcha.mw'
+import identity from '@middlewares/global/identity.mw'
 
 const publicSetsRouter = Router()
 const securedSetsRouter = Router()

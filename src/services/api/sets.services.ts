@@ -1,10 +1,10 @@
-import SetsDao from '../../dao/sets.dao'
-import TopSetsDao from '../../dao/top-sets.dao'
-import InteractionsDao from '../../dao/interactions.dao'
-import ItemsInteractionsDao from '../../dao/items-interactions.dao'
-import CategoriesDao from '../../dao/categories.dao'
-import { BaseCollectionProperties, CacheKeyRandomSetPrefix, CacheKeySet, CacheKeySetPrefix, CacheKeySuggestSet, InteractionSubscribe, SupportingTopSetsTypes } from '../../common/consts'
-import { getCache, setCache, delCache, delCacheByKeyPattern } from '../../common/redis'
+import SetsDao from '@dao/sets.dao'
+import TopSetsDao from '@dao/top-sets.dao'
+import InteractionsDao from '@dao/interactions.dao'
+import ItemsInteractionsDao from '@dao/items-interactions.dao'
+import CategoriesDao from '@dao/categories.dao'
+import { BaseCollectionProperties, CacheKeyRandomSetPrefix, CacheKeySet, CacheKeySetPrefix, CacheKeySuggestSet, InteractionSubscribe, SupportingTopSetsTypes } from '@common/consts'
+import { getCache, setCache, delCache, delCacheByKeyPattern } from '@common/redis'
 import { ObjectId } from 'mongodb'
 
 function standardizeSetInfoProperties(setInfo) {

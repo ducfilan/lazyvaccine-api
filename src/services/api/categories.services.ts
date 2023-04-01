@@ -1,4 +1,4 @@
-import CategoriesDao from '../../dao/categories.dao'
+import CategoriesDao from '@dao/categories.dao'
 
 export default {
   getCategories: async (lang: string, isTopCategory: boolean) => {

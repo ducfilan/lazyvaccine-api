@@ -1,4 +1,4 @@
-import TagsDao from '../dao/tags.dao'
+import TagsDao from '@dao/tags.dao'
 
 export default class TagsController {
   static async apiGetTagsStartWith(req, res, next) {

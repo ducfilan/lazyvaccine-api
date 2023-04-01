@@ -1,4 +1,4 @@
-import { DatabaseName } from '../common/configs/mongodb-client.config'
+import { DatabaseName } from '@common/configs/mongodb-client.config'
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
 import {
   SetsCollectionName,
@@ -12,7 +12,7 @@ import {
   InteractionDislike,
   MaxInt,
   ItemsInteractions
-} from '../common/consts'
+} from '@common/consts'
 
 let _sets: Collection
 let _db: Db

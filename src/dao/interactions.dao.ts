@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
-import { DatabaseName } from '../common/configs/mongodb-client.config'
-import { SetsCollectionName, InteractionsCollectionName, SetInteractions, MaxInt } from '../common/consts'
+import { DatabaseName } from '@common/configs/mongodb-client.config'
+import { SetsCollectionName, InteractionsCollectionName, SetInteractions, MaxInt } from '@common/consts'
 
 let _interactions: Collection
 let _db: Db

@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient } from 'mongodb'
-import { DatabaseName } from '../common/configs/mongodb-client.config'
-import Consts, { TagsCollectionName } from '../common/consts'
+import { DatabaseName } from '@common/configs/mongodb-client.config'
+import Consts, { TagsCollectionName } from '@common/consts'
 
 let _tags: Collection
 let _db: Db

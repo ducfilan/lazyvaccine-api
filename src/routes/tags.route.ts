@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import TagsController from '../controllers/tags.controller'
+import TagsController from '@controllers/tags.controller'
 import multer from 'multer'
-import auth from '../middlewares/global/auth.mw'
+import auth from '@middlewares/global/auth.mw'
 
 const router = Router()
 

@@ -1,5 +1,6 @@
-import app from './app'
-import { injectTables } from './common/configs/mongodb-client.config'
+import 'module-alias/register'
+import app from '@/app'
+import { injectTables } from '@common/configs/mongodb-client.config'
 
 
 const port = process.env.NODE_PORT || 80

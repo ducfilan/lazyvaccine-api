@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient } from 'mongodb'
-import { DatabaseName } from '../common/configs/mongodb-client.config'
-import { SetsStatisticsCollectionName } from '../common/consts'
+import { DatabaseName } from '@common/configs/mongodb-client.config'
+import { SetsStatisticsCollectionName } from '@common/consts'
 
 let _setsStatistics: Collection
 let _db: Db

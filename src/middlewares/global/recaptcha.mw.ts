@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
-import { CaptchaVerificationUrl } from '../../common/consts'
-import { HttpBadRequest, HttpServerError } from '../../common/http-codes'
+import { CaptchaVerificationUrl } from '@common/consts'
+import { HttpBadRequest, HttpServerError } from '@common/http-codes'
 
 export default async (req, res, next) => {
   try {

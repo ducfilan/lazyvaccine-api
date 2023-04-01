@@ -1,7 +1,7 @@
-import UsersDao from '../../dao/users.dao'
-import { getEmailFromGoogleToken } from '../../services/support/google-auth.service'
-import { CacheKeyUser, LoginTypes } from '../../common/consts'
-import { getCache, setCache } from '../../common/redis'
+import UsersDao from '@dao/users.dao'
+import { getEmailFromGoogleToken } from '@services/support/google-auth.service'
+import { CacheKeyUser, LoginTypes } from '@common/consts'
+import { getCache, setCache } from '@common/redis'
 import { ObjectId } from 'mongodb'
 
 export default async (req, res, next) => {

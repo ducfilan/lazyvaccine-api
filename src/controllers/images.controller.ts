@@ -1,11 +1,15 @@
-import AWS from 'aws-sdk'
-import { DoSpaceName, DoEndpoint, DoPreSignExpirationInSecond, SupportingContentTypes, HttpStatusBadRequest } from '../common/consts'
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const spacesEndpoint = new AWS.Endpoint(DoEndpoint)
-const s3 = new AWS.S3({
-  endpoint: spacesEndpoint,
-  accessKeyId: process.env.DO_SPACES_KEY,
-  secretAccessKey: process.env.DO_SPACES_SECRET
+import { DoSpaceName, DoEndpoint, DoPreSignExpirationInSecond, SupportingContentTypes, HttpStatusBadRequest, S3RegionSEA } from '@common/consts'
+
+const client = new S3Client({
+  region: S3RegionSEA,
+  endpoint: DoEndpoint,
+  credentials: {
+    accessKeyId: process.env.DO_SPACES_KEY,
+    secretAccessKey: process.env.DO_SPACES_SECRET
+  },
 });
 
 
@@ -16,13 +20,14 @@ export default class ImagesController {
     }
 
     try {
-      const url = s3.getSignedUrl('putObject', {
+      const command = new PutObjectCommand({
         Bucket: DoSpaceName,
         Key: req.body.fileName,
         ContentType: req.body.contentType,
         ACL: 'public-read',
-        Expires: DoPreSignExpirationInSecond
-      });
+      })
+
+      const url = await getSignedUrl(client, command, { expiresIn: DoPreSignExpirationInSecond })
 
       return res.json({ url })
     } catch (e) {
