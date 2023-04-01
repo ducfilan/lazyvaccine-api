@@ -27,7 +27,7 @@ export default class ImagesController {
         ACL: 'public-read',
       })
 
-      const url = getSignedUrl(client, command, { expiresIn: DoPreSignExpirationInSecond })
+      const url = await getSignedUrl(client, command, { expiresIn: DoPreSignExpirationInSecond })
 
       return res.json({ url })
     } catch (e) {

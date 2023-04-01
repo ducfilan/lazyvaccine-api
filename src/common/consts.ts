@@ -97,7 +97,7 @@ export const CaptchaVerificationUrl = (response) => `https://www.google.com/reca
 
 export const S3RegionSEA = 'ap-southeast-1'
 export const DoSpaceName = 'lazy-vaccine-static'
-export const DoEndpoint = 'sgp1.digitaloceanspaces.com'
+export const DoEndpoint = 'https://sgp1.digitaloceanspaces.com'
 export const DoPreSignExpirationInSecond = 600 // 10 minutes
 
 export const StaticBaseUrl = 'https://static.lazyvaccine.com'
