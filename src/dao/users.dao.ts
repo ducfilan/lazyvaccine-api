@@ -86,19 +86,11 @@ export default class UsersDao {
   static async registerUserIfNotFound(userInfo): Promise<ObjectId> {
     let user = await this.findByEmail(userInfo.email)
 
-    if (!!user) {
+    if (!!user && user._id) {
       return user._id
     }
 
-    return new Promise((resolve, reject) => {
-      _users.insertOne(userInfo, null, (error, response) => {
-        if (error) {
-          reject(error)
-        } else {
-          const insertedUserId = response.insertedId
-          resolve(insertedUserId)
-        }
-      })
-    })
+    const insertResult = await _users.insertOne(userInfo)
+    return insertResult.insertedId
   }
 }
