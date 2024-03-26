@@ -51,7 +51,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-prettier": "^4.2.1",
-    "express": "~4.18.2",
+    "express": "~4.19.2",
     "express-jwt": "^8.4.1",
     "express-session": "^1.17.3",
     "express-validator": "^6.14.3",
