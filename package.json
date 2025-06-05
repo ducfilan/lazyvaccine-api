@@ -61,7 +61,7 @@
     "module-alias": "^2.2.2",
     "mongodb": "^5.8.0",
     "morgan": "~1.10.0",
-    "multer": "^2.0.0",
+    "multer": "^2.0.1",
     "node-fetch": "^2.6.6",
     "nodemon": "^2.0.20",
     "prettier": "^2.8.4",
