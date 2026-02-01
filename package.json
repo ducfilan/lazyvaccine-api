@@ -45,7 +45,7 @@
     "cors": "^2.8.5",
     "debug": "~4.3.4",
     "dotenv": "^16.0.3",
-    "eslint": "^8.34.0",
+    "eslint": "^9.26.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-import": "^2.27.5",
